@@ -1,0 +1,57 @@
+# Sjekker hver pull request: at skriptene og manifestet er gyldige, og at pakken kan bygges.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Syntaks i skriptene
+        run: |
+          for f in background.js content/*.js popup/*.js tools/*.mjs; do
+            node --check "$f"
+          done
+
+      - name: Manifestet
+        run: |
+          node -e '
+            const m = require("./manifest.json");
+            if (m.manifest_version !== 3) throw new Error("manifest_version må være 3");
+            if (!/^\d+\.\d+\.\d+$/.test(m.version)) throw new Error("versjonen må være på formen 1.2.3");
+            if (m.description.length > 132) throw new Error("description er over 132 tegn");
+            const fs = require("fs");
+            const files = [
+              m.background.service_worker,
+              m.action.default_popup,
+              ...Object.values(m.icons),
+              ...m.content_scripts.flatMap((c) => [...c.css, ...c.js]),
+            ];
+            const missing = files.filter((f) => !fs.existsSync(f));
+            if (missing.length) throw new Error("mangler filer: " + missing.join(", "));
+          '
+
+      - name: Ikonene er bygget
+        run: |
+          node tools/build-icons.mjs
+          git diff --exit-code content/icons.css || (echo "Kjør node tools/build-icons.mjs og commit content/icons.css" && exit 1)
+
+      - name: Bygg pakken
+        run: python3 tools/package.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bedre-canvas
+          path: dist/*.zip

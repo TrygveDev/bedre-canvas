@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <title>Bedre Canvas</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="../icons/app/icon-32.png" alt="" width="24" height="24">
+    <h1>Bedre Canvas</h1>
+    <label class="switch" title="Slå av eller på">
+      <input type="checkbox" id="enabled" role="switch" aria-label="Bedre Canvas på">
+      <span></span>
+    </label>
+  </header>
+
+  <section class="group">
+    <h2 id="theme-label">Tema</h2>
+    <div class="segmented" id="themes" role="radiogroup" aria-labelledby="theme-label">
+      <button data-theme="light" role="radio">Lyst</button>
+      <button data-theme="auto" role="radio">Auto</button>
+      <button data-theme="dark" role="radio">Mørkt</button>
+    </div>
+  </section>
+
+  <section class="group">
+    <h2 id="accent-label">Farge <span id="accent-name"></span></h2>
+    <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="accent-label">
+      <button class="school" data-accent="school" role="radio">Skolens</button>
+    </div>
+  </section>
+
+  <section class="group" id="site" hidden>
+    <h2>Denne siden</h2>
+    <p class="hint" id="site-text"></p>
+    <button class="primary" id="site-button"></button>
+  </section>
+
+  <script src="popup.js"></script>
+</body>
+</html>

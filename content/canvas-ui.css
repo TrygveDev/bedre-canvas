@@ -1,0 +1,766 @@
+/*
+  Bedre Canvas – Canvas sine egne komponenter
+  Topplinje, popovere, menyer, sidepaneler, kortvisning, aktivitetsvisning og
+  «Å gjøre»-kolonnen. Canvas bygger mye av dette med Instructure UI, som har
+  genererte klassenavn (css-abc123-view-tab). Vi treffer derfor den stabile delen
+  av navnet med [class*="-view-tab"] og lignende.
+
+  Skygge brukes bare på det som ligger oppå siden (popovere, menyer, sidepaneler),
+  fordi det er der dybden forteller noe.
+*/
+
+html.bc {
+  --bc-overlay-shadow: 0 10px 30px rgb(16 24 40 / 0.14), 0 2px 6px rgb(16 24 40 / 0.06);
+}
+
+/* Hele bredden: Canvas stopper innholdet ved 1366px. */
+html.bc .ic-Layout-wrapper {
+  max-width: none !important;
+}
+
+/* Ikonene byttes i icons.css (generert av tools/build-icons.mjs). */
+
+/* Menyikonene farges av Canvas med fill, ikke color. */
+html.bc .ic-app-header__menu-list-link svg,
+html.bc #global_nav_profile_link .menu-item-icon-container::before {
+  background-color: var(--ic-brand-global-nav-ic-icon-svg-fill);
+}
+
+html.bc .ic-app-header__menu-list-item--active svg,
+html.bc .ic-app-header__menu-list-item--active #global_nav_profile_link .menu-item-icon-container::before {
+  background-color: var(--ic-brand-global-nav-ic-icon-svg-fill--active);
+}
+
+/* ---------- Topplinjen på dashboardet ---------- */
+/* Canvas løfter dashboardet 24px opp og gjør topplinjen «sticky». Da havnet varseltelleren
+   på bjella utenfor siden. Vi tar bort løftet og gir topplinjen luft over seg, og samme
+   bakgrunn som siden så innhold ikke synes gjennom når den står fast under rulling. */
+html.bc #dashboard {
+  margin-top: 0 !important;
+}
+
+html.bc #dashboard_header_container {
+  background: var(--bc-bg) !important;
+  padding-top: 12px;
+  z-index: 5;
+}
+
+html.bc .ic-Dashboard-header__layout {
+  background: transparent !important;
+}
+
+html.bc .ic-Dashboard-header__layout {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 0 12px !important;
+  margin-bottom: 8px;
+  border-bottom: 0 !important;
+}
+
+html.bc #dashboard_header_container [class*="-view-heading"] {
+  font-size: var(--bc-fs-title) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+}
+
+html.bc .PlannerHeader-styles__root {
+  background: transparent !important;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+html.bc .ic-Dashboard-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Ikonknappene: 44px trykkflate, myk flate ved hover i stedet for Canvas sin ramme. */
+html.bc #dashboard_header_container button[class*="-baseButton"] [class*="baseButton__content"] {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--bc-radius-sm) !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: var(--bc-text) !important;
+  transition: background-color 0.15s ease;
+}
+
+html.bc #dashboard_header_container button[class*="-baseButton"]:hover [class*="baseButton__content"],
+html.bc #dashboard_header_container button[class*="-baseButton"][aria-expanded="true"] [class*="baseButton__content"] {
+  background: var(--bc-surface-2) !important;
+}
+
+html.bc #dashboard_header_container button[class*="-baseButton"] svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- Popovere (varsler / «Opportunity Centre») ---------- */
+html.bc [class*="-contextView__content"] {
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius) !important;
+  box-shadow: var(--bc-overlay-shadow) !important;
+  background: var(--bc-surface) !important;
+  overflow: hidden;
+}
+
+html.bc [class*="-contextView__arrow"] {
+  display: none !important;
+}
+
+html.bc .Opportunities-styles__root {
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  padding: 4px 0 0;
+}
+
+html.bc .Opportunities-styles__root [class*="-closeButton"] {
+  top: 8px !important;
+  right: 8px !important;
+}
+
+html.bc [role="tablist"][class*="-view-tabs__tabList"] {
+  padding: 0 16px;
+  gap: 4px;
+  border-bottom: 1px solid var(--bc-border);
+}
+
+html.bc [role="tab"][class*="-view-tab"] {
+  padding: 12px 10px !important;
+  color: var(--bc-muted) !important;
+  font-weight: 600;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  background: transparent !important;
+}
+
+html.bc [role="tab"][class*="-view-tab"][aria-selected="true"] {
+  color: var(--bc-text) !important;
+  border-bottom-color: var(--bc-accent) !important;
+}
+
+html.bc [role="tab"][class*="-view-tab"]::before,
+html.bc [role="tab"][class*="-view-tab"]::after {
+  display: none !important;
+}
+
+html.bc .Opportunities-styles__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+}
+
+html.bc .Opportunities-styles__item {
+  border-bottom: 1px solid var(--bc-border);
+}
+
+html.bc .Opportunities-styles__item:last-child {
+  border-bottom: 0;
+}
+
+html.bc .Opportunity-styles__root {
+  position: relative;
+  padding: 14px 52px 14px 16px !important;
+  display: grid;
+  gap: 8px;
+}
+
+html.bc .Opportunity-styles__oppName {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+html.bc .Opportunity-styles__title a,
+html.bc .Opportunity-styles__title [class*="-view-link"] {
+  color: var(--bc-text) !important;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+html.bc .Opportunity-styles__footer {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+html.bc .Opportunity-styles__due,
+html.bc .Opportunity-styles__dueText {
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+}
+
+html.bc .Opportunity-styles__points {
+  display: inline-flex !important;
+  align-items: baseline;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  text-transform: none !important;
+}
+
+html.bc .Opportunity-styles__pointsNumber {
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 600;
+  color: var(--bc-text);
+}
+
+html.bc .Opportunity-styles__close {
+  position: absolute !important;
+  top: 8px;
+  right: 8px;
+}
+
+/* «Missing» er en ekte status, så den beholder rødt, men uten pilleform og versaler. */
+html.bc :is(.Opportunity-styles__status, #bedre-dashboard) [class*="-pill"] {
+  border-radius: var(--bc-radius-xs) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+/* ---------- Modaler og skjemafelt (Instructure UI, hele Canvas) ---------- */
+html.bc [role="dialog"][class*="-modal"] {
+  border-radius: var(--bc-radius) !important;
+  overflow: hidden;
+  box-shadow: var(--bc-overlay-shadow) !important;
+  border: 1px solid var(--bc-border) !important;
+}
+
+html.bc [class*="-modalFooter"] {
+  background: var(--bc-surface-2) !important;
+  border-top: 1px solid var(--bc-border) !important;
+}
+
+html.bc :is([class*="-textInput__facade"], [class*="-textArea__outline"], [class*="-dateInput"] [class*="-textInput__facade"]) {
+  border-radius: var(--bc-radius-sm) !important;
+}
+
+/* ---------- Dialoger i gammel jQuery-stil (ny hendelse, filer, innstillinger) ---------- */
+html.bc .ui-dialog {
+  padding: 0 !important;
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius) !important;
+  box-shadow: var(--bc-overlay-shadow) !important;
+  background: var(--bc-surface) !important;
+  overflow: hidden;
+  max-width: calc(100vw - 32px);
+}
+
+html.bc .ui-dialog .ui-dialog-titlebar {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 56px 0 20px !important;
+  background: var(--bc-surface) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--bc-border) !important;
+  border-radius: 0 !important;
+}
+
+html.bc .ui-dialog .ui-dialog-title {
+  font-size: var(--bc-fs-heading);
+  font-weight: 600;
+  color: var(--bc-text);
+  margin: 0 !important;
+}
+
+html.bc .ui-dialog .ui-dialog-titlebar-close {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  margin: 0 !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--bc-radius-sm) !important;
+  background: transparent !important;
+}
+
+html.bc .ui-dialog .ui-dialog-titlebar-close:hover {
+  background: var(--bc-surface-2) !important;
+}
+
+/* Krysset er et bildeikon fra jQuery UI; byttes til Phosphor som resten. */
+html.bc .ui-dialog .ui-dialog-titlebar-close .ui-icon {
+  position: static !important;
+  margin: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  background: var(--bc-muted) !important;
+  -webkit-mask: var(--ph-x) center / contain no-repeat;
+  mask: var(--ph-x) center / contain no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+
+html.bc .ui-dialog .ui-dialog-content {
+  padding: 16px 20px !important;
+  background: var(--bc-surface) !important;
+  box-sizing: border-box;
+}
+
+/* Canvas maler hele innholdet i kalenderfargen; kalenderen står allerede i et eget felt. */
+html.bc .ui-dialog [class^="group_"],
+html.bc .ui-dialog [class*=" group_"] {
+  background: transparent !important;
+}
+
+html.bc .ui-dialog .ui-dialog-buttonpane {
+  margin: 0 !important;
+  padding: 12px 20px !important;
+  background: var(--bc-surface-2) !important;
+  border-top: 1px solid var(--bc-border) !important;
+}
+
+html.bc .ui-dialog .ui-dialog-buttonset {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+html.bc .ui-widget-overlay {
+  background: rgb(16 24 40 / 0.45) !important;
+  opacity: 1 !important;
+}
+
+/* ---------- Menyer (visningsvalg og andre) ---------- */
+html.bc [role="menu"][class*="-menu"] {
+  padding: 6px !important;
+  min-width: 220px;
+  border-radius: var(--bc-radius-sm);
+  background: var(--bc-surface) !important;
+}
+
+html.bc [class*="-menuItemGroup__label"] {
+  padding: 6px 12px 4px !important;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 600 !important;
+}
+
+html.bc [role="menu"] [class*="-menuItem"]:is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]) {
+  border-radius: 6px;
+  padding: 8px 12px !important;
+  min-height: 40px;
+  color: var(--bc-text) !important;
+  background: transparent !important;
+}
+
+html.bc [role="menu"] [class*="-menuItem"]:is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]):is(:hover, :focus) {
+  background: var(--bc-surface-2) !important;
+  color: var(--bc-text) !important;
+  outline: none;
+}
+
+html.bc [role="menu"] [class*="-menuItem"]:is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]):focus-visible {
+  outline: 2px solid var(--bc-accent) !important;
+  outline-offset: -2px;
+}
+
+/* Canvas legger hakemerket i venstre polstring på valgbare punkter. */
+html.bc [role="menu"] [class*="-menuItem"]:is([role="menuitemradio"], [role="menuitemcheckbox"]) {
+  padding-left: 36px !important;
+}
+
+html.bc [role="menu"] [class*="-menuItem"][aria-checked="true"] {
+  font-weight: 600;
+}
+
+html.bc [role="menu"] [class*="-menuItem"] [class*="-menuItem__label"],
+html.bc [role="menu"] [class*="-menuItem"] [class*="-menuItem__icon"] {
+  color: inherit !important;
+}
+
+/* ---------- Sidepaneler (Mine karakterer, Legg til gjøremål) ---------- */
+html.bc span[class*="-tray"] {
+  box-shadow: var(--bc-overlay-shadow) !important;
+}
+
+html.bc [class*="-tray__content"] {
+  background: var(--bc-surface) !important;
+}
+
+html.bc [role="dialog"][aria-label="My Grades"] [class*="-tray__content"] > [class*="-view"] {
+  padding: 24px !important;
+}
+
+html.bc [role="dialog"][aria-label="My Grades"] h2 {
+  font-size: var(--bc-fs-heading) !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+/* Én rad per emne: navnet i vanlig skrift, karakteren stor under. */
+html.bc .GradesDisplay-styles__course {
+  display: block;
+  padding-top: 14px;
+  border-top: 1px solid var(--bc-border);
+  border-bottom: 0 !important;
+}
+
+html.bc .GradesDisplay-styles__course a,
+html.bc .GradesDisplay-styles__course a [class*="-text"] {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--bc-text) !important;
+  font-weight: 600 !important;
+  font-size: var(--bc-fs-row) !important;
+  line-height: 1.35 !important;
+}
+
+html.bc .GradesDisplay-styles__course + [class*="-text"] {
+  display: block;
+  padding: 2px 0 14px;
+  font-size: 1.35rem !important;
+  font-weight: 600 !important;
+  color: var(--bc-text) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+html.bc .UpdateItemTray-styles__root {
+  padding: 24px !important;
+}
+
+html.bc .UpdateItemTray-styles__root [class*="-formFieldLayout__label"] {
+  font-weight: 600 !important;
+  font-size: var(--bc-fs-small) !important;
+  color: var(--bc-text) !important;
+}
+
+html.bc .UpdateItemTray-styles__root :is([class*="-textInput__facade"], [class*="-textArea__outline"], [class*="-select"] input) {
+  border-radius: var(--bc-radius-sm) !important;
+}
+
+html.bc .UpdateItemTray-styles__root [class*="-formFieldMessage"] {
+  color: var(--bc-muted) !important;
+}
+
+html.bc .UpdateItemTray-styles__root button[data-testid="save"] [class*="baseButton__content"] {
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--bc-radius-sm) !important;
+  background: var(--bc-accent) !important;
+  border-color: var(--bc-accent) !important;
+  color: #fff !important;
+}
+
+html.bc .UpdateItemTray-styles__root button[data-testid="save"]:disabled [class*="baseButton__content"] {
+  background: var(--bc-surface-2) !important;
+  border-color: var(--bc-border) !important;
+  color: var(--bc-muted) !important;
+}
+
+/* ---------- Kortvisning ---------- */
+html.bc .ic-DashboardCard__box__container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin: 0 !important;
+}
+
+html.bc .ic-DashboardCard__action-layout {
+  position: relative;
+}
+
+html.bc .ic-DashboardCard {
+  width: auto !important;
+  margin: 0 !important;
+}
+
+html.bc .ic-DashboardCard__header_image,
+html.bc .ic-DashboardCard__header_hero {
+  height: 128px !important;
+}
+
+html.bc .ic-DashboardCard__header-title {
+  font-size: var(--bc-fs-heading) !important;
+  line-height: 1.3;
+}
+
+html.bc .ic-DashboardCard__header-subtitle {
+  font-size: var(--bc-fs-small) !important;
+}
+
+html.bc .ic-DashboardCard__header-term {
+  font-size: var(--bc-fs-foot) !important;
+  text-transform: none !important;
+}
+
+html.bc .ic-DashboardCard__action-container {
+  display: flex;
+  gap: 2px;
+  border-top: 1px solid var(--bc-border);
+  margin-top: 8px;
+  padding: 6px 8px !important;
+}
+
+html.bc .ic-DashboardCard__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--bc-muted) !important;
+}
+
+html.bc .ic-DashboardCard__action:hover {
+  color: var(--bc-text) !important;
+}
+
+html.bc .ic-DashboardCard__action svg {
+  width: 22px;
+  height: 22px;
+}
+
+html.bc .ic-DashboardCard__action-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--bc-accent) !important;
+  color: #fff !important;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+  top: -8px !important;
+  right: -12px !important;
+  left: auto !important;
+  border: 2px solid var(--bc-surface);
+  box-sizing: content-box;
+}
+
+html.bc .ic-DashboardCard__header-button-bg {
+  border-radius: var(--bc-radius-sm) !important;
+}
+
+/* ---------- Siste aktivitet ---------- */
+html.bc #dashboard-activity .recent-activity-header {
+  font-size: var(--bc-fs-heading);
+  font-weight: 600;
+  border-bottom: 0 !important;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+html.bc #dashboard-activity .recent_activity {
+  display: grid;
+  gap: 12px;
+}
+
+html.bc #dashboard-activity .stream-category {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius);
+  overflow: hidden;
+  margin: 0 !important;
+}
+
+html.bc #dashboard-activity .stream_header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html.bc #dashboard-activity .stream_header .image-block-image {
+  position: relative;
+  font-size: 22px;
+  color: var(--bc-muted);
+}
+
+html.bc #dashboard-activity .stream_header .title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+html.bc #dashboard-activity .unread-count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--bc-accent) !important;
+  color: #fff !important;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+  box-sizing: content-box;
+}
+
+html.bc #dashboard-activity .toggle-details {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--bc-radius-sm);
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: var(--bc-fs-small) !important;
+  font-weight: 600;
+  color: var(--bc-accent) !important;
+  text-decoration: none !important;
+}
+
+html.bc #dashboard-activity .toggle-details:hover {
+  background: var(--bc-surface-2);
+}
+
+html.bc #dashboard-activity .details_container {
+  border-top: 1px solid var(--bc-border);
+}
+
+html.bc #dashboard-activity .stream-details {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.bc #dashboard-activity .stream-details > li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid var(--bc-border) !important;
+  background: transparent !important;
+}
+
+html.bc #dashboard-activity .stream-details > li:last-child {
+  border-bottom: 0 !important;
+}
+
+html.bc #dashboard-activity .stream-details > li.unread .content_summary {
+  font-weight: 600;
+}
+
+html.bc #dashboard-activity .stream-details .date {
+  margin-left: auto;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+  white-space: nowrap;
+}
+
+/* ---------- «To do»-kolonnen (kort- og aktivitetsvisning) ---------- */
+/* Bredere kolonne, så emnenavn ikke brytes etter hvert ord. Canvas sine skjulte
+   «truncate»-elementer stikker ellers ut og gir vannrett rulling. */
+@media (min-width: 1200px) {
+  html.bc body:not(.dashboard-is-planner) #right-side-wrapper {
+    width: 360px !important;
+    flex: 0 0 360px !important;
+  }
+}
+
+html.bc #right-side {
+  overflow: hidden;
+}
+html.bc #right-side .todo-list-header,
+html.bc #right-side .events_list + h2,
+html.bc #right-side h2 {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+html.bc .Sidebar__TodoListContainer {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  padding: 14px 16px 8px;
+  margin-bottom: 16px;
+}
+
+html.bc .ToDoSidebarItem {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0 !important;
+  border-top: 1px solid var(--bc-border);
+  border-radius: 0 !important;
+}
+
+html.bc .ToDoSidebarItem:first-child {
+  border-top: 0;
+}
+
+html.bc .ToDoSidebarItem__Icon {
+  color: var(--bc-muted);
+  padding-top: 2px;
+}
+
+html.bc .ToDoSidebarItem__Info {
+  flex: 1;
+  min-width: 0;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+  font-weight: 400 !important;
+}
+
+html.bc .ToDoSidebarItem__Title a,
+html.bc .ToDoSidebarItem__Title [class*="-view-link"] {
+  color: var(--bc-text) !important;
+  font-weight: 600;
+  font-size: var(--bc-fs-row);
+  text-decoration: none !important;
+}
+
+html.bc .ToDoSidebarItem__Title a:hover,
+html.bc .ToDoSidebarItem__Title [class*="-view-link"]:hover {
+  text-decoration: underline !important;
+}
+
+/* Tittelen er det viktigste, emnet og datoen er hjelpetekst. Canvas har det motsatt. */
+html.bc .ToDoSidebarItem__Info *:not(.ToDoSidebarItem__Title, .ToDoSidebarItem__Title *) {
+  font-weight: 400 !important;
+  color: var(--bc-muted) !important;
+}
+
+html.bc .ToDoSidebarItem__Title,
+html.bc .ToDoSidebarItem__Title * {
+  font-weight: 600 !important;
+  color: var(--bc-text) !important;
+}
+
+html.bc .ToDoSidebarItem__Close {
+  margin-left: auto;
+}
+
+html.bc #right-side .button-sidebar-wide {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 4px;
+}
+
+html.bc #right-side .events_list {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  padding: 4px 16px;
+  margin: 0 0 16px !important;
+}
+
+html.bc #right-side .events_list .event {
+  padding: 10px 0 !important;
+  border-top: 1px solid var(--bc-border);
+}
+
+html.bc #right-side .events_list .event:first-child {
+  border-top: 0;
+}

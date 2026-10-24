@@ -1,0 +1,10 @@
+# Pakken til Chrome Web Store lages av tools/package.py
+dist/
+
+# Lokalt oppsett for verktøy
+.mcp.json
+.claude/
+node_modules/
+
+.DS_Store
+Thumbs.db

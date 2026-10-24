@@ -1,0 +1,663 @@
+/*
+  Bedre Canvas – stilark
+  Alt er avgrenset til html.bc, så det slås av helt når utvidelsen er deaktivert.
+
+  Fargevalg: standard er skolens egne Canvas-farger (data-bc-accent="school"), så OsloMet
+  forblir gul og marineblå. Velger brukeren en egen farge, overstyres Canvas sine
+  --ic-brand-*-variabler og menyen blir hvit.
+
+  Radius: 12px for flater som rammer inn innhold, 8px for rader, knapper og felt,
+  4px for små etiketter. Skygge brukes bare på det som faktisk løftes (neste frist).
+
+  Typografi: seks størrelser og tre vekter, ikke mer. Hierarki bygges med størrelse,
+  vekt og farge sammen, så det viktigste på hver side er det tydeligste.
+    Tittel        1.75rem  600  -0.02em   sidetittel, én per side
+    Overskrift    1.125rem 600  -0.01em   seksjoner og kort
+    Brødtekst     1rem     400            innhold
+    Rad           0.9375rem 400/500       lister og menyer; 500 bare for navnet du leter etter
+    Liten         0.875rem 400            sidekolonner og hjelpetekst
+    Fotnote       0.8125rem 400 dempet    datoer, emnekoder, metadata
+  Fet skrift er for overskrifter og navnet i en rad, aldri for metadata, etiketter eller
+  hele lister. Farge: tekst eller dempet. Aksenten bare for valgt, i dag, ulest og
+  hovedknappen. Rødt, oransje og grønt bare for ekte status.
+*/
+
+/* ---------- Tokens ---------- */
+html.bc {
+  --bc-accent: #2563eb;
+  --bc-accent-soft: color-mix(in srgb, var(--bc-accent) 11%, transparent);
+  --bc-accent-strong: color-mix(in srgb, var(--bc-accent) 82%, black);
+
+  --bc-bg: #f6f7f9;
+  --bc-surface: #ffffff;
+  --bc-surface-2: #f1f3f6;
+  --bc-border: #e4e7ec;
+  --bc-border-strong: #c9ced6;
+  --bc-text: #1d2433;
+  --bc-muted: #5b6474;
+
+  --bc-fs-title: 1.75rem;
+  --bc-fs-heading: 1.125rem;
+  --bc-fs-row: 0.9375rem;
+  --bc-fs-small: 0.875rem;
+  --bc-fs-foot: 0.8125rem;
+
+  --bc-radius: 12px;
+  --bc-radius-sm: 8px;
+  --bc-radius-xs: 4px;
+  /* Systemfonten: skarp på Windows og Mac, og lastes ikke fra nettet. */
+  --bc-font: "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --ic-brand-font-color-dark: var(--bc-text) !important;
+  --ic-brand-watermark-opacity: 0 !important;
+}
+
+html.bc[data-bc-accent="school"] {
+  --bc-accent: var(--ic-brand-primary);
+}
+
+/* Egen farge: Canvas sine merkevarevariabler følger aksenten, og menyen blir hvit. */
+html.bc:not([data-bc-accent="school"]) {
+  --ic-brand-primary: var(--bc-accent) !important;
+  --ic-brand-primary-darkened-5: var(--bc-accent-strong) !important;
+  --ic-brand-primary-darkened-10: var(--bc-accent-strong) !important;
+  --ic-brand-primary-darkened-15: var(--bc-accent-strong) !important;
+  --ic-link-color: var(--bc-accent) !important;
+  --ic-link-color-darkened-10: var(--bc-accent-strong) !important;
+  --ic-brand-button--primary-bgd: var(--bc-accent) !important;
+  --ic-brand-button--primary-bgd-darkened-5: var(--bc-accent-strong) !important;
+  --ic-brand-button--primary-bgd-darkened-15: var(--bc-accent-strong) !important;
+  --ic-brand-button--primary-text: #fff !important;
+
+  --ic-brand-global-nav-bgd: var(--bc-surface) !important;
+  --ic-brand-global-nav-ic-icon-svg-fill: var(--bc-muted) !important;
+  --ic-brand-global-nav-ic-icon-svg-fill--active: var(--bc-accent) !important;
+  --ic-brand-global-nav-menu-item__text-color: var(--bc-muted) !important;
+  --ic-brand-global-nav-menu-item__text-color--active: var(--bc-accent) !important;
+  --ic-brand-global-nav-avatar-border: var(--bc-border) !important;
+  --ic-brand-global-nav-logo-bgd: var(--bc-surface) !important;
+}
+
+/* ---------- Grunnlag ---------- */
+html.bc,
+html.bc body {
+  background: var(--bc-bg) !important;
+  color: var(--bc-text);
+}
+
+html.bc body,
+html.bc body :where(*:not([class*="icon-"]):not(i):not(code):not(pre):not(kbd)) {
+  font-family: var(--bc-font) !important;
+}
+
+html.bc body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html.bc :is(h1, h2, h3, .page-title, .ic-Dashboard-header__title) {
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+/* Fotnoter (metadata) får litt luft mellom bokstavene, siden de er små. */
+html.bc :is(.ig-details, .ToDoSidebarItem__Info, .bcd-item-meta, .event-details__context) {
+  letter-spacing: 0.005em;
+}
+
+html.bc a:focus-visible,
+html.bc button:focus-visible,
+html.bc [role="button"]:focus-visible,
+html.bc input:focus-visible,
+html.bc select:focus-visible,
+html.bc textarea:focus-visible {
+  outline: 2px solid var(--bc-accent) !important;
+  outline-offset: 2px;
+}
+
+/* ---------- Global meny ----------
+   Menyen er en frittstående pille til venstre, med skolelogoen over seg uten bakgrunn eller kant.
+   Pillen har menyfargen: skolens egen, eller hvit når brukeren har valgt egen farge. Bare ikoner
+   synes; navnet vises som verktøytips ved hover og tastaturfokus, og skjermlesere leser det som før.
+   Valgt side får en pille bak ikonet: hvit på skolefarger (det Canvas sin aktiv-farge er laget for),
+   aksenten ved egen farge. Canvas sin knapp for å minimere menyen skjules, siden menyen alltid er smal.
+   Under 768px bytter Canvas til egen mobilmeny, så alt her gjelder bare bredere skjermer. */
+@media (min-width: 768px) {
+  html.bc {
+    --bc-nav-pill: #fff;
+    --bc-nav-space: 96px;
+  }
+
+  html.bc:not([data-bc-accent="school"]) {
+    --bc-nav-pill: var(--bc-accent-soft);
+  }
+
+  html.bc #header.ic-app-header {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    width: var(--bc-nav-space) !important;
+    padding: 12px;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  html.bc #wrapper.ic-Layout-wrapper {
+    margin-left: var(--bc-nav-space) !important;
+  }
+
+  html.bc .ic-app-header__main-navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  html.bc .ic-app-header__logomark-container {
+    width: 72px;
+    background: transparent !important;
+    border: 0 !important;
+  }
+
+  html.bc .ic-app-header__logomark {
+    height: 64px !important;
+    background-size: contain !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+
+  html.bc #menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 72px;
+    padding: 8px 0;
+    background: var(--ic-brand-global-nav-bgd);
+    border-radius: 16px;
+  }
+
+  /* Hvit pille på lys grå side trenger en kant for å skille seg ut. Skolefarger gjør ikke det. */
+  html.bc:not([data-bc-accent="school"]) #menu {
+    border: 1px solid var(--bc-border);
+  }
+
+  html.bc .ic-app-header__secondary-navigation {
+    display: none !important;
+  }
+
+  html.bc #menu .ic-app-header__menu-list-item {
+    width: auto;
+    padding: 0;
+  }
+
+  html.bc #menu .ic-app-header__menu-list-link,
+  html.bc #menu .ic-app-header__menu-list-link:hover,
+  html.bc #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link {
+    position: relative;
+    display: flex !important;
+    width: auto;
+    height: auto;
+    padding: 8px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html.bc #menu .menu-item-icon-container {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 32px;
+    border-radius: 16px;
+    transition: background-color 0.15s ease;
+  }
+
+  html.bc #menu .menu-item-icon-container svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  /* Hinne i ikonfargen, så hover synes både på hvit meny og på mørke og lyse skolefarger. */
+  html.bc #menu .ic-app-header__menu-list-link:hover .menu-item-icon-container {
+    background: color-mix(in srgb, var(--ic-brand-global-nav-ic-icon-svg-fill) 10%, transparent);
+  }
+
+  html.bc #menu .ic-app-header__menu-list-item--active .menu-item-icon-container,
+  html.bc #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link:hover .menu-item-icon-container {
+    background: var(--bc-nav-pill) !important;
+  }
+
+  html.bc #menu .menu-item__text {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    z-index: 1;
+    display: block !important;
+    padding: 4px 8px;
+    border-radius: var(--bc-radius-xs);
+    background: var(--bc-text);
+    color: #fff !important;
+    font-size: var(--bc-fs-foot);
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: opacity 0.12s ease;
+  }
+
+  html.bc #menu .ic-app-header__menu-list-link:hover .menu-item__text,
+  html.bc #menu .ic-app-header__menu-list-link:focus-visible .menu-item__text {
+    opacity: 1;
+  }
+
+  /* Fokusringen følger pillen rundt ikonet i stedet for den firkantede lenken. */
+  html.bc #menu .ic-app-header__menu-list-link:focus-visible {
+    outline: none !important;
+  }
+
+  html.bc #menu .ic-app-header__menu-list-link:focus-visible .menu-item-icon-container {
+    outline: 2px solid var(--bc-accent);
+    outline-offset: 2px;
+  }
+
+  /* Lave vinduer: menyen må kunne rulle, selv om verktøytipsene da klippes. */
+  @media (max-height: 640px) {
+    html.bc #header.ic-app-header {
+      overflow-y: auto !important;
+    }
+  }
+}
+
+/* ---------- Topplinje med brødsmuler ---------- */
+html.bc .ic-app-nav-toggle-and-crumbs {
+  border-bottom: 1px solid var(--bc-border) !important;
+  min-height: 56px;
+}
+
+html.bc #breadcrumbs li,
+html.bc #breadcrumbs a {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-small);
+}
+
+/* Siste ledd er der du er: tekstfarge, men vanlig vekt. Sidetittelen under bærer vekten. */
+html.bc #breadcrumbs li:last-of-type a,
+html.bc #breadcrumbs li:last-of-type span {
+  color: var(--bc-text);
+  font-weight: 500;
+}
+
+/* ---------- Kursmeny ---------- */
+html.bc #left-side {
+  background: transparent !important;
+}
+
+html.bc #section-tabs {
+  padding: 4px 0;
+}
+
+/* Semesteret over kursmenyen er en fotnote: dempet og rett, ikke kursiv. */
+html.bc #section-tabs-header-subtitle {
+  display: block;
+  padding: 0 12px 4px;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-style: normal !important;
+  font-weight: 400;
+}
+
+html.bc #section-tabs li a {
+  border: 0 !important;
+  border-radius: var(--bc-radius-sm);
+  margin: 1px 0;
+  padding: 8px 12px !important;
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-row);
+  line-height: 1.35;
+  transition: background-color 0.15s ease;
+}
+
+html.bc #section-tabs li a:hover {
+  background: var(--bc-surface-2) !important;
+  text-decoration: none !important;
+}
+
+html.bc #section-tabs li a.active {
+  background: var(--bc-accent-soft) !important;
+  color: var(--bc-accent-strong) !important;
+  font-weight: 500;
+}
+
+html.bc #section-tabs li a.active::before {
+  display: none;
+}
+
+/* ---------- Hovedinnhold ---------- */
+html.bc #main {
+  background: transparent;
+}
+
+html.bc #content {
+  padding: 28px 32px !important;
+}
+
+html.bc #content-wrapper,
+html.bc .ic-Layout-contentMain {
+  background: transparent !important;
+}
+
+/* Linjelengde rundt 75 tegn gjør lange oppgavetekster lettere å lese. */
+html.bc .show-content,
+html.bc .user_content {
+  line-height: 1.65;
+  font-size: 1rem;
+  max-width: 78ch;
+}
+
+html.bc .user_content img {
+  border-radius: var(--bc-radius-sm);
+}
+
+/* ---------- Dashboard med kort (Canvas sin kortvisning) ---------- */
+html.bc .ic-Dashboard-header__layout {
+  border-bottom: 0 !important;
+  padding-bottom: 8px;
+}
+
+html.bc .ic-DashboardCard__box__container {
+  gap: 20px;
+}
+
+html.bc .ic-DashboardCard {
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+  background: var(--bc-surface) !important;
+  transition: border-color 0.15s ease;
+}
+
+html.bc .ic-DashboardCard:hover {
+  border-color: var(--bc-border-strong) !important;
+}
+
+html.bc .ic-DashboardCard__header_content {
+  padding: 14px 16px 6px !important;
+}
+
+html.bc .ic-DashboardCard__header-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+html.bc .ic-DashboardCard__header-subtitle,
+html.bc .ic-DashboardCard__header-term {
+  color: var(--bc-muted) !important;
+}
+
+html.bc .ic-DashboardCard__action-container {
+  padding: 4px 8px 10px !important;
+}
+
+html.bc .ic-DashboardCard__action {
+  border-radius: var(--bc-radius-sm);
+}
+
+html.bc .ic-DashboardCard__action:hover {
+  background: var(--bc-surface-2);
+}
+
+/* ---------- Knapper ---------- */
+html.bc :is(.Button, .btn, button.btn, a.btn) {
+  border-radius: var(--bc-radius-sm) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 1px solid var(--bc-border) !important;
+  background-color: var(--bc-surface) !important;
+  color: var(--bc-text) !important;
+  font-weight: 500;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+html.bc :is(.Button, .btn):hover {
+  background-color: var(--bc-surface-2) !important;
+}
+
+/* Innholdet i knapper sentreres med flex, så ikon og tekst står midt i knappen i stedet
+   for å følge tekstens grunnlinje. Brede sidekolonneknapper og lenkeknapper har egen
+   justering og holdes utenfor. */
+html.bc :is(a, button, label):is(.Button, .btn):not(.button-sidebar-wide, .Button--block, .btn-block, .Button--link, .btn-link) {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+/* Knapper med bare et ikon: lik polstring på begge sider (Canvas har noen skjeve). */
+html.bc :is(.Button, .btn):has(> i[class*="icon-"]):not(:has(> :not(i[class*="icon-"], .screenreader-only))) {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+html.bc :is(.Button, .btn) > i[class*="icon-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0 !important;
+}
+
+html.bc :is(.Button, .btn) > i[class*="icon-"]::before {
+  vertical-align: 0 !important;
+}
+
+/* Element + klasse, så primærknappen vinner over den generelle knappregelen over. */
+html.bc :is(a, button, input):is(.Button--primary, .btn-primary) {
+  background-color: var(--bc-accent) !important;
+  border-color: var(--bc-accent) !important;
+  color: #fff !important;
+}
+
+html.bc :is(a, button, input):is(.Button--primary, .btn-primary):hover {
+  background-color: var(--bc-accent-strong) !important;
+}
+
+/* Lenkeknapper (Button--link, btn-link) skal se ut som lenker eller ikonknapper, ikke bokser. */
+html.bc :is(a, button):is(.Button--link, .btn-link, .Button--icon-action) {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: var(--bc-accent) !important;
+}
+
+html.bc :is(a, button):is(.Button--link, .btn-link, .Button--icon-action):hover {
+  background-color: rgb(0 0 0 / 0.05) !important;
+}
+
+html.bc .ic-app-course-nav-toggle {
+  color: var(--bc-text) !important;
+}
+
+/* Hvit-på-farge-knappen på kortene beholder sin egen bakgrunn. */
+html.bc .Button--icon-action-rev {
+  border-color: transparent !important;
+}
+
+/* ---------- Skjemafelt ---------- */
+html.bc :is(input[type="text"], input[type="search"], input[type="email"], input[type="number"],
+  input[type="password"], input[type="url"], input[type="date"], select, textarea, .ic-Input) {
+  border-radius: var(--bc-radius-sm) !important;
+  border: 1px solid var(--bc-border) !important;
+  box-shadow: none !important;
+  background-color: var(--bc-surface);
+}
+
+/* Fokusring rundt feltet erstatter Canvas sin egen, så det er tydelig hvor du skriver. */
+html.bc :is(input, select, textarea, .ic-Input):focus {
+  border-color: var(--bc-accent) !important;
+  box-shadow: 0 0 0 3px var(--bc-accent-soft) !important;
+}
+
+/* ---------- Moduler og lister ---------- */
+html.bc .context_module {
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius) !important;
+  background: var(--bc-surface) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+  margin-bottom: 16px !important;
+}
+
+html.bc .context_module .ig-header,
+html.bc .item-group-condensed .ig-header {
+  background: var(--bc-surface-2) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--bc-border) !important;
+  padding: 10px 14px !important;
+}
+
+html.bc .ig-header .name,
+html.bc .ig-header-title {
+  font-weight: 600 !important;
+}
+
+html.bc .ig-list,
+html.bc .item-group-container {
+  border: 0 !important;
+}
+
+html.bc .ig-row,
+html.bc .context_module_item {
+  border-color: var(--bc-border) !important;
+  background: transparent !important;
+  transition: background-color 0.12s ease;
+}
+
+html.bc .ig-row:hover,
+html.bc .context_module_item:hover {
+  background: var(--bc-surface-2) !important;
+}
+
+html.bc .item-group-condensed {
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius) !important;
+  overflow: hidden;
+  background: var(--bc-surface);
+}
+
+/* ---------- Tabeller ---------- */
+html.bc :is(.ic-Table, table.summary) {
+  border-collapse: separate !important;
+  border-spacing: 0;
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  overflow: hidden;
+  background: var(--bc-surface);
+}
+
+html.bc :is(.ic-Table, table.summary) th {
+  background: var(--bc-surface-2) !important;
+  font-weight: 600;
+}
+
+html.bc :is(.ic-Table, table.summary) :is(td, th) {
+  border-color: var(--bc-border) !important;
+}
+
+/* ---------- Høyre sidekolonne (Å gjøre, kommende) ---------- */
+html.bc #right-side-wrapper {
+  background: transparent !important;
+  border-left: 1px solid var(--bc-border);
+}
+
+html.bc #right-side .h2,
+html.bc #right-side h2 {
+  font-size: 1rem !important;
+  font-weight: 600;
+  color: var(--bc-text) !important;
+  border-bottom: 0 !important;
+}
+
+html.bc #right-side .ToDoSidebarItem,
+html.bc #right-side .events_list li {
+  border-radius: var(--bc-radius-sm);
+  padding: 8px;
+}
+
+html.bc .ic-sidebar-logo {
+  display: none;
+}
+
+/* ---------- Kunngjøringer, diskusjoner og varsler ---------- */
+html.bc :is(.ic-notification, .alert, .ic-flash-info, .ic-flash-success, .ic-flash-error) {
+  border-radius: var(--bc-radius) !important;
+}
+
+html.bc .discussion-topic,
+html.bc .discussion_entry {
+  border-radius: var(--bc-radius);
+}
+
+/* ---------- Rullefelt ---------- */
+html.bc ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html.bc ::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--bc-muted) 35%, transparent);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+html.bc ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- Mørkt tema ----------
+   Canvas har hundrevis av hardkodede farger, så i stedet for å overstyre hver
+   enkelt inverteres hele siden, og bilder/video snus tilbake. */
+html.bc[data-bc-theme="dark"] {
+  filter: invert(0.9) hue-rotate(180deg);
+}
+
+/* Bytter du tema i popupen mens siden er åpen, tones siden over i stedet for å blinke fra lys
+   til mørk. Bare da: ved vanlig innlasting står riktig tema der fra start. */
+html.bc-live,
+html.bc-live :is(img, video, iframe, canvas, picture, [style*="background-image"],
+  .ic-DashboardCard__header_hero, .ic-avatar, .fs-exclude, .bcd-swatch) {
+  transition: filter 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.bc-live,
+  html.bc-live * {
+    transition: none !important;
+  }
+}
+
+html.bc[data-bc-theme="dark"]
+  :is(img, video, iframe, canvas, picture, svg image, [style*="background-image"],
+    .ic-DashboardCard__header_hero, .ic-avatar, .fs-exclude) {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  html.bc[data-bc-theme="auto"] {
+    filter: invert(0.9) hue-rotate(180deg);
+  }
+
+  html.bc[data-bc-theme="auto"]
+    :is(img, video, iframe, canvas, picture, svg image, [style*="background-image"],
+      .ic-DashboardCard__header_hero, .ic-avatar, .fs-exclude) {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}

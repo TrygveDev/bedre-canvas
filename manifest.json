@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Bedre Canvas",
+  "version": "0.1.0",
+  "description": "Et renere og mer moderne design for Canvas LMS.",
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": ["https://*.instructure.com/*"],
+  "optional_host_permissions": ["https://*/*"],
+  "icons": {
+    "16": "icons/app/icon-16.png",
+    "32": "icons/app/icon-32.png",
+    "48": "icons/app/icon-48.png",
+    "128": "icons/app/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Bedre Canvas",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/app/icon-16.png",
+      "32": "icons/app/icon-32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.instructure.com/*"],
+      "css": ["content/icons.css", "content/canvas.css", "content/canvas-ui.css", "content/pages.css", "content/dashboard.css"],
+      "js": ["content/content.js", "content/dashboard.js", "content/calendar.js", "content/trays.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ]
+}

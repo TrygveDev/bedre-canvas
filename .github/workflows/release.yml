@@ -1,0 +1,86 @@
+# Ny versjon: øk "version" i manifest.json, commit, og push en tagg med samme nummer
+# (git tag v0.2.0 && git push origin v0.2.0). Da bygges pakken, legges ved en GitHub-release
+# og sendes til Chrome Web Store for gjennomgang. Brukerne får den automatisk når Google har
+# godkjent den. Oppsettet av nøklene står i RELEASING.md.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Taggen må stemme med manifestet
+        id: version
+        run: |
+          version=$(node -p 'require("./manifest.json").version')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Taggen $GITHUB_REF_NAME stemmer ikke med version $version i manifest.json"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Bygg pakken
+        run: python3 tools/package.py
+
+      - name: GitHub-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "dist/bedre-canvas-${{ steps.version.outputs.version }}.zip" \
+            --title "Bedre Canvas ${{ steps.version.outputs.version }}" --generate-notes
+
+      - name: Last opp og send til gjennomgang i Chrome Web Store
+        env:
+          CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+          ZIP: dist/bedre-canvas-${{ steps.version.outputs.version }}.zip
+        run: |
+          if [ -z "$REFRESH_TOKEN" ] || [ -z "$EXTENSION_ID" ]; then
+            echo "::warning::Nøklene til Chrome Web Store er ikke satt opp. Pakken ligger på GitHub-releasen; last den opp for hånd, eller se RELEASING.md."
+            exit 0
+          fi
+
+          token=$(curl -sf https://oauth2.googleapis.com/token \
+            -d client_id="$CLIENT_ID" -d client_secret="$CLIENT_SECRET" \
+            -d refresh_token="$REFRESH_TOKEN" -d grant_type=refresh_token | jq -r .access_token)
+          api="https://chromewebstore.googleapis.com"
+          item="publishers/$PUBLISHER_ID/items/$EXTENSION_ID"
+
+          echo "Laster opp $ZIP"
+          upload=$(curl -s -X POST -H "Authorization: Bearer $token" \
+            -H "Content-Type: application/zip" --data-binary @"$ZIP" \
+            "$api/upload/v2/$item:upload")
+          echo "$upload"
+          state=$(echo "$upload" | jq -r '.uploadState // empty')
+
+          # Store pakker behandles i bakgrunnen. Vent til opplastingen er ferdig.
+          for _ in $(seq 1 20); do
+            case "$state" in IN_PROGRESS|UPLOAD_IN_PROGRESS) ;; *) break ;; esac
+            sleep 5
+            state=$(curl -s -H "Authorization: Bearer $token" "$api/v2/$item:fetchStatus" \
+              | jq -r '.lastAsyncUploadState // empty')
+          done
+          if [ "$state" != "SUCCEEDED" ]; then
+            echo "::error::Opplastingen feilet ($state). Se svaret over."
+            exit 1
+          fi
+
+          echo "Sender til gjennomgang"
+          publish=$(curl -s -X POST -H "Authorization: Bearer $token" "$api/v2/$item:publish")
+          echo "$publish"
+          if echo "$publish" | jq -e '.error' > /dev/null; then
+            echo "::error::Publiseringen feilet. Se svaret over."
+            exit 1
+          fi

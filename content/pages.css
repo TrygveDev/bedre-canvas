@@ -1,0 +1,1572 @@
+/*
+  Bedre Canvas – sidene utenfor dashboardet
+  Ordnet etter rute. Felles mønstre (ark, overskrifter, lister, tabeller) først,
+  deretter én seksjon per side.
+
+  Ark: innholdet i emner og grupper ligger på en hvit flate, fordi lærernes egne sider
+  (bilder, farger, tabeller) er laget for hvit bakgrunn. Resten av siden er grå, så
+  menyene rundt trer tilbake.
+*/
+
+/* ---------- Felles: ark, topplinje, overskrifter ---------- */
+html.bc body:is([class*="context-course_"], [class*="context-group_"], .with-left-side) #content {
+  background: var(--bc-surface) !important;
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  margin: 16px 0 24px;
+  min-height: 60vh;
+}
+
+@media (max-width: 640px) {
+  html.bc #content {
+    padding: 20px 16px !important;
+  }
+
+  html.bc body:is([class*="context-course_"], [class*="context-group_"], .with-left-side) #content {
+    margin: 8px 0 16px;
+  }
+}
+
+html.bc .ic-app-nav-toggle-and-crumbs,
+html.bc #breadcrumbs,
+html.bc .header-bar,
+html.bc .page-toolbar {
+  background: transparent !important;
+}
+
+html.bc .ic-app-nav-toggle-and-crumbs {
+  padding: 0 24px !important;
+}
+
+html.bc #courseMenuToggle {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--bc-radius-sm);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 !important;
+}
+
+html.bc #courseMenuToggle i {
+  display: inline-flex;
+  line-height: 1;
+}
+
+html.bc #courseMenuToggle i::before {
+  vertical-align: 0 !important;
+}
+
+html.bc #courseMenuToggle:hover {
+  background: rgb(0 0 0 / 0.05);
+}
+
+html.bc .header-bar {
+  border-bottom: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+html.bc :is(.page-title, .course-title, .ic-Action-header__Heading, #content > h1, #content > h2:first-child) {
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-title);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Andre overskrifter på sidene: én størrelse for seksjoner. */
+html.bc #content > h2:not(:first-child) {
+  font-size: var(--bc-fs-heading);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+/* Ikke i fristoversikten, som har egne farger på overskriftene. */
+html.bc #content :is(h2, h3):not(#bedre-dashboard *) {
+  color: var(--bc-text);
+}
+
+/* Lærernes innhold skal aldri gå utenfor arket: bilder skaleres ned, brede tabeller
+   ruller sidelengs inni seg selv. */
+html.bc .user_content img,
+html.bc .user_content video,
+html.bc .user_content iframe {
+  max-width: 100% !important;
+  height: auto;
+}
+
+html.bc .user_content iframe {
+  aspect-ratio: auto;
+}
+
+html.bc .user_content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Lenker i innhold: Canvas sin standard er understreket blått. Beholdes understreket
+   i brødtekst, så de fortsatt ser ut som lenker. */
+html.bc .user_content a:not(.btn, .Button) {
+  text-underline-offset: 2px;
+}
+
+/* ---------- Global meny: skuffene (Account, Courses, Groups, History, Help) ---------- */
+html.bc .navigation-tray-container {
+  padding: 20px 16px !important;
+}
+
+html.bc .navigation-tray-container [class*="-view-heading"] {
+  font-size: var(--bc-fs-heading) !important;
+  font-weight: 600 !important;
+}
+
+html.bc .navigation-tray-container :is([class*="-text"], [class*="-view-heading"], h3, h4) {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+html.bc .navigation-tray-container hr {
+  border-color: var(--bc-border) !important;
+  margin: 12px 0 !important;
+}
+
+html.bc .navigation-tray-container [class*="-view-listItem"] {
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  border-radius: var(--bc-radius-sm);
+  transition: background-color 0.12s ease;
+}
+
+html.bc .navigation-tray-container [class*="-view-listItem"]:hover {
+  background: var(--bc-surface-2);
+}
+
+html.bc .navigation-tray-container [class*="-view-listItem"] [class*="-view-link"] {
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-row);
+  font-weight: 500;
+  text-decoration: none !important;
+}
+
+html.bc .navigation-tray-container [class*="-view-listItem"] [class*="-text"] {
+  font-size: var(--bc-fs-foot) !important;
+  line-height: 1.4 !important;
+}
+
+/* Konto-skuffen: en vanlig menyliste med 44px rader, ikke 64px luft per punkt. */
+html.bc .profile-tray [class*="-view-listItem"] {
+  padding: 0 !important;
+}
+
+html.bc .profile-tray [class*="-view-listItem"] > div {
+  margin: 0 !important;
+}
+
+html.bc .profile-tray [class*="-view-listItem"] [class*="-view-link"] {
+  display: flex !important;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  font-weight: 400;
+}
+
+html.bc .profile-tray [class*="-view-listItem"] [class*="-view-link"]:hover {
+  text-decoration: none !important;
+}
+
+html.bc .profile-tray h2 {
+  font-size: var(--bc-fs-heading) !important;
+}
+
+html.bc .profile-tray :is(h3, h4) {
+  font-size: var(--bc-fs-small) !important;
+  font-weight: 600 !important;
+}
+
+html.bc .navigation-tray-container [class*="-view-listItem"] [class*="-view-link"]:hover {
+  text-decoration: underline !important;
+}
+
+html.bc .navigation-tray-container [class*="-view-listItem"] [class*="-text"] {
+  color: var(--bc-muted) !important;
+}
+
+/* Courses-skuffen: én rad per emne med en fargebrikke i emnefargen (trays.js setter
+   data-bc-* og --bc-course). Hele raden er klikkbar, og raden tones i emnefargen. */
+html.bc :is(.courses-tray, .groups-tray, .history-tray, .help-tray) hr,
+html.bc .groups-tray li:has(> hr) {
+  display: none !important;
+}
+
+html.bc :is(.courses-tray, .groups-tray, .history-tray, .help-tray) [class*="-view-heading"] {
+  margin-bottom: 4px !important;
+}
+
+/* «All courses →» og «All groups →»: lenken til hele listen, i aksentfarge. */
+html.bc .groups-tray li:has(> a[href="/groups"]) {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+html.bc .navigation-tray-container.groups-tray [class*="-view-listItem"] a[href="/groups"],
+html.bc :is(.courses-tray a[href="/courses"], .groups-tray a[href="/groups"]) {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 44px;
+  margin: 0 0 4px 10px;
+  color: var(--bc-accent) !important;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+html.bc :is(.courses-tray a[href="/courses"], .groups-tray a[href="/groups"])::after {
+  content: "→";
+  margin-left: 6px;
+  transition: transform 0.15s ease;
+}
+
+html.bc :is(.courses-tray a[href="/courses"], .groups-tray a[href="/groups"]):hover::after {
+  transform: translateX(2px);
+}
+
+html.bc :is(.courses-tray, .groups-tray, .history-tray, .help-tray) ul {
+  display: grid;
+  gap: 2px;
+  margin: 0 !important;
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row]) {
+  --bc-course: var(--bc-border-strong);
+  --bc-course-ink: var(--bc-text);
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  column-gap: 12px;
+  align-items: center;
+  padding: 8px 10px !important;
+  border-radius: var(--bc-radius) !important;
+  transition: background-color 0.15s ease, transform 0.1s ease-out !important;
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row])::before {
+  content: attr(data-bc-tile);
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--bc-course);
+  color: var(--bc-course-ink);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: pre;
+  transition: background-color 0.2s ease;
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row])[data-bc-initial]::before {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row]) > * {
+  grid-column: 2;
+  min-width: 0;
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row]):hover,
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row])[data-bc-current] {
+  background: color-mix(in srgb, var(--bc-course) 12%, transparent) !important;
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row]):active {
+  transform: scale(0.98);
+}
+
+html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row]):has(a:focus-visible) {
+  outline: 2px solid var(--bc-accent);
+  outline-offset: -2px;
+}
+
+/* Navnet uten kode foran. Lenken dekker hele raden. */
+html.bc .courses-tray li[data-bc-course] a[data-bc-name] {
+  position: static;
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+html.bc .courses-tray li[data-bc-course] a[data-bc-name]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+html.bc .courses-tray li[data-bc-course] a[data-bc-name] > * {
+  display: none !important;
+}
+
+html.bc .courses-tray li[data-bc-course] a[data-bc-name]::before {
+  content: attr(data-bc-name);
+  display: block;
+  font-size: var(--bc-fs-row);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--bc-text);
+}
+
+html.bc .courses-tray li[data-bc-course] > div {
+  font-size: var(--bc-fs-foot) !important;
+  line-height: 1.35 !important;
+}
+
+html.bc .courses-tray li[data-bc-same-code] > div:nth-of-type(1),
+html.bc .courses-tray[data-bc-one-term] li[data-bc-course] > div:nth-of-type(2) {
+  display: none;
+}
+
+/* Groups, History og hjelp: samme rad som Courses, med lenken over hele raden. */
+html.bc .navigation-tray-container [data-bc-row] :is(a, [class*="-view-link"]) {
+  position: static;
+  outline: none !important;
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-row) !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  text-decoration: none !important;
+}
+
+html.bc .navigation-tray-container [data-bc-row] :is(a, [class*="-view-link"]) * {
+  font: inherit !important;
+  color: inherit !important;
+}
+
+html.bc .navigation-tray-container [data-bc-row] :is(a, [class*="-view-link"])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+html.bc .navigation-tray-container [data-bc-row] :is([class*="-text"], div):not(a *) {
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  line-height: 1.35 !important;
+}
+
+/* InstUI legger innholdet i flex-rader; de skal bare stable seg i kolonne 2. */
+html.bc .navigation-tray-container [data-bc-row] [class*="-view--flex-flex"] {
+  display: flex !important;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+html.bc .navigation-tray-container [data-bc-row] [class*="-view-flexItem"] {
+  min-width: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Tekst trays.js har kortet ned (emnenavnet uten koden som står på brikken). */
+html.bc .navigation-tray-container [data-bc-row] [data-bc-text][class*="-text"] {
+  font-size: 0 !important;
+}
+
+html.bc .navigation-tray-container [data-bc-row] [data-bc-text][class*="-text"]::before {
+  content: attr(data-bc-text);
+  font-size: var(--bc-fs-foot);
+}
+
+/* Brikker med ikon i stedet for tekst (History og hjelp). */
+html.bc .navigation-tray-container [data-bc-row]:is([data-bc-row="icon"], [data-bc-row="help"])::before {
+  content: "";
+}
+
+html.bc .navigation-tray-container [data-bc-row]:is([data-bc-row="icon"], [data-bc-row="help"])::after {
+  content: "";
+  position: absolute;
+  top: 17px;
+  left: 19px;
+  width: 22px;
+  height: 22px;
+  background: var(--bc-course-ink);
+  -webkit-mask: var(--bc-tile-icon, var(--ph-link)) center / contain no-repeat;
+  mask: var(--bc-tile-icon, var(--ph-link)) center / contain no-repeat;
+  pointer-events: none;
+}
+
+/* Canvas sitt lille ikon foran History-radene er nå brikken. */
+html.bc .history-tray [data-bc-row] [class*="-view-flexItem"]:has(> i[class*="icon-"]) {
+  display: none !important;
+}
+
+/* Hjelp: nøytral brikke, siden lenkene ikke hører til et emne. */
+html.bc .help-tray [data-bc-row] {
+  --bc-course: var(--bc-surface-2) !important;
+  --bc-course-ink: var(--bc-muted) !important;
+}
+
+html.bc .help-tray [data-bc-row]:hover {
+  background: var(--bc-surface-2) !important;
+}
+
+html.bc .help-tray [data-bc-row]:hover::before {
+  background: var(--bc-border);
+}
+
+/* Pandaen er pynt, og «Tilgjengelighetserklæringer» blir en vanlig rad. */
+html.bc .help-tray img[data-testid="cheerful-panda-svg"] {
+  display: none !important;
+}
+
+/* Seksjonsetikettene («OTHER RESOURCES», «Release Notes»): liten, dempet og med vanlig
+   stor forbokstav. Canvas skriver noen av dem med versaler i selve teksten. */
+html.bc .help-tray :is(h3, [transform="uppercase"]) {
+  display: block;
+  margin: 0 10px 4px !important;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 500 !important;
+  text-transform: lowercase !important;
+  letter-spacing: 0.005em !important;
+}
+
+html.bc .help-tray :is(h3, [transform="uppercase"])::first-letter {
+  text-transform: uppercase;
+}
+
+html.bc .help-tray [data-bc-row] {
+  text-align: left !important;
+}
+
+/* Datoen på release notes står til høyre for tittelen. */
+html.bc .help-tray [data-bc-row] [class*="-view--flex-flex"] > [color="secondary"] {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* Hjelpeteksten nederst er en fotnote, ikke innhold. */
+html.bc .courses-tray ul ~ div,
+html.bc .courses-tray span:has(> ul) ~ div {
+  margin-top: 12px;
+  padding: 12px 10px 0;
+  border-top: 1px solid var(--bc-border);
+  font-size: var(--bc-fs-foot) !important;
+  line-height: 1.45 !important;
+  color: var(--bc-muted) !important;
+}
+
+html.bc .courses-tray span:has(> ul) ~ br {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.bc .courses-tray li[data-bc-course]:active,
+  html.bc .courses-tray a[href="/courses"]:hover::after {
+    transform: none;
+  }
+}
+
+/* ---------- Felles: høyre kolonne på emnesider ---------- */
+html.bc #right-side .button-sidebar-wide {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  margin: 0 0 4px !important;
+  padding: 0 12px !important;
+  text-align: left !important;
+  justify-content: flex-start;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-small) !important;
+  font-weight: 400 !important;
+}
+
+html.bc #right-side .button-sidebar-wide:hover {
+  background: var(--bc-surface) !important;
+  border-color: var(--bc-border) !important;
+}
+
+html.bc #right-side .button-sidebar-wide i {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-heading);
+}
+
+html.bc #right-side > h2,
+html.bc #right-side > div > h2 {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  margin: 20px 0 8px !important;
+}
+
+html.bc #right-side #course_show_secondary + h2 + ul,
+html.bc #right-side ul.group_list,
+html.bc #right-side .group_reference {
+  list-style: none;
+  padding: 0;
+}
+
+/* Lenkelister i sidekolonnen (emnegrupper o.l.): vanlig tekst, ikke store blå lenker. */
+html.bc #right-side :is(ul.group_list, #course_show_secondary + h2 + ul, .group_reference) a {
+  display: inline-block;
+  padding: 3px 0;
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-small);
+}
+
+/* Siste tilbakemelding: én rad per oppgave med hake, tittel, emne og kommentar.
+   Canvas tegner den som kort i kort; her er det bare en liste. */
+html.bc .recent_feedback .event a {
+  display: flex !important;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--bc-text) !important;
+  text-decoration: none !important;
+}
+
+html.bc .recent_feedback .event a > i {
+  flex: none;
+  padding-top: 3px;
+  color: #067647 !important;
+}
+
+html.bc .recent_feedback .event-details {
+  display: grid;
+  gap: 2px;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-size: var(--bc-fs-small);
+  line-height: 1.4;
+}
+
+html.bc .recent_feedback .event-details p {
+  margin: 0 !important;
+}
+
+html.bc .recent_feedback .event-details__title {
+  font-weight: 500;
+}
+
+html.bc .recent_feedback .event a:hover .event-details__title {
+  text-decoration: underline;
+}
+
+html.bc .recent_feedback .event-details :is(.event-details__context, p:last-child) {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+}
+
+html.bc .recent_feedback .event-details strong {
+  font-weight: 400;
+}
+
+/* Oppgavesiden: innlevering, karakter og kommentarer i sidekolonnen. Canvas setter
+   «Comments:» og signaturen i 11 og 10 px; her blir det etikett og fotnote. */
+html.bc #sidebar_content .details .content {
+  display: grid;
+  gap: 12px;
+  font-size: var(--bc-fs-small);
+  line-height: 1.45;
+}
+
+html.bc #sidebar_content .details .content .module {
+  margin: 0 !important;
+}
+
+html.bc #sidebar_content .details .comments h3 {
+  margin: 0 0 6px !important;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 500 !important;
+}
+
+html.bc #sidebar_content .details .comment {
+  padding: 10px 12px;
+  border-radius: var(--bc-radius-sm);
+  background: var(--bc-surface-2);
+}
+
+html.bc #sidebar_content .details .comment {
+  margin: 0 !important;
+}
+
+html.bc #sidebar_content .details .comment_content,
+html.bc #sidebar_content .details .comment_content p {
+  margin: 0;
+  color: var(--bc-text);
+  font-size: var(--bc-fs-small) !important;
+}
+
+html.bc #sidebar_content .details .comment .signature {
+  margin-top: 4px;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot) !important;
+  text-align: left !important;
+}
+
+/* «Due 23 Oct by 14:30  Points 1»: etiketten dempet, verdien i tekstfarge. */
+html.bc .student-assignment-overview .title {
+  color: var(--bc-muted);
+  font-weight: 400 !important;
+  margin-right: 6px;
+}
+
+html.bc .student-assignment-overview .value {
+  font-weight: 500;
+}
+
+/* ---------- Felles: knapper i verktøylinjer ---------- */
+html.bc :is(.header-bar-right, .page-toolbar-end, .ic-Action-header__Secondary) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+
+/* ---------- Felles: tabeller ---------- */
+html.bc .ic-Table tbody tr:hover > * {
+  background: var(--bc-surface-2) !important;
+}
+
+html.bc .ic-Table :is(td, th) {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  vertical-align: middle !important;
+}
+
+/* Kolonnetitler er etiketter, ikke innhold: små, dempet og vanlig vekt. Sorteringslenkene
+   i dem (Canvas gjør dem svarte og fete) følger med. */
+html.bc :is(.ic-Table, table.summary) th[scope="col"],
+html.bc :is(.ic-Table, table.summary) thead th,
+html.bc :is(.ic-Table, table.summary) :is(th[scope="col"], thead th) a {
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 500 !important;
+  color: var(--bc-muted) !important;
+  text-decoration: none !important;
+  letter-spacing: 0.005em;
+}
+
+html.bc :is(.ic-Table, table.summary) td {
+  font-size: var(--bc-fs-row);
+}
+
+/* ---------- /courses: alle emner ---------- */
+html.bc .course-list-table :is(td, th[scope="row"]) {
+  background: transparent !important;
+  font-size: var(--bc-fs-row);
+  font-weight: 400;
+}
+
+/* Emnenavnet er det du leter etter: tekstfarge og mellomvekt, i radstørrelse. */
+html.bc .course-list-table :is(td, th[scope="row"]) a:not(.btn, .Button),
+html.bc .course-list-table :is(td, th[scope="row"]) a:not(.btn, .Button) .name {
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-row) !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+html.bc .course-list-table :is(td, th[scope="row"]) a:not(.btn, .Button):hover {
+  text-decoration: underline !important;
+}
+
+html.bc .course-list-unpublished-course-row :is(td, th),
+html.bc .course-list-unpublished-course-row :is(td, th) * {
+  color: var(--bc-muted) !important;
+}
+
+/* «Yes/No» under Published: bare informasjon, ikke en advarsel. */
+html.bc .course-list-published-column,
+html.bc .course-list-published-column * {
+  color: inherit !important;
+}
+
+html.bc .course-list-favorite-icon {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-heading);
+}
+
+html.bc .course-list-favoritable:hover .course-list-favorite-icon,
+html.bc .course-list-favorite-icon.icon-star {
+  color: #b54708;
+}
+
+html.bc .course-color-block {
+  border-radius: 2px;
+}
+
+/* ---------- /courses/:id/modules ---------- */
+/* Modulen er kortet. Tittelraden bærer hierarkiet, elementene under er vanlig vekt. */
+html.bc .context_module {
+  padding: 0 !important;
+}
+
+html.bc .context_module > .content,
+html.bc .context_module .content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.bc .context_module .ig-header,
+html.bc .item-group-condensed .ig-header {
+  box-sizing: border-box;
+  margin: 0 !important;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+}
+
+html.bc :is(.context_module, .item-group-condensed) .ig-header .ig-header-title {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Bunnfeltet er tomt til modulen er låst. Da får «Will unlock …» egen luft. */
+html.bc .context_module .footer {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.bc .context_module .footer :is(.unlock_details, .progression_container) > :not([style*="display: none"]) {
+  padding: 10px 16px;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-small);
+}
+
+html.bc .context_module .ig-header .name {
+  font-size: 1rem !important;
+  letter-spacing: -0.005em;
+}
+
+/* Lange modulnavn brytes over flere linjer i stedet for å kuttes, særlig på mobil. */
+html.bc .context_module .ig-header-title,
+html.bc .context_module .ig-header .name {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* Elementene er vanlig tekst i radstørrelse, så modultittelen over er det som skiller seg ut. */
+html.bc .context_module_item .ig-title,
+html.bc .context_module_item .item_name a {
+  font-size: var(--bc-fs-row) !important;
+  font-weight: 400 !important;
+  color: var(--bc-text) !important;
+}
+
+html.bc .context_module_item .ig-row {
+  min-height: 48px;
+  padding: 6px 14px !important;
+}
+
+html.bc .context_module_item .type_icon,
+html.bc .context_module_item [class*="icon-"]:not(.icon-check, .icon-lock) {
+  color: var(--bc-muted);
+}
+
+/* Fullført-merket er en ekte status: grønn hake. */
+html.bc .context_module_item .module-item-status-icon .icon-check {
+  color: #067647;
+}
+
+html.bc .context_module_item .ig-details,
+html.bc .context_module_item .ig-details * {
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 400 !important;
+}
+
+/* Innrykk Canvas bruker for underpunkter beholdes, men mindre. */
+html.bc .context_module_item.indent_1 .ig-row { padding-left: 36px !important; }
+html.bc .context_module_item.indent_2 .ig-row { padding-left: 58px !important; }
+html.bc .context_module_item.indent_3 .ig-row { padding-left: 80px !important; }
+
+/* ---------- /courses/:id/announcements (og diskusjonslister i gammel stil) ---------- */
+html.bc .ic-item-row {
+  border-radius: var(--bc-radius-sm);
+  padding: 12px !important;
+  transition: background-color 0.12s ease;
+}
+
+html.bc .ic-item-row:hover {
+  background: var(--bc-surface-2);
+}
+
+html.bc .ic-item-row__content-link h3,
+html.bc .ic-item-row__content-link :is(.ic-item-row__content-heading, span) {
+  color: var(--bc-text) !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+/* «All sections» og «Posted on:» sier ingenting en student trenger. Datoen står alene. */
+html.bc .ic-announcement-row .ic-section-tooltip,
+html.bc .ic-item-row__meta-content-heading {
+  display: none !important;
+}
+
+html.bc .ic-item-row__meta-content-timestamp,
+html.bc .ic-item-row__meta-content-timestamp * {
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  white-space: nowrap;
+}
+
+/* Utdraget er hjelpetekst: dempet, ikke lenkeblått. */
+html.bc .ic-announcement-row__content,
+html.bc .ic-announcement-row__content * {
+  margin-top: 2px;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-small) !important;
+}
+
+/* Ulest: en liten prikk i aksentfargen, som i Mail. */
+html.bc .ic-announcement-row [class*="-badge"] {
+  width: 8px !important;
+  height: 8px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  background: var(--bc-accent) !important;
+  box-shadow: none !important;
+}
+
+/* Filteret («All/Unread») trenger ikke hele bredden. */
+html.bc .announcements-v2__wrapper [class*="-select"]:has(#announcement-filter) {
+  display: block;
+  max-width: 240px;
+}
+
+html.bc .ic-unread-badge__unread-count,
+html.bc .ic-unread-badge__count {
+  background: var(--bc-accent) !important;
+}
+
+/* ---------- /courses/:id/assignments ---------- */
+/* Grupper (kommende, tidligere): samme kort som modulene, uten tom luft over tittelen. */
+html.bc .item-group-condensed {
+  padding: 0 !important;
+  margin-bottom: 16px !important;
+}
+
+html.bc .item-group-condensed .ig-row {
+  min-height: 56px;
+  padding: 8px 14px !important;
+}
+
+html.bc .item-group-condensed .ig-title {
+  font-size: var(--bc-fs-row) !important;
+  font-weight: 500 !important;
+  color: var(--bc-text) !important;
+}
+
+html.bc .item-group-condensed .ig-details,
+html.bc .item-group-condensed .ig-details * {
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 400 !important;
+}
+
+/* Canvas skiller frist og poeng med en farget «|». En dempet strek holder. */
+html.bc .item-group-condensed .ig-details .assignment-date-due ~ *::before,
+html.bc .item-group-condensed .ig-details__item + .ig-details__item::before {
+  color: var(--bc-border-strong) !important;
+}
+
+/* «Vis etter dato / type»: Instructure UI sin vippebryter, i aksentfarge og vanlig skrift. */
+html.bc .header-bar-right [class*="-radioInput__label"] {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 600 !important;
+}
+
+html.bc .header-bar-right [class*="-radioInput__facade"] {
+  background: var(--bc-accent) !important;
+  border-radius: var(--bc-radius-sm) !important;
+}
+
+/* ---------- /courses/:id/assignments/:id (oppgave og innlevering) ---------- */
+html.bc .student-assignment-overview {
+  border-color: var(--bc-border) !important;
+  padding: 12px 0 !important;
+}
+
+html.bc .submission_comment_textarea,
+html.bc #submit_assignment textarea {
+  width: 100% !important;
+  min-height: 88px;
+  padding: 10px 12px;
+}
+
+html.bc #submit_assignment .button-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+html.bc .add_another_file_link,
+html.bc .toggle_uploaded_files_link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Faner i gammel jQuery-stil (innlevering, profil, filer): understrek i stedet for bokser. */
+html.bc .ui-tabs {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+html.bc .ui-tabs .ui-tabs-nav {
+  display: flex;
+  gap: 4px;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--bc-border) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+html.bc .ui-tabs .ui-tabs-nav li {
+  background: transparent !important;
+  border: 0 !important;
+  margin: 0 !important;
+}
+
+html.bc .ui-tabs .ui-tabs-nav li a {
+  display: inline-block;
+  text-decoration: none !important;
+  padding: 10px 12px !important;
+  color: var(--bc-muted) !important;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+}
+
+html.bc .ui-tabs .ui-tabs-nav li.ui-state-active a,
+html.bc .ui-tabs .ui-tabs-nav li.ui-tabs-active a {
+  color: var(--bc-text) !important;
+  border-bottom-color: var(--bc-accent);
+}
+
+html.bc .ui-tabs .ui-tabs-panel {
+  border: 0 !important;
+  padding: 16px 0 !important;
+}
+
+/* ---------- /courses/:id/grades ---------- */
+html.bc #grades_summary th[scope="row"],
+html.bc .ic-Table--grades-summary-table th[scope="row"] {
+  background: transparent !important;
+}
+
+html.bc #grades_summary .title a {
+  font-size: var(--bc-fs-row);
+  font-weight: 500;
+  color: var(--bc-text) !important;
+}
+
+html.bc #grades_summary .title .context {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+}
+
+/* Gruppesummer er oppsummering, ikke oppgaver: dempet, liten og vanlig vekt, så
+   oppgavene og totalen er det øyet finner. */
+html.bc #grades_summary tr.group_total > *,
+html.bc #grades_summary tr.group_total > * * {
+  background: transparent !important;
+  color: var(--bc-muted) !important;
+  font-weight: 400 !important;
+  font-size: var(--bc-fs-foot) !important;
+  line-height: 1.4 !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+html.bc #grades_summary tr.group_total :is(.score_holder, .tooltip) {
+  height: auto !important;
+  padding: 0 !important;
+}
+
+html.bc #grades_summary tr.final_grade > *,
+html.bc #grades_summary tr.final_grade > * * {
+  background: var(--bc-surface-2) !important;
+  color: var(--bc-text) !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+
+/* Sidekolonnen på karaktersiden: totalen er tallet du kom for, resten er hjelpetekst. */
+html.bc #student-grades-right-content {
+  font-size: var(--bc-fs-small);
+  line-height: 1.45;
+}
+
+html.bc #student-grades-right-content .student_assignment.final_grade {
+  margin-bottom: 12px;
+  font-size: var(--bc-fs-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+html.bc #student-grades-right-content #assignments-not-weighted h2 {
+  margin: 16px 0 8px !important;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 400 !important;
+}
+
+html.bc #student-grades-right-content :is(.ic-Label, label) {
+  font-size: var(--bc-fs-small) !important;
+}
+
+/* Skjemaet øverst (Course / Arrange by): etiketter i liten, dempet skrift. */
+html.bc label[for="course_select_menu"] [class*="-formFieldLayout__label"],
+html.bc label[for="assignment_sort_order_select_menu"] [class*="-formFieldLayout__label"] {
+  font-size: var(--bc-fs-foot) !important;
+  font-weight: 500 !important;
+  color: var(--bc-muted) !important;
+}
+
+html.bc #grades_summary .score_holder .grade {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+html.bc #grades_summary .graded_icon {
+  color: #067647;
+}
+
+/* ---------- /calendar ---------- */
+html.bc .calendar_header {
+  background: transparent !important;
+  border: 0 !important;
+  padding-bottom: 12px !important;
+}
+
+html.bc .navigation_title_text {
+  font-size: 1.375rem;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  color: var(--bc-text);
+  text-decoration: none !important;
+}
+
+html.bc .calendar_navigator,
+html.bc .calendar_header .header-bar-left,
+html.bc .calendar_header .header-bar-right {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+html.bc .calendar_navigator .navigation_buttons {
+  display: inline-flex;
+  gap: 4px;
+}
+
+html.bc .calendar_navigator .btn {
+  min-width: 40px;
+  min-height: 40px;
+  margin: 0 !important;
+}
+
+html.bc .calendar_navigator .btn i {
+  font-size: 18px;
+}
+
+html.bc .calendar_navigator .navigation_title {
+  margin: 0 0 0 4px !important;
+  line-height: 40px;
+}
+
+/* Uke / Måned / Agenda: én segmentert gruppe der valgt visning er fylt. */
+html.bc .calendar_view_buttons {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  background: var(--bc-surface-2);
+  border-radius: var(--bc-radius-sm);
+}
+
+html.bc .calendar_view_buttons .btn {
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 6px !important;
+  min-height: 36px;
+  color: var(--bc-muted) !important;
+}
+
+html.bc .calendar_view_buttons .btn.active,
+html.bc .calendar_view_buttons .btn[aria-selected="true"] {
+  background: var(--bc-surface) !important;
+  color: var(--bc-text) !important;
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.12) !important;
+}
+
+html.bc #calendar-app .fc-day-header {
+  text-transform: none !important;
+  font-weight: 600;
+  color: var(--bc-muted);
+  padding: 8px 0 !important;
+}
+
+html.bc #calendar-app .fc-view-container {
+  background: var(--bc-surface);
+  border-radius: var(--bc-radius);
+  overflow: hidden;
+  border: 1px solid var(--bc-border);
+}
+
+html.bc #calendar-app :is(td, th).fc-widget-content,
+html.bc #calendar-app :is(td, th).fc-widget-header {
+  border-color: var(--bc-border) !important;
+}
+
+/* I dag: aksentfarget dato i en ring, og en svak flate i ruten. Samme språk som «Nå»-linjen. */
+html.bc #calendar-app .fc-day.fc-today {
+  background: var(--bc-accent-soft) !important;
+}
+
+html.bc #calendar-app .fc-day-top.fc-today .fc-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--bc-accent);
+  color: #fff !important;
+  font-weight: 600;
+  margin: 4px;
+}
+
+html.bc #calendar-app .fc-day-number {
+  color: var(--bc-text);
+  font-size: var(--bc-fs-small);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dager i forrige og neste måned trer tilbake. */
+html.bc #calendar-app .fc-other-month .fc-day-number,
+html.bc #minical .fc-other-month .fc-day-number {
+  color: color-mix(in srgb, var(--bc-muted) 55%, transparent) !important;
+}
+
+html.bc #calendar-app .fc-event {
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+  margin: 1px 4px !important;
+}
+
+/* Minikalenderen: prikk under dager med hendelser i stedet for en ramme rundt. */
+html.bc #minical .fc-day,
+html.bc #minical td {
+  border-color: transparent !important;
+}
+
+/* Canvas sin ramme rundt dager med hendelser fjernes. Prikken tegnes på tallcellen
+   (merket .bc-has-event av calendar.js), sentrert under tallet. */
+html.bc #minical .fc-day.event::after {
+  display: none !important;
+}
+
+html.bc #minical .fc-scroller {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+html.bc #minical .fc-day-grid .fc-row {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+html.bc #minical .fc-day-top {
+  position: relative;
+  text-align: center !important;
+  padding: 2px 0 8px !important;
+  vertical-align: top;
+}
+
+html.bc #minical .fc-day-top .fc-day-number {
+  float: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border-radius: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+html.bc #minical .fc-day-top.bc-has-event::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--bc-accent);
+}
+
+html.bc #minical .fc-day-header {
+  text-align: center !important;
+}
+
+/* Hele kalenderen i vinduet (fra nettbrettbredde og opp). --bc-cal-avail settes av
+   calendar.js. Måned: ukene deler høyden likt. Uke og agenda: ruller inni kalenderen,
+   ikke hele siden. */
+@media (min-width: 768px) and (min-height: 500px) {
+  html.bc #calendar-app .fc-month-view .fc-scroller.fc-day-grid-container {
+    height: var(--bc-cal-avail, calc(100vh - 210px)) !important;
+    overflow: hidden !important;
+  }
+
+  html.bc #calendar-app .fc-month-view .fc-day-grid {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  html.bc #calendar-app .fc-month-view .fc-row.fc-week {
+    flex: 1 1 0;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden;
+  }
+
+  html.bc #calendar-app .fc-agendaWeek-view .fc-scroller,
+  html.bc #calendar-app .fc-agendaDay-view .fc-scroller {
+    height: var(--bc-cal-avail, calc(100vh - 260px)) !important;
+    overflow-y: auto !important;
+  }
+
+  html.bc #calendar-app .agenda-wrapper {
+    max-height: var(--bc-cal-avail, calc(100vh - 210px));
+    overflow-y: auto;
+  }
+
+  /* Høyrekolonnen (minikalender, kalenderliste) ruller selv i lave vinduer,
+     så den ikke gjør siden høyere enn skjermen. */
+  html.bc body:has(#calendar-app) #right-side-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  html.bc body:has(#calendar-app) #main,
+  html.bc body:has(#calendar-app) #wrapper {
+    min-height: 0 !important;
+  }
+}
+
+html.bc #calendar-app .fc-now-indicator {
+  border-color: var(--bc-accent) !important;
+}
+
+html.bc #calendar-app .fc-day-top.fc-today {
+  background: transparent !important;
+}
+
+html.bc #minical .fc-toolbar h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Hendelsesdetaljer (popoveren når du klikker på noe i kalenderen).
+   Kort med fast bredde, overskrift øverst og innhold som ruller loddrett inni kortet.
+   Canvas plasserer den med JavaScript, så vi rører ikke top/left. */
+html.bc .event-details:not(.events_list *) {
+  width: 440px !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: calc(100vh - 16px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  background: var(--bc-surface) !important;
+  border: 1px solid var(--bc-border) !important;
+  border-radius: var(--bc-radius) !important;
+  box-shadow: var(--bc-overlay-shadow) !important;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+html.bc .event-details:not(.events_list *) .ui-menu-carat {
+  display: none !important;
+}
+
+html.bc .event-details:not(.events_list *) #event-details-trap-focus {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+html.bc .event-details:not(.events_list *) .popover_close {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: var(--bc-radius-sm);
+  font-size: 22px !important;
+  line-height: 1 !important;
+  color: var(--bc-muted) !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+html.bc .event-details:not(.events_list *) .popover_close:hover {
+  background: var(--bc-surface-2);
+  color: var(--bc-text) !important;
+}
+
+html.bc .event-details:not(.events_list *) .event-details-header {
+  padding: 16px 56px 12px 20px !important;
+  border-bottom: 1px solid var(--bc-border) !important;
+  width: auto !important;
+}
+
+html.bc .event-details:not(.events_list *) .event-type {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+  font-weight: 600;
+  width: auto !important;
+}
+
+html.bc .event-details:not(.events_list *) .details_title {
+  margin: 2px 0 0 !important;
+  font-size: var(--bc-fs-heading) !important;
+  font-weight: 600 !important;
+  line-height: 1.3;
+  width: auto !important;
+}
+
+html.bc .event-details:not(.events_list *) .details_title a {
+  color: var(--bc-text) !important;
+}
+
+html.bc .event-details:not(.events_list *) .event-details-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: min(60vh, 520px);
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 14px 20px 20px !important;
+  width: auto !important;
+  box-sizing: border-box;
+}
+
+html.bc .event-details:not(.events_list *) .event-details-timestring {
+  color: var(--bc-text);
+  font-weight: 600;
+  margin-bottom: 12px;
+  width: auto !important;
+}
+
+/* «Source Calendar» / «Details»: etikett over verdi i stedet for en smal tabellkolonne. */
+html.bc .event-details-content :is(table, tbody, tr, th, td) {
+  display: block !important;
+  width: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+}
+
+html.bc .event-details-content tr {
+  margin-bottom: 12px;
+}
+
+html.bc .event-details-content th {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+  font-weight: 600 !important;
+  margin-bottom: 2px;
+}
+
+/* Bare ett rullefelt: Canvas gir også detaljteksten sitt eget. */
+html.bc .event-details-content :is(td.user_content, .event-detail-overflow) {
+  max-width: 100% !important;
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere;
+}
+
+html.bc .event-details-content td.user_content :is(h1, h2, h3) {
+  font-size: var(--bc-fs-heading);
+  margin: 12px 0 6px;
+}
+
+html.bc .event-details-content td.user_content :is(img, video, iframe) {
+  max-width: 100% !important;
+  height: auto;
+  border-radius: var(--bc-radius-sm);
+}
+
+html.bc .event-details:not(.events_list *) .event-details-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px !important;
+  border-top: 1px solid var(--bc-border);
+  background: var(--bc-surface-2);
+}
+
+html.bc #right-side .element_toggler {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 600;
+}
+
+/* Kalenderlisten: navnene i vanlig vekt og liten skrift. Canvas setter dem i 13px fet. */
+html.bc #calendar-list-holder .context_list_context,
+html.bc #calendars-context-list li,
+html.bc #calendars-context-list li label {
+  font-size: var(--bc-fs-small) !important;
+  font-weight: 400 !important;
+  line-height: 1.35;
+}
+
+html.bc #calendars-context-list li {
+  align-items: center;
+  padding: 5px 0;
+}
+
+html.bc #calendar-feed-button {
+  font-size: var(--bc-fs-small) !important;
+  font-weight: 500 !important;
+}
+
+/* ---------- /grades: alle emner ---------- */
+html.bc table.course_details.student_grades {
+  width: 100%;
+  max-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  overflow: hidden;
+}
+
+html.bc table.course_details.student_grades td {
+  padding: 14px 16px !important;
+  border-bottom: 1px solid var(--bc-border) !important;
+  border-top: 0 !important;
+}
+
+html.bc table.course_details.student_grades tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+html.bc table.course_details.student_grades tr:hover td {
+  background: var(--bc-surface-2);
+}
+
+html.bc table.course_details.student_grades td a {
+  color: var(--bc-text) !important;
+  font-weight: 600;
+}
+
+html.bc table.course_details.student_grades td.percent {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: var(--bc-fs-heading);
+}
+
+/* ---------- /conversations (innboks) ---------- */
+html.bc [data-testid="tool-bar"],
+html.bc [data-testid="desktop-message-action-header"] {
+  background: var(--bc-surface) !important;
+  border-color: var(--bc-border) !important;
+}
+
+/* Canvas-feil: når innboksen er tom, strekker listekolonnen seg over hele bredden og
+   skyver meldingskolonnen ut av skjermen. Fast bredde på listen gir to kolonner. */
+@media (min-width: 768px) {
+  html.bc [class*="-view-flexItem"]:has(> span > div > [data-testid="list-items-desktop"]) {
+    flex: 0 0 400px !important;
+    width: 400px !important;
+    max-width: 40% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* «Skriv ny» er hovedhandlingen på siden. */
+html.bc button[data-testid="compose"] [class*="baseButton__content"] {
+  background: var(--bc-accent) !important;
+  border-color: var(--bc-accent) !important;
+  color: #fff !important;
+}
+
+html.bc [data-testid="list-items-desktop"] [class*="-view-listItem"],
+html.bc [data-testid="conversationListItem-Item"] {
+  border-color: var(--bc-border) !important;
+}
+
+/* Innboksen er én hvit flate med lyse skillelinjer, ikke grå bakgrunn med mørke streker. */
+html.bc body:has([data-testid="tool-bar"]) #content > div > div:has([data-testid="tool-bar"]) {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  overflow: hidden;
+}
+
+html.bc [data-testid="list-items-desktop"] > [class*="-view"] {
+  border-color: var(--bc-border) !important;
+}
+
+html.bc [data-testid="tool-bar"] {
+  border-bottom: 1px solid var(--bc-border) !important;
+}
+
+/* Tomme tilstander: rolig, dempet tekst og et lite ikon. */
+html.bc [data-testid="conversation-list-no-messages"] [class*="-text"],
+html.bc body:has([data-testid="tool-bar"]) svg[name="IconEmail"] ~ *,
+html.bc body:has([data-testid="tool-bar"]) [class*="-flexItem"]:has(> svg[name="IconEmail"]) + * [class*="-text"] {
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-small) !important;
+  font-weight: 400 !important;
+}
+
+html.bc body:has([data-testid="tool-bar"]) svg[name="IconEmail"] {
+  font-size: 48px !important;
+  color: var(--bc-border-strong) !important;
+}
+
+/* ---------- Felles: søkefelt og filtre ---------- */
+html.bc :is(input[type="search"], .ic-Input[type="search"]) {
+  min-height: 40px;
+  padding-left: 12px;
+}

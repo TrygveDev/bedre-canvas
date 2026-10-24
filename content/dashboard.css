@@ -1,0 +1,550 @@
+/*
+  Bedre Canvas – dashboard
+  Canvas sin egen visning skjules bare når html.bc-dash er satt, og dashboard.js
+  fjerner klassen igjen hvis brukeren bytter tilbake.
+*/
+
+/* Bare listevisningen byttes ut. Canvas sin topplinje (gjøremål, karakterer, varsler,
+   visningsvalg) står igjen, og kort- og aktivitetsvisningen er Canvas sine egne, restylet. */
+html.bc-dash body.dashboard-is-planner #dashboard-planner,
+html.bc-dash body.dashboard-is-planner #right-side-wrapper,
+html.bc-dash body.dashboard-is-planner #planner-today-btn,
+html.bc-dash body.dashboard-is-planner #new_activity_button,
+html.bc-dash body:not(.dashboard-is-planner) #bedre-dashboard {
+  display: none !important;
+}
+
+html.bc .bcd {
+  --bcd-warn: #b54708;
+  --bcd-danger: #b42318;
+  --bcd-ok: #067647;
+  color: var(--bc-text);
+}
+
+/* ---------- Topp ---------- */
+html.bc .bcd-today {
+  margin: -8px 0 20px;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-row);
+}
+
+html.bc .bcd-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1000px) {
+  html.bc .bcd-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    align-items: start;
+  }
+}
+
+/* På brede skjermer får sidekolonnen fast bredde, og tidslinjen tar resten. */
+@media (min-width: 1500px) {
+  html.bc .bcd-grid {
+    grid-template-columns: minmax(0, 1fr) 400px;
+  }
+}
+
+html.bc .bcd-col-main,
+html.bc .bcd-col-side {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+html.bc .bcd-label {
+  margin: 0 0 6px;
+  font-size: var(--bc-fs-foot);
+  font-weight: 500;
+  color: var(--bc-muted);
+}
+
+html.bc .bcd-item-meta {
+  display: block;
+  margin-top: 1px;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+}
+
+/* ---------- Neste frist: sidens eneste fokuspunkt, og det eneste elementet med skygge ---------- */
+html.bc .bcd-hero {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgb(16 24 40 / 0.06);
+}
+
+html.bc .bcd-hero-title {
+  display: block;
+  font-size: var(--bc-fs-title);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--bc-text) !important;
+  text-decoration: none;
+  margin: 0;
+}
+
+html.bc a.bcd-hero-title:hover {
+  text-decoration: underline;
+}
+
+html.bc .bcd-hero-course {
+  margin: 8px 0 0;
+  color: var(--bc-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+html.bc .bcd-hero-when {
+  margin: 18px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  color: var(--bc-muted);
+}
+
+html.bc .bcd-countdown {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--bc-text);
+  font-variant-numeric: tabular-nums;
+}
+
+html.bc .bcd-hero.is-soon .bcd-countdown {
+  color: var(--bcd-warn);
+}
+
+html.bc .bcd-hero.is-urgent .bcd-countdown {
+  color: var(--bcd-danger);
+}
+
+html.bc .bcd-hero.is-empty .bcd-hero-title {
+  font-size: var(--bc-fs-heading);
+}
+
+html.bc .bcd-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 18px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--bc-radius-sm);
+  background: var(--bc-accent);
+  color: #fff !important;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+html.bc .bcd-button:hover {
+  background: var(--bc-accent-strong);
+}
+
+html.bc .bcd-link {
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  min-height: 44px;
+  color: var(--bc-accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- Ikke levert ---------- */
+/* Nøytral flate: bare overskriften er rød, så boksen ikke stjeler fokus fra neste frist. */
+html.bc .bcd-missing {
+  border: 1px solid var(--bc-border);
+  background: var(--bc-surface);
+  border-radius: var(--bc-radius);
+  padding: 14px 18px;
+}
+
+html.bc .bcd-missing .bcd-label {
+  color: var(--bcd-danger);
+}
+
+html.bc .bcd-missing ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+html.bc .bcd-missing a {
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-row);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+html.bc .bcd-missing a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Tidslinje ---------- */
+html.bc .bcd-section-head {
+  margin-bottom: 8px;
+}
+
+html.bc .bcd-section-head h2,
+html.bc .bcd-panel h2 {
+  font-size: var(--bc-fs-heading);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+html.bc .bcd-past {
+  margin: 4px 0 8px;
+}
+
+html.bc .bcd-past summary {
+  cursor: pointer;
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-small);
+  padding: 10px 0;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+html.bc .bcd-past[open] {
+  opacity: 0.85;
+}
+
+html.bc .bcd-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+html.bc .bcd-day {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--bc-border);
+}
+
+html.bc .bcd-date {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+html.bc .bcd-date-rel {
+  font-weight: 600;
+  font-size: var(--bc-fs-row);
+}
+
+html.bc .bcd-date-abs {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-foot);
+}
+
+html.bc .bcd-day.is-today .bcd-date-rel {
+  color: var(--bc-accent);
+}
+
+html.bc .bcd-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+html.bc .bcd-item {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius-sm);
+}
+
+html.bc .bcd-item.is-complete .bcd-item-title {
+  color: var(--bc-muted) !important;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--bc-muted) 60%, transparent);
+}
+
+/* Avhuking: 20px boks i et 44px trykkfelt (marginen gir trykkflaten). */
+html.bc .bcd-check {
+  width: 20px;
+  height: 20px;
+  margin: -12px;
+  padding: 0;
+  box-sizing: content-box;
+  border: 12px solid transparent;
+  background-clip: padding-box;
+  accent-color: var(--bc-accent);
+  cursor: pointer;
+}
+
+html.bc .bcd-item-details {
+  display: block;
+  color: var(--bc-text);
+  font-size: var(--bc-fs-small);
+  white-space: pre-line;
+}
+
+html.bc .bcd-save-error {
+  grid-column: 1 / -1;
+  color: var(--bcd-danger);
+  font-size: var(--bc-fs-foot);
+}
+
+html.bc .bcd-item-title {
+  font-size: var(--bc-fs-row);
+  font-weight: 500;
+  color: var(--bc-text) !important;
+  overflow-wrap: anywhere;
+}
+
+html.bc .bcd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--bc-fs-foot);
+  font-weight: 400;
+  color: var(--bc-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+html.bc .bcd-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+html.bc .bcd-status {
+  font-size: var(--bc-fs-foot);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+html.bc .bcd-status--done {
+  color: var(--bcd-ok);
+}
+
+html.bc .bcd-status--missing {
+  color: var(--bcd-danger);
+}
+
+html.bc .bcd-quiet,
+html.bc .bcd-gap {
+  color: var(--bc-muted);
+  font-size: var(--bc-fs-small);
+}
+
+html.bc .bcd-items .bcd-quiet {
+  padding: 10px 0;
+}
+
+html.bc .bcd-gap {
+  padding: 10px 0 10px 116px;
+  border-top: 1px solid var(--bc-border);
+}
+
+/* «Nå»-linjen: plassert mellom det som har vært og det som kommer */
+html.bc .bcd-now {
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+html.bc .bcd-now::before {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 2px;
+  background: var(--bc-accent);
+}
+
+html.bc .bcd-now-label {
+  position: relative;
+  background: var(--bc-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--bc-radius-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Sidekolonne ---------- */
+html.bc .bcd-panel {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  padding: 16px 18px;
+}
+
+html.bc .bcd-panel h2 {
+  margin-bottom: 10px;
+}
+
+html.bc .bcd-news,
+html.bc .bcd-courses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+html.bc .bcd-courses {
+  gap: 10px;
+}
+
+/* Kunngjøringer: tittelen i vanlig vekt. Ulest får en prikk i venstremargen, som i Mail,
+   og mellomvekt, i stedet for en etikett. Ordet «Ulest» står igjen for skjermlesere. */
+html.bc .bcd-news li {
+  position: relative;
+}
+
+html.bc .bcd-news a {
+  color: var(--bc-text) !important;
+  font-size: var(--bc-fs-row);
+  font-weight: 400;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+html.bc .bcd-news a:hover {
+  text-decoration: underline;
+}
+
+html.bc .bcd-news .is-new a {
+  font-weight: 500;
+}
+
+html.bc .bcd-new {
+  position: absolute;
+  left: -13px;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--bc-accent);
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+}
+
+html.bc .bcd-courses a {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--bc-muted) !important;
+  font-size: var(--bc-fs-row);
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+html.bc .bcd-courses a:hover {
+  text-decoration: underline;
+}
+
+/* Emnekoden er det du kjenner igjen emnet på; navnet er forklaringen. */
+html.bc .bcd-courses strong {
+  color: var(--bc-text);
+  font-weight: 500;
+}
+
+html.bc .bcd-courses .bcd-swatch {
+  transform: translateY(1px);
+}
+
+/* ---------- Tilstander ---------- */
+html.bc .bcd-loading {
+  color: var(--bc-muted);
+  padding: 24px 0;
+}
+
+html.bc .bcd-error {
+  background: var(--bc-surface);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  padding: 20px 24px;
+}
+
+html.bc .bcd-error h2 {
+  margin: 0 0 6px;
+  font-size: var(--bc-fs-heading);
+}
+
+html.bc .bcd-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------- Smal skjerm ---------- */
+@media (max-width: 640px) {
+  html.bc .bcd-day {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  html.bc .bcd-date {
+    flex-direction: row;
+    gap: 8px;
+    align-items: baseline;
+    padding-top: 0;
+  }
+
+  html.bc .bcd-gap {
+    padding-left: 0;
+  }
+
+  html.bc .bcd-item {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: 4px;
+  }
+
+  html.bc .bcd-item .bcd-check {
+    grid-row: span 2;
+  }
+
+  html.bc .bcd-item .bcd-chip {
+    grid-column: 2 / -1;
+  }
+
+  html.bc .bcd-hero {
+    padding: 18px;
+  }
+
+  html.bc .bcd-hero-title {
+    font-size: 1.35rem;
+  }
+}
+
+/* Mørkt tema inverterer siden; emnefargene snus tilbake så de matcher resten av Canvas. */
+html.bc[data-bc-theme="dark"] .bcd-swatch {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  html.bc[data-bc-theme="auto"] .bcd-swatch {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}

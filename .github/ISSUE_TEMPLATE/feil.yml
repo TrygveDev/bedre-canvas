@@ -1,0 +1,38 @@
+name: Feil
+description: Noe ser feil ut eller virker ikke
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Hva skjer?
+      description: Hva ser du, og hva forventet du?
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Hvilken side?
+      description: F.eks. dashboardet, moduler, kalender. Ta gjerne med adressen uten personlige opplysninger.
+    validations:
+      required: true
+  - type: input
+    id: school
+    attributes:
+      label: Skole / Canvas-adresse
+      placeholder: oslomet.instructure.com
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Tema
+      options: [Lyst, Mørkt, Auto]
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Skjermbilde
+      description: Pass på at navnet ditt og andres ikke synes.
+  - type: input
+    id: version
+    attributes:
+      label: Versjon
+      description: Står i chrome://extensions

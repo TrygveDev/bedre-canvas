@@ -1,0 +1,16 @@
+name: Forslag
+description: En idé til noe som kan bli bedre
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Hva er problemet?
+      description: Hva er tungvint, uklart eller stygt i dag?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Forslag
+      description: Hvordan kunne det vært bedre? Skisser og skjermbilder er velkomne.
