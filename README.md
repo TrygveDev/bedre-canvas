@@ -1,3 +1,5 @@
+![Bedre Canvas: ryddigere Canvas, med neste frist øverst på dashboardet](store/promo-1400x560.png)
+
 # Bedre Canvas
 
 En Chrome-utvidelse som gir Canvas LMS et renere og mer moderne utseende, med en oversikt over
