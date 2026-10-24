@@ -16,9 +16,12 @@ endres.
 - [x] **Navn:** beholder «Bedre Canvas». Se «Kjente problemer» nederst.
 - [x] **Kontakt-e-post:** trygvemf@gmail.com.
 - [ ] **Utgivernavn:** sjekk visningsnavnet under Settings i utviklerkonsollen.
-- [ ] **Første opplasting:** gjøres for hånd, se «Første publisering» i [RELEASING.md](RELEASING.md).
-- [ ] **Automatisk publisering:** nøklene legges inn i GitHub etter første opplasting, når
-      utvidelsen har fått en ID.
+- [x] **Første opplasting:** gjort 2026-10-24. Utvidelsens ID er `bceihlocdogakenkkccccekeggahmkpl`.
+      Oppføring, personvern og distribusjon er fylt inn og lagret som utkast.
+- [ ] **Sendt til gjennomgang:** gjøres i utviklerkonsollen.
+- [ ] **Automatisk publisering:** `CWS_EXTENSION_ID` og `CWS_PUBLISHER_ID` er lagt inn som
+      variabler i GitHub. Nøklene (`CWS_CLIENT_ID`, `CWS_CLIENT_SECRET`, `CWS_REFRESH_TOKEN`)
+      mangler, se [RELEASING.md](RELEASING.md).
 - [x] Skjermbilder tatt på nytt med gjeldende design (2026-10-24).
 - [x] Pakke: `python tools/package.py` lager `dist/bedre-canvas-<versjon>.zip` med bare det
       Chrome trenger (manifest, `background.js`, `content/`, `popup/`, `icons/app/` og lisensene).
@@ -180,6 +183,10 @@ erklæringen og datoen i den i samme pull request.
 
 **Utgiver:** utviklerkonto trygvemf@gmail.com (ID `ea4f0073-7efe-4601-8771-23667533d6b6`)
 
+**Utvidelsens ID:** `bceihlocdogakenkkccccekeggahmkpl`
+
+**Butikkside (når den er godkjent):** https://chromewebstore.google.com/detail/bceihlocdogakenkkccccekeggahmkpl
+
 **Kontakt-e-post** (vises offentlig, må følges med): trygvemf@gmail.com
 
 **Støtte:** https://github.com/TrygveDev/bedre-canvas/issues
@@ -192,7 +199,7 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
-| 0.1.0 | 2026-10-24 | Første offentlige versjon | Utkast |
+| 0.1.0 | 2026-10-24 | Første offentlige versjon | Utkast, lastet opp |
 
 ### Ikke publisert
 

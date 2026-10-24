@@ -51,9 +51,9 @@ GitHub-releasen, men pakken må lastes opp for hånd i utviklerkonsollen.
    | `CWS_CLIENT_SECRET` | Secret | Klienthemmelighet fra trinn 3 |
    | `CWS_REFRESH_TOKEN` | Secret | Refresh token fra trinn 4 |
    | `CWS_PUBLISHER_ID` | Variable | `ea4f0073-7efe-4601-8771-23667533d6b6` (står i adressen til utviklerkonsollen) |
-   | `CWS_EXTENSION_ID` | Variable | ID-en utvidelsen får i Chrome Web Store (32 bokstaver) |
+   | `CWS_EXTENSION_ID` | Variable | `bceihlocdogakenkkccccekeggahmkpl` |
 
-   Med GitHub CLI:
+   De to variablene er allerede lagt inn på repoet. Med GitHub CLI:
 
    ```bash
    gh secret set CWS_CLIENT_ID --env chrome-web-store
