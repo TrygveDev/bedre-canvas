@@ -22,7 +22,7 @@ Bedre Canvas er ikke laget av eller tilknyttet Instructure, som lager Canvas LMS
 
 ## Installer
 
-**Fra Chrome Web Store:** kommer snart.
+**Fra Chrome Web Store:** kommer snart. Se [nettsiden](https://trygvedev.github.io/bedre-canvas/).
 
 **Fra kildekoden:**
 
@@ -64,7 +64,7 @@ hvordan du kommer i gang, og [RELEASING.md](RELEASING.md) for hvordan nye versjo
 | `popup/` | Innstillingsvinduet |
 | `icons/app/` | Utvidelsens ikon i 16, 32, 48 og 128 px |
 | `store/` | Skjermbilder og kampanjefliser til Chrome Web Store. Ikke en del av utvidelsen |
-| `docs/` | Nettsiden med personvernerklæringen (GitHub Pages) |
+| `docs/` | Nettsiden (GitHub Pages): forsiden i `index.html` og personvernerklæringen |
 | `tools/` | Skript for ikoner og pakking |
 
 ## Ikoner

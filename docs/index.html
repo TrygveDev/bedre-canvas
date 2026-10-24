@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bedre Canvas – et renere Canvas LMS</title>
+  <meta name="description" content="Chrome-utvidelse som gir Canvas LMS et renere og mer moderne design, med neste frist øverst på dashboardet.">
+  <meta property="og:title" content="Bedre Canvas">
+  <meta property="og:description" content="Ryddigere Canvas, med neste frist øverst på dashboardet.">
+  <meta property="og:image" content="https://trygvedev.github.io/bedre-canvas/assets/og.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="assets/icon-32.png">
+  <style>
+    /* Samme tokens og typografi som utvidelsen (content/canvas.css). */
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-2: #eef0f3;
+      --border: #e4e7ec;
+      --text: #1d2433;
+      --muted: #5b6474;
+      --accent: #2563eb;
+      --accent-strong: #1d4fd0;
+      --shadow: 0 1px 2px rgb(16 24 40 / 0.06), 0 12px 40px rgb(16 24 40 / 0.12);
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #17181b;
+        --surface: #202124;
+        --surface-2: #2a2b2f;
+        --border: #33353a;
+        --text: #e8e9ec;
+        --muted: #a0a5ad;
+        --accent: #6a9bff;
+        --accent-strong: #8fb3ff;
+        --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 40px rgb(0 0 0 / 0.45);
+        color-scheme: dark;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 100%/1.55 "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+
+    a { color: var(--accent); }
+
+    .wrap {
+      width: min(1120px, 100% - 32px);
+      margin-inline: auto;
+    }
+
+    /* ---------- Topp ---------- */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    }
+
+    .nav .wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 56px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+
+    .brand img { width: 28px; height: 28px; border-radius: 7px; }
+
+    .nav-links { margin-left: auto; display: flex; gap: 4px; }
+
+    .nav-links a {
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { background: var(--surface-2); color: var(--text); }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      padding: clamp(56px, 10vw, 112px) 0 0;
+      text-align: center;
+    }
+
+    .hero-icon {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 24px;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.25rem);
+      font-weight: 650;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+
+    .lede {
+      max-width: 34rem;
+      margin: 20px auto 0;
+      color: var(--muted);
+      font-size: clamp(1.125rem, 2vw, 1.3rem);
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 24px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.1s ease-out, background-color 0.15s ease;
+    }
+
+    .button:active { transform: scale(0.97); }
+
+    .button-primary { background: var(--accent); color: #fff; }
+
+    .button-primary:hover { background: var(--accent-strong); }
+
+    @media (prefers-color-scheme: dark) {
+      .button-primary { color: #0d1526; }
+    }
+
+    .button-secondary {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .button-secondary:hover { background: var(--surface-2); }
+
+    .button svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    /* Skjermbildet i et enkelt nettleservindu, så det leses som en ekte side. */
+    .window {
+      margin: clamp(48px, 8vw, 80px) auto 0;
+      max-width: 1040px;
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: var(--shadow), 0 0 0 1px var(--border);
+      overflow: hidden;
+    }
+
+    .window-bar {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      height: 34px;
+      padding: 0 14px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .window-bar span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    /* ---------- Seksjoner ---------- */
+    section { padding: clamp(72px, 10vw, 120px) 0 0; }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 22ch;
+      font-size: clamp(1.75rem, 4vw, 2.6rem);
+      font-weight: 650;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+    }
+
+    .section-lede {
+      max-width: 38rem;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.0625rem;
+    }
+
+    /* Seks funksjoner: tre og tre på bred skjerm, to og to på nettbrett, én på mobil. */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .feature {
+      padding: 22px;
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--tile) 14%, transparent);
+      color: var(--tile);
+    }
+
+    .feature-icon svg { width: 22px; height: 22px; fill: currentColor; }
+
+    @media (prefers-color-scheme: dark) {
+      .feature-icon { color: color-mix(in srgb, var(--tile) 65%, white); }
+    }
+
+    @media (max-width: 960px) {
+      .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .features { grid-template-columns: 1fr; }
+    }
+
+    .feature h3 {
+      margin: 0;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .feature p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    /* Bilde og tekst side om side. */
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: clamp(32px, 6vw, 72px);
+      align-items: center;
+    }
+
+    .split.reverse { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+
+    .split.reverse .split-text { order: 2; }
+
+    .shot {
+      border-radius: 14px;
+      box-shadow: var(--shadow), 0 0 0 1px var(--border);
+      overflow: hidden;
+    }
+
+    .checklist {
+      list-style: none;
+      margin: 24px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 30px;
+      color: var(--muted);
+    }
+
+    .checklist li strong { color: var(--text); font-weight: 600; }
+
+    .checklist li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.2em;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 14%, transparent)
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%232563eb' d='M229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z'/%3E%3C/svg%3E")
+        center / 12px no-repeat;
+    }
+
+    /* ---------- Personvern og åpen kildekode ---------- */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      padding: clamp(24px, 4vw, 36px);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .card h2 { font-size: clamp(1.5rem, 3vw, 1.9rem); }
+
+    .card p { margin: 12px 0 0; color: var(--muted); }
+
+    .card .button { margin-top: 22px; }
+
+    /* ---------- Bunn ---------- */
+    .cta {
+      text-align: center;
+    }
+
+    .cta h2 { margin-inline: auto; }
+
+    .cta .section-lede { margin-inline: auto; }
+
+    footer {
+      margin-top: clamp(72px, 10vw, 120px);
+      padding: 28px 0 40px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    footer .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px 24px;
+    }
+
+    footer a { color: var(--muted); }
+
+    footer nav { display: flex; gap: 20px; }
+
+    /* ---------- Smal skjerm ---------- */
+    @media (max-width: 760px) {
+      .split,
+      .split.reverse { grid-template-columns: 1fr; }
+
+      .split.reverse .split-text { order: 0; }
+
+      .nav-links a:not(:last-child) { display: none; }
+    }
+
+    /* Innholdet glir rolig inn når det kommer til syne. */
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .reveal {
+          animation: reveal linear both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 40%;
+        }
+
+        @keyframes reveal {
+          from { opacity: 0; transform: translateY(24px); }
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="./">
+        <img src="assets/icon-32.png" alt="" width="28" height="28">
+        Bedre Canvas
+      </a>
+      <nav class="nav-links" aria-label="Sider">
+        <a href="#funksjoner">Funksjoner</a>
+        <a href="#personvern">Personvern</a>
+        <a href="https://github.com/TrygveDev/bedre-canvas">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero wrap">
+      <img class="hero-icon" src="assets/icon-128.png" alt="" width="88" height="88">
+      <h1>Canvas, bare bedre.</h1>
+      <p class="lede">En gratis Chrome-utvidelse som rydder opp i Canvas LMS og viser neste frist øverst på dashboardet.</p>
+      <div class="actions">
+        <!-- Bytt til https://chromewebstore.google.com/detail/bceihlocdogakenkkccccekeggahmkpl når den er godkjent. -->
+        <a class="button button-primary" href="https://github.com/TrygveDev/bedre-canvas#installer">
+          <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 152v56a16 16 0 0 1-16 16H48a16 16 0 0 1-16-16v-56a8 8 0 0 1 16 0v56h160v-56a8 8 0 0 1 16 0Zm-101.66 5.66a8 8 0 0 0 11.32 0l40-40a8 8 0 0 0-11.32-11.32L136 132.69V40a8 8 0 0 0-16 0v92.69l-26.34-26.35a8 8 0 0 0-11.32 11.32Z"/></svg>
+          Installer
+        </a>
+        <a class="button button-secondary" href="https://github.com/TrygveDev/bedre-canvas">
+          <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32ZM200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48 8 8 0 0 0 1.1-7.69 43.81 43.81 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.81 43.81 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.72 41.72 0 0 1 7 22.52Z"/></svg>
+          Se koden
+        </a>
+      </div>
+      <p class="note">Kommer snart i Chrome Web Store. Virker på Canvas hos Instructure, og på skoler med eget Canvas-domene.</p>
+
+      <div class="window reveal">
+        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+        <img src="assets/dashboard.png" width="1280" height="800"
+          alt="Dashboardet med Bedre Canvas: neste frist øverst med nedtelling, oppgaver som ikke er levert, kunngjøringer og emner.">
+      </div>
+    </div>
+
+    <section id="funksjoner" class="wrap">
+      <p class="eyebrow">Funksjoner</p>
+      <h2>Det du trenger å vite, først.</h2>
+      <p class="section-lede">Canvas har alt, men viser alt like høyt. Bedre Canvas løfter frem det viktigste og lar resten tre tilbake.</p>
+
+      <div class="features">
+        <article class="feature reveal" style="--tile: #2563eb">
+          <div class="feature-icon"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm0 192a88 88 0 1 1 88-88 88.1 88.1 0 0 1-88 88Zm64-88a8 8 0 0 1-8 8h-56a8 8 0 0 1-8-8V72a8 8 0 0 1 16 0v48h48a8 8 0 0 1 8 8Z"/></svg></div>
+          <h3>Neste frist øverst</h3>
+          <p>Nedtelling til neste innlevering, og en tidslinje med en «Nå»-linje som viser hvor du er i uka.</p>
+        </article>
+        <article class="feature reveal" style="--tile: #b42318">
+          <div class="feature-icon"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M236.8 188.09 149.35 36.22a24.76 24.76 0 0 0-42.7 0L19.2 188.09a23.51 23.51 0 0 0 0 23.72A24.35 24.35 0 0 0 40.55 224h174.9a24.35 24.35 0 0 0 21.33-12.19 23.51 23.51 0 0 0 .02-23.72Zm-13.87 15.71a8.5 8.5 0 0 1-7.48 4.2H40.55a8.5 8.5 0 0 1-7.48-4.2 7.59 7.59 0 0 1 0-7.72l87.45-151.87a8.75 8.75 0 0 1 15 0l87.45 151.87a7.59 7.59 0 0 1-.04 7.72ZM120 144v-40a8 8 0 0 1 16 0v40a8 8 0 0 1-16 0Zm20 36a12 12 0 1 1-12-12 12 12 0 0 1 12 12Z"/></svg></div>
+          <h3>Ikke levert, samlet</h3>
+          <p>Oppgaver du ikke har levert står for seg, og du huker av gjøremål rett i oversikten.</p>
+        </article>
+        <article class="feature reveal" style="--tile: #cb3f77">
+          <div class="feature-icon"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M231.65 194.55 198.46 36.75a16 16 0 0 0-19-12.39L132.65 34.42a16.08 16.08 0 0 0-12.3 19l33.19 157.8A16 16 0 0 0 169.16 224a16.25 16.25 0 0 0 3.38-.36l46.81-10.06a16.09 16.09 0 0 0 12.3-19.03ZM136 50.15v-.09l46.8-10 3.33 15.87L139.33 66Zm6.62 31.47 46.82-10.05 3.34 15.9L146 97.53Zm6.64 31.57 46.82-10.06 13.3 63.24-46.82 10.06ZM216 197.94l-46.8 10-3.33-15.87L212.67 182 216 197.85ZM104 32H56a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM56 48h48v16H56Zm0 32h48v96H56Zm48 128H56v-16h48Z"/></svg></div>
+          <h3>Emner i farger</h3>
+          <p>Hvert emne, hver gruppe og hver side i historikken får en fargebrikke, så du finner riktig fag med et blikk.</p>
+        </article>
+        <article class="feature reveal" style="--tile: #0f766e">
+          <div class="feature-icon"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M208 32H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16Zm0 176H48V48h160ZM80 88a8 8 0 0 1 8-8h80a8 8 0 0 1 0 16H88a8 8 0 0 1-8-8Zm0 40a8 8 0 0 1 8-8h80a8 8 0 0 1 0 16H88a8 8 0 0 1-8-8Zm0 40a8 8 0 0 1 8-8h48a8 8 0 0 1 0 16H88a8 8 0 0 1-8-8Z"/></svg></div>
+          <h3>Roligere sider</h3>
+          <p>Moduler, oppgaver, karakterer, kalender og innboks med lik og lettlest typografi.</p>
+        </article>
+        <article class="feature reveal" style="--tile: #7c3aed">
+          <div class="feature-icon"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M233.54 142.23a8 8 0 0 0-8-2 88.08 88.08 0 0 1-109.8-109.8 8 8 0 0 0-10-10 104.84 104.84 0 0 0-52.91 37A104 104 0 0 0 136 224a103.09 103.09 0 0 0 62.52-20.88 104.84 104.84 0 0 0 37-52.91 8 8 0 0 0-1.98-7.98Zm-44.64 48.11A88 88 0 0 1 65.66 67.11a89 89 0 0 1 31.4-26A106 106 0 0 0 96 56a104.11 104.11 0 0 0 104 104 106 106 0 0 0 14.92-1.06 89 89 0 0 1-26.02 31.4Z"/></svg></div>
+          <h3>Lyst eller mørkt</h3>
+          <p>Velg lyst, mørkt eller automatisk tema. Byttet tones mykt over, uten å blinke.</p>
+        </article>
+        <article class="feature reveal" style="--tile: #c2410c">
+          <div class="feature-icon"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M200.77 53.89A103.27 103.27 0 0 0 128 24h-1.07A104 104 0 0 0 24 128c0 43 26.58 79.06 69.36 94.17A32 32 0 0 0 136 192a16 16 0 0 1 16-16h46.21a31.81 31.81 0 0 0 31.2-24.88 104.43 104.43 0 0 0 2.59-24A103.28 103.28 0 0 0 200.77 53.89Zm13 93.71A15.89 15.89 0 0 1 198.21 160H152a32 32 0 0 0-32 32 16 16 0 0 1-21.31 15.07C62.49 194.3 40 164 40 128a88 88 0 0 1 87.09-88h.9a88.35 88.35 0 0 1 88 87.25 88.86 88.86 0 0 1-2.18 20.35ZM140 76a12 12 0 1 1-12-12 12 12 0 0 1 12 12ZM96 100a12 12 0 1 1-12-12 12 12 0 0 1 12 12Zm0 56a12 12 0 1 1-12-12 12 12 0 0 1 12 12Zm88-56a12 12 0 1 1-12-12 12 12 0 0 1 12 12Z"/></svg></div>
+          <h3>Skolens farger</h3>
+          <p>Bruker fargene skolen din har i Canvas, eller en farge du velger selv.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="split">
+        <div class="split-text reveal">
+          <p class="eyebrow">Emnene dine</p>
+          <h2>Moduler som er lette å lese.</h2>
+          <p class="section-lede">Modultitlene står tydelig, elementene under er rolige, og kursmenyen viser hvor du er.</p>
+          <ul class="checklist">
+            <li><strong>Tydelig hierarki.</strong> Det viktigste på siden står størst.</li>
+            <li><strong>Mindre støy.</strong> Etiketter som ikke sier deg noe, er borte.</li>
+            <li><strong>Lærernes innhold i fokus.</strong> Sidene emnet ditt har laget, står på en hvit flate med god linjelengde.</li>
+          </ul>
+        </div>
+        <img class="shot reveal" src="assets/moduler.png" width="1280" height="800" loading="lazy"
+          alt="Modulsiden med kursmenyen til venstre og modulene i hvite kort.">
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="split reverse">
+        <div class="split-text reveal">
+          <p class="eyebrow">Mørkt tema</p>
+          <h2>Like fint om kvelden.</h2>
+          <p class="section-lede">Mørkt tema demper hele Canvas, mens bilder, video og emnefargene beholder fargene sine.</p>
+        </div>
+        <img class="shot reveal" src="assets/morkt-tema.png" width="1280" height="800" loading="lazy"
+          alt="Dashboardet i mørkt tema.">
+      </div>
+    </section>
+
+    <section id="personvern" class="wrap">
+      <div class="cards">
+        <div class="card reveal">
+          <p class="eyebrow">Personvern</p>
+          <h2>Dine data blir hos deg.</h2>
+          <p>Bedre Canvas samler ikke inn, selger eller deler noe. Fristene og emnene dine hentes fra Canvas-nettstedet du allerede er logget inn på, og vises bare i nettleseren din. Ingen analyse, ingen sporing.</p>
+          <a class="button button-secondary" href="personvern/">Les personvernerklæringen</a>
+        </div>
+        <div class="card reveal">
+          <p class="eyebrow">Åpen kildekode</p>
+          <h2>Laget i det åpne.</h2>
+          <p>All koden ligger på GitHub under GPL-3.0. Se hvordan den virker, meld feil, eller bidra med forbedringer.</p>
+          <a class="button button-secondary" href="https://github.com/TrygveDev/bedre-canvas">Bidra på GitHub</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap cta">
+      <h2 class="reveal">Klar for et bedre Canvas?</h2>
+      <p class="section-lede">Gratis, og på plass med en gang du åpner Canvas.</p>
+      <div class="actions">
+        <a class="button button-primary" href="https://github.com/TrygveDev/bedre-canvas#installer">Installer Bedre Canvas</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Bedre Canvas er ikke laget av eller tilknyttet Instructure, som lager Canvas LMS.</p>
+      <nav aria-label="Bunntekst">
+        <a href="personvern/">Personvern</a>
+        <a href="https://github.com/TrygveDev/bedre-canvas">GitHub</a>
+        <a href="https://github.com/TrygveDev/bedre-canvas/issues">Meld en feil</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
