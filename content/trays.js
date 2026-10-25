@@ -16,10 +16,14 @@
 
   // Hentes med en gang, så fargene er klare før skuffen åpnes.
   const ready = (async () => {
-    const get = (url) =>
-      fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" })
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null);
+    const get = async (url) => {
+      try {
+        const r = await fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" });
+        return r.ok ? await r.json() : null;
+      } catch {
+        return null;
+      }
+    };
     const [custom, cards, groups] = await Promise.all([
       get("/api/v1/users/self/colors"),
       get("/api/v1/dashboard/dashboard_cards"),
