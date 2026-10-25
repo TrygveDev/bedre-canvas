@@ -622,6 +622,29 @@ html.bc :is(input, select, textarea, .ic-Input):focus {
   box-shadow: 0 0 0 3px var(--bc-accent-soft) !important;
 }
 
+/* Instructure UI tegner kanten på et omslag rundt feltet (med søkeikonet inni). Feltet inni skal
+   ikke ha egen kant i tillegg, da ble det en boks i boksen. Fokusringen går på omslaget. */
+html.bc [class*="-textInput__facade"] input,
+html.bc [class*="-textInput__facade"] input:focus,
+html.bc textarea[class*="-textArea"],
+html.bc textarea[class*="-textArea"]:focus {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  outline: none !important;
+}
+
+/* Instructure UI sin egen fokusring (::before) ville gitt to ringer sammen med vår. */
+html.bc [class*="-textInput__facade"]::before {
+  display: none !important;
+}
+
+html.bc [class*="-textInput__facade"]:focus-within {
+  border-color: var(--bc-accent-ink) !important;
+  box-shadow: 0 0 0 3px var(--bc-accent-soft) !important;
+}
+
 /* ---------- Moduler og lister ---------- */
 html.bc .context_module {
   border: 1px solid var(--bc-border) !important;

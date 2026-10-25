@@ -220,6 +220,8 @@ erklæringen og datoen i den i samme pull request.
 - Kursmenyen: knappen som skjuler den står øverst i menyen, i raden med semesteret, i stedet
   for i brødsmulelinjen. Når menyen er skjult, står knappen for å vise den igjen der den var.
   Begge bruker samme sidemeny-ikon i stedet for hamburgermenyen.
+- Søkefelt og andre tekstfelt fra Instructure UI (f.eks. «Search people»): feltet inni har ikke
+  lenger egen kant, så det blir ikke en boks i boksen. Fokusringen er én ring rundt hele feltet.
 
 ### 0.1.0
 
