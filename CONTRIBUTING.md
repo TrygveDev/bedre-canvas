@@ -23,8 +23,18 @@ DevTools (F12) for å finne klassenavnene du vil style.
 - **Ett tema per pull request.** Små pull requests er lettere å se gjennom.
 - **Skjermbilder** før og etter gjør det mye lettere å vurdere designendringer. Pass på at
   navnet ditt og andres ikke synes.
-- **Commit-meldingene følger formatet** under «Commit-meldinger».
-- CI sjekker commit-meldingene, at skriptene og manifestet er gyldige og at pakken kan bygges.
+- **Commit-meldingene og tittelen følger formatet** under «Commit-meldinger». Tittelen blir
+  commit-meldingen når pull requesten flettes.
+- **Kjør sjekkene lokalt** før du pusher:
+
+  ```bash
+  node tools/check-extension.mjs
+  ```
+
+  Den sjekker at manifestet følger Manifest V3, at ikonene har riktig størrelse, at hver
+  tillatelse er begrunnet i `CHROMEWEBSTORE.md`, at det ikke er `eval` eller kode fra nettet, og
+  at alle CSS-regler starter med `html.bc`. CI kjører den samme sjekken, pluss commit-meldingene,
+  ikonbygget og pakken.
 
 ## Retningslinjer for koden
 

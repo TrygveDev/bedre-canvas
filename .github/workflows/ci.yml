@@ -1,5 +1,5 @@
-# Sjekker hver pull request: commit-meldingene, at skriptene og manifestet er gyldige, og at
-# pakken kan bygges.
+# Sjekker hver pull request før den kan flettes: commit-meldingene og tittelen, at utvidelsen
+# følger Manifest V3 og kravene i Chrome Web Store, og at pakken kan bygges.
 name: CI
 
 on:
@@ -9,6 +9,11 @@ on:
 
 permissions:
   contents: read
+
+# En ny push til samme pull request avbryter kjøringen som allerede går.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check:
@@ -22,6 +27,15 @@ jobs:
         with:
           node-version: 22
 
+      # Tittelen blir commit-meldingen når pull requesten flettes med squash.
+      - name: Tittelen på pull requesten
+        if: github.event_name == 'pull_request'
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          printf '%s\n' "$TITLE" > "$RUNNER_TEMP/title"
+          node tools/check-commit.mjs "$RUNNER_TEMP/title"
+
       - name: Commit-meldinger
         if: github.event_name == 'pull_request'
         run: node tools/check-commit.mjs "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
@@ -32,28 +46,22 @@ jobs:
             node --check "$f"
           done
 
-      - name: Manifestet
-        run: |
-          node -e '
-            const m = require("./manifest.json");
-            if (m.manifest_version !== 3) throw new Error("manifest_version må være 3");
-            if (!/^\d+\.\d+\.\d+$/.test(m.version)) throw new Error("versjonen må være på formen 1.2.3");
-            if (m.description.length > 132) throw new Error("description er over 132 tegn");
-            const fs = require("fs");
-            const files = [
-              m.background.service_worker,
-              m.action.default_popup,
-              ...Object.values(m.icons),
-              ...m.content_scripts.flatMap((c) => [...c.css, ...c.js]),
-            ];
-            const missing = files.filter((f) => !fs.existsSync(f));
-            if (missing.length) throw new Error("mangler filer: " + missing.join(", "));
-          '
+      - name: Manifest V3, tillatelser og html.bc
+        run: node tools/check-extension.mjs
 
       - name: Ikonene er bygget
         run: |
           node tools/build-icons.mjs
-          git diff --exit-code content/icons.css || (echo "Kjør node tools/build-icons.mjs og commit content/icons.css" && exit 1)
+          git diff --exit-code content/icons.css || (echo "::error::Kjør node tools/build-icons.mjs og commit content/icons.css" && exit 1)
+
+      # Bare en påminnelse: ikke alle endringer i koden merkes av brukerne.
+      - name: Endringslogg
+        if: github.event_name == 'pull_request'
+        run: |
+          changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}")
+          if echo "$changed" | grep -qE '^(content|popup)/|^manifest\.json$|^background\.js$' && ! echo "$changed" | grep -q '^CHROMEWEBSTORE\.md$'; then
+            echo "::warning::Koden er endret uten en linje under «Ikke publisert» i CHROMEWEBSTORE.md. Legg til en hvis brukerne merker endringen."
+          fi
 
       - name: Bygg pakken
         run: python3 tools/package.py
