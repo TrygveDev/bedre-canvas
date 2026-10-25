@@ -8,10 +8,8 @@ endres.
 
 ## Status før neste opplasting
 
-- [ ] **Versjon:** 0.2.0 er tagget 2026-10-25. Pakken ligger på GitHub-releasen og må lastes
-      opp for hånd i utviklerkonsollen, siden nøklene til automatisk publisering mangler. Den nye
-      tillatelsen `sidePanel` trenger begrunnelsen fra tabellen under. Senere versjoner slippes
-      som beskrevet i [RELEASING.md](RELEASING.md).
+- [x] **Versjon:** 0.2.0 ble lastet opp for hånd 2026-10-25 og venter på gjennomgang. Senere
+      versjoner slippes som beskrevet i [RELEASING.md](RELEASING.md).
 - [x] **Personvernerklæring:** [docs/personvern.md](docs/personvern.md), publiseres med GitHub
       Pages. Sjekk at adressen under «Personvernerklæring» laster før innsending.
 - [x] **Navn:** beholder «Bedre Canvas». Se «Kjente problemer» nederst.
@@ -20,9 +18,9 @@ endres.
 - [x] **Første opplasting:** gjort 2026-10-24. Utvidelsens ID er `bceihlocdogakenkkccccekeggahmkpl`.
       Oppføring, personvern og distribusjon er fylt inn og lagret som utkast.
 - [x] **Publisert:** 0.1.0 ble godkjent og publisert 2026-10-25: https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl
-- [ ] **Automatisk publisering:** `CWS_EXTENSION_ID` og `CWS_PUBLISHER_ID` er lagt inn som
-      variabler i GitHub. Nøklene (`CWS_CLIENT_ID`, `CWS_CLIENT_SECRET`, `CWS_REFRESH_TOKEN`)
-      mangler, se [RELEASING.md](RELEASING.md).
+- [x] **Automatisk publisering:** nøklene (`CWS_CLIENT_ID`, `CWS_CLIENT_SECRET`,
+      `CWS_REFRESH_TOKEN`) ligger i miljøet `chrome-web-store`, og `CWS_EXTENSION_ID` og
+      `CWS_PUBLISHER_ID` som variabler. Sjekket med `cws-check.yml` 2026-10-25.
 - [x] Skjermbilder tatt på nytt med gjeldende design (2026-10-24).
 - [x] Pakke: `python tools/package.py` lager `dist/bedre-canvas-<versjon>.zip` med bare det
       Chrome trenger (manifest, `background.js`, `content/`, `popup/`, `icons/app/` og lisensene).
@@ -202,7 +200,7 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
-| 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Ikke sendt inn |
+| 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Til gjennomgang |
 | 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
 
 ### Ikke publisert
