@@ -27,7 +27,7 @@
     {
       "matches": ["https://*.instructure.com/*"],
       "css": ["content/icons.css", "content/canvas.css", "content/canvas-ui.css", "content/pages.css", "content/dashboard.css"],
-      "js": ["content/content.js", "content/dashboard.js", "content/calendar.js", "content/trays.js"],
+      "js": ["content/content.js", "content/dashboard.js", "content/calendar.js", "content/trays.js", "content/layout.js"],
       "run_at": "document_start",
       "all_frames": false
     }

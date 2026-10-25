@@ -55,10 +55,88 @@ html.bc #courseMenuToggle i {
 
 html.bc #courseMenuToggle i::before {
   vertical-align: 0 !important;
+  /* Samme ikon som knappen som skjuler menyen, så det er tydelig at de hører sammen. */
+  --bc-icon: var(--ph-sidebar-simple);
 }
 
 html.bc #courseMenuToggle:hover {
   background: rgb(0 0 0 / 0.05);
+}
+
+/* Knappen som skjuler kursmenyen står øverst i menyen (se layout.js), ved det den styrer. Canvas
+   sin egen knapp i brødsmulelinjen vises bare når menyen er skjult, for å hente den fram igjen. */
+@media (min-width: 768px) {
+  html.bc body.course-menu-expanded:has(.bc-course-menu-close) #courseMenuToggle {
+    display: none !important;
+  }
+
+  /* Knappen flyter til høyre i raden med semesteret. Har emnet ikke semester, får den en egen
+     rad. Ingen posisjonering: Canvas plasserer kursmenyen selv, og den skal ikke overstyres. */
+  html.bc .bc-course-menu-close:has(+ #section-tabs-header-subtitle) {
+    float: right;
+    margin: 0 4px 0 0;
+  }
+
+  html.bc #left-side:has(.bc-course-menu-close) #section-tabs-header-subtitle {
+    min-height: 32px;
+    line-height: 32px;
+    padding-bottom: 0;
+  }
+
+  html.bc .bc-course-menu-close {
+    display: grid;
+    margin: 0 4px 4px auto;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bc-radius-sm);
+    background: transparent;
+    color: var(--bc-muted);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease-out;
+  }
+
+  html.bc .bc-course-menu-close::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask: var(--ph-sidebar-simple) center / contain no-repeat;
+    mask: var(--ph-sidebar-simple) center / contain no-repeat;
+  }
+
+  html.bc .bc-course-menu-close:hover {
+    background: rgb(0 0 0 / 0.05);
+    color: var(--bc-text);
+  }
+
+  html.bc .bc-course-menu-close:active {
+    transform: scale(0.94);
+  }
+}
+
+html:not(.bc) .bc-course-menu-close {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  html.bc .bc-course-menu-close {
+    display: none;
+  }
+}
+
+/* Tom høyre kolonne (typisk på oppgavesider før levering) tar ikke plass. */
+html.bc #right-side-wrapper[data-bc-empty] {
+  display: none !important;
+}
+
+/* Kolonnen ga luft mot høyre kant. Uten den får arket samme luft som brødsmulelinjen. */
+@media (min-width: 768px) {
+  html.bc body:has(#right-side-wrapper[data-bc-empty]) #main {
+    padding-right: 24px;
+  }
 }
 
 html.bc .header-bar {

@@ -215,6 +215,11 @@ erklæringen og datoen i den i samme pull request.
 - Nytt valg i popupen: «Sidemeny» med tre utseender for sidemenyen. «Moderne» (standard) er pillen
   med bare ikoner, «Canvas» er Canvas sin egen meny i full høyde med navn under ikonene, og
   «Utvidet» er pillen som en bredere sidemeny med navnet ved siden av ikonet.
+- Oppgavesider: den tomme høyre kolonnen (før du har levert) tar ikke lenger plass, så arket
+  går helt ut til høyre. Gjelder alle sider der kolonnen er tom. Ny fil: `content/layout.js`.
+- Kursmenyen: knappen som skjuler den står øverst i menyen, i raden med semesteret, i stedet
+  for i brødsmulelinjen. Når menyen er skjult, står knappen for å vise den igjen der den var.
+  Begge bruker samme sidemeny-ikon i stedet for hamburgermenyen.
 
 ### 0.1.0
 
