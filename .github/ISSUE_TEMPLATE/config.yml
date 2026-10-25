@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Personvern
+    url: https://trygvedev.github.io/bedre-canvas/personvern/
+    about: Hva utvidelsen lagrer, og hva den aldri sender noe sted.

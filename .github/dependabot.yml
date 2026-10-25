@@ -1,0 +1,9 @@
+# Holder GitHub Actions oppdatert. Utvidelsen selv har ingen avhengigheter.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
