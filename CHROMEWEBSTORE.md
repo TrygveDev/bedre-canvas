@@ -222,6 +222,9 @@ erklæringen og datoen i den i samme pull request.
   Begge bruker samme sidemeny-ikon i stedet for hamburgermenyen.
 - Søkefelt og andre tekstfelt fra Instructure UI (f.eks. «Search people»): feltet inni har ikke
   lenger egen kant, så det blir ikke en boks i boksen. Fokusringen er én ring rundt hele feltet.
+- Popupen har en liten bunntekst: «Laget av Trygve» med lenke til trygve.dev, og «Åpen
+  kildekode på GitHub» med GitHub-logo og lenke til repoet. Lenkene åpnes i ny fane og sender
+  ingen data.
 
 ### 0.1.0
 

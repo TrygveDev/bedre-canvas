@@ -352,6 +352,38 @@ h2 span {
   transform: scale(0.96);
 }
 
+/* ---------- Bunntekst ---------- */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 4px 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+footer a {
+  color: var(--text);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+footer .github {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+}
+
+footer .github:hover {
+  color: var(--text);
+}
+
 /* ---------- Bryter ---------- */
 .switch {
   position: relative;
@@ -413,7 +445,8 @@ h2 span {
 
 /* ---------- Fokus ---------- */
 .switch input:focus-visible + span,
-button:focus-visible {
+button:focus-visible,
+footer a:focus-visible {
   outline: 2px solid var(--accent-ink);
   outline-offset: 2px;
 }
