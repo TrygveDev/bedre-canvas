@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: chrome-web-store
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Taggen må stemme med manifestet
         id: version
