@@ -63,7 +63,7 @@ hvordan du kommer i gang, og [RELEASING.md](RELEASING.md) for hvordan nye versjo
 | `content/dashboard.css` | Stil for fristoversikten, og skjuler Canvas sin egen visning |
 | `content/calendar.js` | Får kalenderen til å passe i vinduet og plasserer hendelsesdetaljene |
 | `content/trays.js` | Fargebrikker i skuffene for emner, grupper, historikk og hjelp |
-| `popup/` | Innstillingsvinduet |
+| `popup/` | Innstillingene, som vises i Chromes sidepanel når du klikker på ikonet |
 | `icons/app/` | Utvidelsens ikon i 16, 32, 48 og 128 px |
 | `store/` | Skjermbilder og kampanjefliser til Chrome Web Store. Ikke en del av utvidelsen |
 | `docs/` | Nettsiden (GitHub Pages): forsiden i `index.html` og personvernerklæringen |

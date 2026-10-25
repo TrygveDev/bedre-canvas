@@ -1,6 +1,6 @@
 # Chrome Web Store – Bedre Canvas
 
-> Sist oppdatert: 2026-10-24
+> Sist oppdatert: 2026-10-25
 
 Alt som trengs for å publisere og oppdatere Bedre Canvas i Chrome Web Store, klart til å
 kopiere inn i utviklerkonsollen. Hold filen oppdatert når tillatelser, funksjoner eller versjon
@@ -63,8 +63,8 @@ Hva du får
 
 Slik bruker du den
 1. Installer utvidelsen og åpne Canvas. Designet er på med en gang.
-2. Klikk på utvidelsesikonet for å velge tema og farge, eller slå designet av.
-3. Bruker skolen et eget Canvas-domene (f.eks. canvas.skolen.no)? Åpne Canvas, klikk på ikonet og velg «Bruk på denne siden».
+2. Klikk på utvidelsesikonet for å åpne innstillingene i sidepanelet. Der velger du tema og farge, eller slår designet av. Klikk igjen for å lukke.
+3. Bruker skolen et eget Canvas-domene (f.eks. canvas.skolen.no)? Åpne Canvas, klikk på ikonet og velg «Bruk på denne siden» i sidepanelet.
 
 Personvern
 Bedre Canvas samler ikke inn, selger eller deler noe om deg. Fristene og emnene dine hentes fra Canvas-nettstedet du allerede er logget inn på, og vises bare i nettleseren din. Innstillingene dine lagres i Chrome.
@@ -120,12 +120,13 @@ Hver linje limes inn i sitt felt under «Privacy practices» i konsollen.
 
 | Tillatelse | Type | Begrunnelse |
 | --- | --- | --- |
-| `storage` | permissions | Lagrer innstillingene brukeren velger i popupen (av/på, lyst/mørkt/auto tema og farge), så de gjelder på alle Canvas-sider og på alle brukerens nettlesere. |
-| `scripting` | permissions | Når brukeren klikker «Bruk på denne siden» i popupen, legger utvidelsen designet inn på skolens Canvas-nettsted med eget domene. Brukes også til å sjekke at siden faktisk er Canvas før knappen vises. |
+| `storage` | permissions | Lagrer innstillingene brukeren velger i sidepanelet (av/på, lyst/mørkt/auto tema og farge), så de gjelder på alle Canvas-sider og på alle brukerens nettlesere. |
+| `scripting` | permissions | Når brukeren klikker «Bruk på denne siden» i sidepanelet, legger utvidelsen designet inn på skolens Canvas-nettsted med eget domene. Brukes også til å sjekke at siden faktisk er Canvas før knappen vises. |
 | Bakgrunnsskript (service worker) | background | Ikke en tillatelse, men nevnes for gjennomgåeren: kjører bare når utvidelsen installeres eller oppdateres, og legger da designet inn på nytt i Canvas-faner som allerede er åpne, så innstillingene virker uten at brukeren må laste siden på nytt. Bruker de samme tillatelsene som over. |
-| `activeTab` | permissions | Lar popupen se adressen til fanen brukeren står i når ikonet klikkes, så den kan tilby å slå på designet for en skole med eget Canvas-domene. Gir ingen tilgang til andre faner. |
+| `activeTab` | permissions | Lar sidepanelet se adressen til fanen brukeren står i når ikonet klikkes, så det kan tilby å slå på designet for en skole med eget Canvas-domene. Gir ingen tilgang til andre faner. |
+| `sidePanel` | permissions | Innstillingene (av/på, tema, sidemeny og farge) vises i Chromes sidepanel ved siden av Canvas i stedet for i en popup. Ikonet åpner og lukker panelet. Panelet hører til fanen det ble åpnet i og lukkes når brukeren bytter fane. Gir ingen tilgang til sider eller data. |
 | `https://*.instructure.com/*` | host_permissions | Canvas LMS-nettstedene som Instructure drifter for skolene. Designet og fristoversikten legges bare inn på disse sidene. |
-| `https://*/*` (valgfri) | optional_host_permissions | Bare for skoler som har Canvas på eget domene (f.eks. canvas.skolen.no). Spørres om først når brukeren klikker «Bruk på denne siden», og gjelder bare det ene domenet. Kan fjernes igjen fra popupen. |
+| `https://*/*` (valgfri) | optional_host_permissions | Bare for skoler som har Canvas på eget domene (f.eks. canvas.skolen.no). Spørres om først når brukeren klikker «Bruk på denne siden», og gjelder bare det ene domenet. Kan fjernes igjen fra sidepanelet. |
 
 **Fjernkode:** Nei. All kode ligger i pakken, og utvidelsen laster ikke skript fra nettet.
 
@@ -204,6 +205,11 @@ erklæringen og datoen i den i samme pull request.
 
 ### Ikke publisert
 
+- Innstillingene åpnes i Chromes sidepanel ved siden av Canvas i stedet for i en popup. Klikk
+  på ikonet åpner panelet, og et nytt klikk lukker det. Panelet hører til fanen det ble åpnet i:
+  det blir stående mens du bruker Canvas i den fanen, så du ser endringene med en gang, og lukkes
+  når du bytter fane. Ny tillatelse: `sidePanel` (gir ingen advarsel ved oppdatering). Krever
+  Chrome 116 eller nyere.
 - Popupen: fargevalgene er nå Skole, Blå, Grønn, Rød og Rosa (#FF8DA1), og det siste valget er
   en regnbuesirkel som åpner en fargevelger med palett, fargetone og hex-felt. Egen farge
   lagres når du slipper, så popupen ikke bruker opp skrivekvoten til `chrome.storage.sync`.

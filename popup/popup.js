@@ -260,7 +260,13 @@ chrome.storage.onChanged.addListener(() => chrome.storage.sync.get(DEFAULTS, ren
 
 // Canvas på egne domener (f.eks. canvas.skolen.no)
 
+// Sidepanelet står åpent mens du går til andre sider i fanen, så delen bygges på nytt når en ny
+// side er lastet. activeTab gjelder bare siden der ikonet ble klikket. Etter det virker sjekken
+// bare på domener som allerede er slått på, ellers skjules delen.
+let siteRun = 0;
 async function setupSiteSection() {
+  const run = ++siteRun;
+  $("#site").hidden = true;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.url?.startsWith("https://")) return;
 
@@ -283,6 +289,7 @@ async function setupSiteSection() {
   const origin = `https://${host}/*`;
   const registered = (await chrome.scripting.getRegisteredContentScripts({ ids: [id] })).length > 0;
   if (!isCanvas && !registered) return;
+  if (run !== siteRun) return; // en nyere fane har tatt over mens vi ventet
 
   const section = $("#site");
   const text = $("#site-text");
@@ -297,7 +304,6 @@ async function setupSiteSection() {
         await chrome.scripting.unregisterContentScripts({ ids: [id] });
         await chrome.permissions.remove({ origins: [origin] });
         await chrome.tabs.reload(tab.id);
-        window.close();
       } catch (err) {
         text.textContent = `Fikk ikke fjernet Bedre Canvas fra ${host}. Prøv igjen.`;
         console.error(err);
@@ -317,7 +323,6 @@ async function setupSiteSection() {
           { id, matches: [origin], css, js, runAt: "document_start" },
         ]);
         await chrome.tabs.reload(tab.id);
-        window.close();
       } catch (err) {
         text.textContent = `Fikk ikke slått på Bedre Canvas for ${host}. Prøv igjen.`;
         console.error(err);
@@ -327,3 +332,6 @@ async function setupSiteSection() {
 }
 
 setupSiteSection();
+chrome.tabs.onUpdated.addListener((_id, change, tab) => {
+  if (tab.active && change.status === "complete") setupSiteSection();
+});
