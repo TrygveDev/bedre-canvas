@@ -18,7 +18,7 @@ endres.
 - [ ] **Utgivernavn:** sjekk visningsnavnet under Settings i utviklerkonsollen.
 - [x] **Første opplasting:** gjort 2026-10-24. Utvidelsens ID er `bceihlocdogakenkkccccekeggahmkpl`.
       Oppføring, personvern og distribusjon er fylt inn og lagret som utkast.
-- [ ] **Sendt til gjennomgang:** gjøres i utviklerkonsollen.
+- [x] **Publisert:** 0.1.0 ble godkjent og publisert 2026-10-25: https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl
 - [ ] **Automatisk publisering:** `CWS_EXTENSION_ID` og `CWS_PUBLISHER_ID` er lagt inn som
       variabler i GitHub. Nøklene (`CWS_CLIENT_ID`, `CWS_CLIENT_SECRET`, `CWS_REFRESH_TOKEN`)
       mangler, se [RELEASING.md](RELEASING.md).
@@ -185,7 +185,7 @@ erklæringen og datoen i den i samme pull request.
 
 **Utvidelsens ID:** `bceihlocdogakenkkccccekeggahmkpl`
 
-**Butikkside (når den er godkjent):** https://chromewebstore.google.com/detail/bceihlocdogakenkkccccekeggahmkpl
+**Butikkside:** https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl
 
 **Kontakt-e-post** (vises offentlig, må følges med): trygvemf@gmail.com
 
@@ -199,7 +199,7 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
-| 0.1.0 | 2026-10-24 | Første offentlige versjon | Utkast, lastet opp |
+| 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
 
 ### Ikke publisert
 

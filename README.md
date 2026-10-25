@@ -1,4 +1,6 @@
-![Bedre Canvas: ryddigere Canvas, med neste frist øverst på dashboardet](store/promo-1400x560.png)
+[![Bedre Canvas: ryddigere Canvas, med neste frist øverst på dashboardet](store/promo-1400x560.png)](https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl)
+
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/bceihlocdogakenkkccccekeggahmkpl?label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl) [![Brukere](https://img.shields.io/chrome-web-store/users/bceihlocdogakenkkccccekeggahmkpl?label=brukere)](https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl) [![Lisens](https://img.shields.io/github/license/TrygveDev/bedre-canvas?label=lisens)](LICENSE)
 
 # Bedre Canvas
 
@@ -22,7 +24,7 @@ Bedre Canvas er ikke laget av eller tilknyttet Instructure, som lager Canvas LMS
 
 ## Installer
 
-**Fra Chrome Web Store:** kommer snart. Se [nettsiden](https://trygvedev.github.io/bedre-canvas/).
+**Fra Chrome Web Store:** [legg til Bedre Canvas i Chrome](https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl). Den oppdateres automatisk.
 
 **Fra kildekoden:**
 
