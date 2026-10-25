@@ -87,9 +87,8 @@
     }
   }
 
-  // Siste innstillinger huskes på Canvas-siden selv, så neste side kan tegnes riktig med en gang
-  // i stedet for å vise standarddesignet (lyst, skolens farge) til innstillingene er lest. Uten
-  // dette blinker siden lys før den blir mørk.
+  // Innstillingene huskes på Canvas-siden selv, så neste side tegnes riktig før chrome.storage
+  // har svart. Uten dette blinker mørkt tema lyst ved innlasting.
   const CACHE = "bedre-canvas";
   const cached = () => {
     try {

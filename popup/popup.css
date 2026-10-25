@@ -56,7 +56,7 @@ button {
   cursor: pointer;
 }
 
-/* ---------- Topp ---------- */
+/* Topp */
 header {
   display: flex;
   align-items: center;
@@ -76,7 +76,7 @@ h1 {
   letter-spacing: -0.015em;
 }
 
-/* ---------- Grupper ---------- */
+/* Grupper */
 .group {
   margin-top: 10px;
   padding: 12px;
@@ -104,7 +104,7 @@ h2 span {
   font-size: 0.875rem;
 }
 
-/* ---------- Tema: segmentert valg med en pille som glir til valgt ---------- */
+/* Tema: segmentert valg med en pille som glir til valgt */
 .segmented {
   --i: 0;
   position: relative;
@@ -149,7 +149,7 @@ h2 span {
   font-weight: 500;
 }
 
-/* ---------- Farge ---------- */
+/* Farge */
 .swatches {
   display: flex;
   align-items: center;
@@ -199,7 +199,7 @@ h2 span {
   box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent-ink);
 }
 
-/* ---------- Fargevelger ---------- */
+/* Fargevelger */
 .picker {
   --hue: hsl(220 100% 50%);
   --picked: #2563eb;
@@ -317,7 +317,7 @@ h2 span {
   outline-offset: 2px;
 }
 
-/* ---------- Knapp ---------- */
+/* Knapp */
 .primary {
   width: 100%;
   min-height: 36px;
@@ -352,7 +352,7 @@ h2 span {
   transform: scale(0.96);
 }
 
-/* ---------- Bunntekst ---------- */
+/* Bunntekst */
 footer {
   display: flex;
   justify-content: space-between;
@@ -384,7 +384,7 @@ footer .github:hover {
   color: var(--text);
 }
 
-/* ---------- Bryter ---------- */
+/* Bryter */
 .switch {
   position: relative;
   flex: none;
@@ -443,7 +443,7 @@ footer .github:hover {
   transform: translateX(12px);
 }
 
-/* ---------- Fokus ---------- */
+/* Fokus */
 .switch input:focus-visible + span,
 button:focus-visible,
 footer a:focus-visible {

@@ -31,10 +31,9 @@ html.bc .ic-app-header__menu-list-item--active #global_nav_profile_link .menu-it
   background-color: var(--ic-brand-global-nav-ic-icon-svg-fill--active);
 }
 
-/* ---------- Topplinjen på dashboardet ---------- */
-/* Canvas løfter dashboardet 24px opp og gjør topplinjen «sticky». Da havnet varseltelleren
-   på bjella utenfor siden. Vi tar bort løftet og gir topplinjen luft over seg, og samme
-   bakgrunn som siden så innhold ikke synes gjennom når den står fast under rulling. */
+/* Topplinjen på dashboardet */
+/* Canvas løfter dashboardet 24px, så varseltelleren på bjella havnet utenfor siden. Topplinjen
+   er «sticky» og trenger sidens bakgrunn, ellers synes innholdet gjennom under rulling. */
 html.bc #dashboard {
   margin-top: 0 !important;
 }
@@ -98,7 +97,7 @@ html.bc #dashboard_header_container button[class*="-baseButton"] svg {
   height: 22px;
 }
 
-/* ---------- Popovere (varsler / «Opportunity Centre») ---------- */
+/* Popovere (varsler / «Opportunity Centre») */
 html.bc [class*="-contextView__content"] {
   border: 1px solid var(--bc-border) !important;
   border-radius: var(--bc-radius) !important;
@@ -228,7 +227,7 @@ html.bc :is(.Opportunity-styles__status, #bedre-dashboard) [class*="-pill"] {
   letter-spacing: 0 !important;
 }
 
-/* ---------- Modaler og skjemafelt (Instructure UI, hele Canvas) ---------- */
+/* Modaler og skjemafelt (Instructure UI, hele Canvas) */
 html.bc [role="dialog"][class*="-modal"] {
   border-radius: var(--bc-radius) !important;
   overflow: hidden;
@@ -245,7 +244,7 @@ html.bc :is([class*="-textInput__facade"], [class*="-textArea__outline"], [class
   border-radius: var(--bc-radius-sm) !important;
 }
 
-/* ---------- Dialoger i gammel jQuery-stil (ny hendelse, filer, innstillinger) ---------- */
+/* Dialoger i gammel jQuery-stil (ny hendelse, filer, innstillinger) */
 html.bc .ui-dialog {
   padding: 0 !important;
   border: 1px solid var(--bc-border) !important;
@@ -337,7 +336,7 @@ html.bc .ui-widget-overlay {
   opacity: 1 !important;
 }
 
-/* ---------- Menyer (visningsvalg og andre) ---------- */
+/* Menyer (visningsvalg og andre) */
 html.bc [role="menu"][class*="-menu"] {
   padding: 6px !important;
   min-width: 220px;
@@ -385,7 +384,7 @@ html.bc [role="menu"] [class*="-menuItem"] [class*="-menuItem__icon"] {
   color: inherit !important;
 }
 
-/* ---------- Sidepaneler (Mine karakterer, Legg til gjøremål) ---------- */
+/* Sidepaneler (Mine karakterer, Legg til gjøremål) */
 html.bc span[class*="-tray"] {
   box-shadow: var(--bc-overlay-shadow) !important;
 }
@@ -464,7 +463,7 @@ html.bc .UpdateItemTray-styles__root button[data-testid="save"]:disabled [class*
   color: var(--bc-muted) !important;
 }
 
-/* ---------- Kortvisning ---------- */
+/* Kortvisning */
 html.bc .ic-DashboardCard__box__container {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -548,7 +547,7 @@ html.bc .ic-DashboardCard__header-button-bg {
   border-radius: var(--bc-radius-sm) !important;
 }
 
-/* ---------- Siste aktivitet ---------- */
+/* Siste aktivitet */
 html.bc #dashboard-activity .recent-activity-header {
   font-size: var(--bc-fs-heading);
   font-weight: 600;
@@ -656,7 +655,7 @@ html.bc #dashboard-activity .stream-details .date {
   white-space: nowrap;
 }
 
-/* ---------- «To do»-kolonnen (kort- og aktivitetsvisning) ---------- */
+/* «To do»-kolonnen (kort- og aktivitetsvisning) */
 /* Bredere kolonne, så emnenavn ikke brytes etter hvert ord. Canvas sine skjulte
    «truncate»-elementer stikker ellers ut og gir vannrett rulling. */
 @media (min-width: 1200px) {

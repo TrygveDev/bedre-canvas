@@ -22,7 +22,7 @@
   hovedknappen. Rødt, oransje og grønt bare for ekte status.
 */
 
-/* ---------- Tokens ---------- */
+/* Tokens */
 html.bc {
   --bc-accent: #2563eb;
   --bc-accent-soft: color-mix(in srgb, var(--bc-accent) 11%, transparent);
@@ -84,7 +84,7 @@ html.bc:not([data-bc-accent="school"]) {
   --ic-brand-global-nav-logo-bgd: var(--bc-surface) !important;
 }
 
-/* ---------- Grunnlag ---------- */
+/* Grunnlag */
 html.bc,
 html.bc body {
   background: var(--bc-bg) !important;
@@ -121,17 +121,12 @@ html.bc textarea:focus-visible {
   outline-offset: 2px;
 }
 
-/* ---------- Global meny ----------
-   Tre utseender, valgt i popupen (data-bc-nav på <html>):
-   - modern (standard): en frittstående pille til venstre med bare ikoner, og skolelogoen over
-     uten bakgrunn eller kant. Navnet vises som verktøytips ved hover og tastaturfokus, og
-     skjermlesere leser det som før. Pillen har menyfargen: skolens egen, eller hvit når brukeren
-     har valgt egen farge. Valgt side får en pille bak ikonet: hvit på skolefarger (det Canvas sin
-     aktiv-farge er laget for), aksenten ved egen farge. Knappen for å minimere menyen skjules.
-   - wide: samme pille, men bredere med navnet ved siden av ikonet, som en sidemeny i en app.
-   - canvas: Canvas sin egen meny i full høyde med navnet under ikonet, og minimeringsknappen
-     beholdt. Bare ikonene, skriften og valgt punkt ved egen farge er justert.
-   Under 768px bytter Canvas til egen mobilmeny, så alt her gjelder bare bredere skjermer. */
+/* Global meny, i tre utseender fra popupen (data-bc-nav):
+   - modern (standard): frittstående pille med bare ikoner, navnet som verktøytips. Valgt side
+     får hvit pille på skolefarger, som Canvas sin aktiv-farge er laget for, og aksenten ellers.
+   - wide: samme pille, bredere, med navnet ved ikonet.
+   - canvas: Canvas sin egen meny. Bare ikoner, skrift og valgt punkt ved egen farge er justert.
+   Under 768px bruker Canvas egen mobilmeny. */
 @media (min-width: 768px) {
   html.bc:not([data-bc-nav="canvas"]) {
     --bc-nav-pill: #fff;
@@ -283,7 +278,7 @@ html.bc textarea:focus-visible {
     }
   }
 
-  /* ---- Utvidet: pillen blir en sidemeny med navnet ved ikonet. Hele raden er valgt og hover. */
+  /* Utvidet: pillen blir en sidemeny med navnet ved ikonet. Hele raden er valgt og hover. */
   html.bc[data-bc-nav="wide"] {
     --bc-nav-space: 232px;
   }
@@ -371,7 +366,7 @@ html.bc textarea:focus-visible {
     outline: none;
   }
 
-  /* ---- Canvas: Canvas sin egen meny. Profilikonet står midt i ruten som de andre ikonene. */
+  /* Canvas: Canvas sin egen meny. Profilikonet står midt i ruten som de andre ikonene. */
   html.bc[data-bc-nav="canvas"] #menu .menu-item-icon-container {
     display: flex;
     justify-content: center;
@@ -392,7 +387,7 @@ html.bc textarea:focus-visible {
   }
 }
 
-/* ---------- Topplinje med brødsmuler ---------- */
+/* Topplinje med brødsmuler */
 html.bc .ic-app-nav-toggle-and-crumbs {
   border-bottom: 1px solid var(--bc-border) !important;
   min-height: 56px;
@@ -411,7 +406,7 @@ html.bc #breadcrumbs li:last-of-type span {
   font-weight: 500;
 }
 
-/* ---------- Kursmeny ---------- */
+/* Kursmeny */
 html.bc #left-side {
   background: transparent !important;
 }
@@ -456,7 +451,7 @@ html.bc #section-tabs li a.active::before {
   display: none;
 }
 
-/* ---------- Hovedinnhold ---------- */
+/* Hovedinnhold */
 html.bc #main {
   background: transparent;
 }
@@ -482,7 +477,7 @@ html.bc .user_content img {
   border-radius: var(--bc-radius-sm);
 }
 
-/* ---------- Dashboard med kort (Canvas sin kortvisning) ---------- */
+/* Dashboard med kort (Canvas sin kortvisning) */
 html.bc .ic-Dashboard-header__layout {
   border-bottom: 0 !important;
   padding-bottom: 8px;
@@ -531,7 +526,7 @@ html.bc .ic-DashboardCard__action:hover {
   background: var(--bc-surface-2);
 }
 
-/* ---------- Knapper ---------- */
+/* Knapper */
 html.bc :is(.Button, .btn, button.btn, a.btn) {
   border-radius: var(--bc-radius-sm) !important;
   background-image: none !important;
@@ -547,9 +542,8 @@ html.bc :is(.Button, .btn):hover {
   background-color: var(--bc-surface-2) !important;
 }
 
-/* Innholdet i knapper sentreres med flex, så ikon og tekst står midt i knappen i stedet
-   for å følge tekstens grunnlinje. Brede sidekolonneknapper og lenkeknapper har egen
-   justering og holdes utenfor. */
+/* Ikon og tekst sentreres i knappen i stedet for å følge grunnlinjen. Brede
+   sidekolonneknapper og lenkeknapper har egen justering. */
 html.bc :is(a, button, label):is(.Button, .btn):not(.button-sidebar-wide, .Button--block, .btn-block, .Button--link, .btn-link) {
   display: inline-flex !important;
   align-items: center;
@@ -607,7 +601,7 @@ html.bc .Button--icon-action-rev {
   border-color: transparent !important;
 }
 
-/* ---------- Skjemafelt ---------- */
+/* Skjemafelt */
 html.bc :is(input[type="text"], input[type="search"], input[type="email"], input[type="number"],
   input[type="password"], input[type="url"], input[type="date"], select, textarea, .ic-Input) {
   border-radius: var(--bc-radius-sm) !important;
@@ -645,7 +639,7 @@ html.bc [class*="-textInput__facade"]:focus-within {
   box-shadow: 0 0 0 3px var(--bc-accent-soft) !important;
 }
 
-/* ---------- Moduler og lister ---------- */
+/* Moduler og lister */
 html.bc .context_module {
   border: 1px solid var(--bc-border) !important;
   border-radius: var(--bc-radius) !important;
@@ -692,7 +686,7 @@ html.bc .item-group-condensed {
   background: var(--bc-surface);
 }
 
-/* ---------- Tabeller ---------- */
+/* Tabeller */
 html.bc :is(.ic-Table, table.summary) {
   border-collapse: separate !important;
   border-spacing: 0;
@@ -711,7 +705,7 @@ html.bc :is(.ic-Table, table.summary) :is(td, th) {
   border-color: var(--bc-border) !important;
 }
 
-/* ---------- Høyre sidekolonne (Å gjøre, kommende) ---------- */
+/* Høyre sidekolonne (Å gjøre, kommende) */
 html.bc #right-side-wrapper {
   background: transparent !important;
   border-left: 1px solid var(--bc-border);
@@ -735,7 +729,7 @@ html.bc .ic-sidebar-logo {
   display: none;
 }
 
-/* ---------- Kunngjøringer, diskusjoner og varsler ---------- */
+/* Kunngjøringer, diskusjoner og varsler */
 html.bc :is(.ic-notification, .alert, .ic-flash-info, .ic-flash-success, .ic-flash-error) {
   border-radius: var(--bc-radius) !important;
 }
@@ -745,7 +739,7 @@ html.bc .discussion_entry {
   border-radius: var(--bc-radius);
 }
 
-/* ---------- Rullefelt ---------- */
+/* Rullefelt */
 html.bc ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -762,7 +756,7 @@ html.bc ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* ---------- Mørkt tema ----------
+/* Mørkt tema
    Canvas har hundrevis av hardkodede farger, så i stedet for å overstyre hver
    enkelt inverteres hele siden, og bilder/video snus tilbake. */
 html.bc[data-bc-theme="dark"] {

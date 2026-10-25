@@ -21,7 +21,7 @@ html.bc .bcd {
   color: var(--bc-text);
 }
 
-/* ---------- Topp ---------- */
+/* Topp */
 html.bc .bcd-today {
   margin: -8px 0 20px;
   color: var(--bc-muted);
@@ -69,7 +69,7 @@ html.bc .bcd-item-meta {
   font-size: var(--bc-fs-foot);
 }
 
-/* ---------- Neste frist: sidens eneste fokuspunkt, og det eneste elementet med skygge ---------- */
+/* Neste frist: sidens eneste fokuspunkt, og det eneste elementet med skygge */
 html.bc .bcd-hero {
   background: var(--bc-surface);
   border: 1px solid var(--bc-border);
@@ -162,7 +162,7 @@ html.bc .bcd-link {
   cursor: pointer;
 }
 
-/* ---------- Ikke levert ---------- */
+/* Ikke levert */
 /* Nøytral flate: bare overskriften er rød, så boksen ikke stjeler fokus fra neste frist. */
 html.bc .bcd-missing {
   border: 1px solid var(--bc-border);
@@ -194,7 +194,7 @@ html.bc .bcd-missing a:hover {
   text-decoration: underline;
 }
 
-/* ---------- Tidslinje ---------- */
+/* Tidslinje */
 html.bc .bcd-section-head {
   margin-bottom: 8px;
 }
@@ -389,7 +389,7 @@ html.bc .bcd-now-label {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Sidekolonne ---------- */
+/* Sidekolonne */
 html.bc .bcd-panel {
   background: var(--bc-surface);
   border: 1px solid var(--bc-border);
@@ -473,7 +473,7 @@ html.bc .bcd-courses .bcd-swatch {
   transform: translateY(1px);
 }
 
-/* ---------- Tilstander ---------- */
+/* Tilstander */
 html.bc .bcd-loading {
   color: var(--bc-muted);
   padding: 24px 0;
@@ -498,7 +498,7 @@ html.bc .bcd-error-actions {
   gap: 16px;
 }
 
-/* ---------- Smal skjerm ---------- */
+/* Smal skjerm */
 @media (max-width: 640px) {
   html.bc .bcd-day {
     grid-template-columns: minmax(0, 1fr);

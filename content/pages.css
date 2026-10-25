@@ -8,7 +8,7 @@
   menyene rundt trer tilbake.
 */
 
-/* ---------- Felles: ark, topplinje, overskrifter ---------- */
+/* Felles: ark, topplinje, overskrifter */
 html.bc body:is([class*="context-course_"], [class*="context-group_"], .with-left-side) #content {
   background: var(--bc-surface) !important;
   border: 1px solid var(--bc-border);
@@ -190,7 +190,7 @@ html.bc .user_content a:not(.btn, .Button) {
   text-underline-offset: 2px;
 }
 
-/* ---------- Global meny: skuffene (Account, Courses, Groups, History, Help) ---------- */
+/* Global meny: skuffene (Account, Courses, Groups, History, Help) */
 html.bc .navigation-tray-container {
   padding: 20px 16px !important;
 }
@@ -556,7 +556,7 @@ html.bc .courses-tray span:has(> ul) ~ br {
   }
 }
 
-/* ---------- Felles: høyre kolonne på emnesider ---------- */
+/* Felles: høyre kolonne på emnesider */
 html.bc #right-side .button-sidebar-wide {
   display: flex !important;
   align-items: center;
@@ -711,7 +711,7 @@ html.bc .student-assignment-overview .value {
   font-weight: 500;
 }
 
-/* ---------- Felles: knapper i verktøylinjer ---------- */
+/* Felles: knapper i verktøylinjer */
 html.bc :is(.header-bar-right, .page-toolbar-end, .ic-Action-header__Secondary) {
   display: flex;
   align-items: center;
@@ -720,7 +720,7 @@ html.bc :is(.header-bar-right, .page-toolbar-end, .ic-Action-header__Secondary) 
 }
 
 
-/* ---------- Felles: tabeller ---------- */
+/* Felles: tabeller */
 html.bc .ic-Table tbody tr:hover > * {
   background: var(--bc-surface-2) !important;
 }
@@ -747,7 +747,7 @@ html.bc :is(.ic-Table, table.summary) td {
   font-size: var(--bc-fs-row);
 }
 
-/* ---------- /courses: alle emner ---------- */
+/* /courses: alle emner */
 html.bc .course-list-table :is(td, th[scope="row"]) {
   background: transparent !important;
   font-size: var(--bc-fs-row);
@@ -792,7 +792,7 @@ html.bc .course-color-block {
   border-radius: 2px;
 }
 
-/* ---------- /courses/:id/modules ---------- */
+/* /courses/:id/modules */
 /* Modulen er kortet. Tittelraden bærer hierarkiet, elementene under er vanlig vekt. */
 html.bc .context_module {
   padding: 0 !important;
@@ -878,7 +878,7 @@ html.bc .context_module_item.indent_1 .ig-row { padding-left: 36px !important; }
 html.bc .context_module_item.indent_2 .ig-row { padding-left: 58px !important; }
 html.bc .context_module_item.indent_3 .ig-row { padding-left: 80px !important; }
 
-/* ---------- /courses/:id/announcements (og diskusjonslister i gammel stil) ---------- */
+/* /courses/:id/announcements (og diskusjonslister i gammel stil) */
 html.bc .ic-item-row {
   border-radius: var(--bc-radius-sm);
   padding: 12px !important;
@@ -940,7 +940,7 @@ html.bc .ic-unread-badge__count {
   color: var(--bc-on-accent) !important;
 }
 
-/* ---------- /courses/:id/assignments ---------- */
+/* /courses/:id/assignments */
 /* Grupper (kommende, tidligere): samme kort som modulene, uten tom luft over tittelen. */
 html.bc .item-group-condensed {
   padding: 0 !important;
@@ -983,7 +983,7 @@ html.bc .header-bar-right [class*="-radioInput__facade"] {
   border-radius: var(--bc-radius-sm) !important;
 }
 
-/* ---------- /courses/:id/assignments/:id (oppgave og innlevering) ---------- */
+/* /courses/:id/assignments/:id (oppgave og innlevering) */
 html.bc .student-assignment-overview {
   border-color: var(--bc-border) !important;
   padding: 12px 0 !important;
@@ -1052,7 +1052,7 @@ html.bc .ui-tabs .ui-tabs-panel {
   padding: 16px 0 !important;
 }
 
-/* ---------- /courses/:id/grades ---------- */
+/* /courses/:id/grades */
 html.bc #grades_summary th[scope="row"],
 html.bc .ic-Table--grades-summary-table th[scope="row"] {
   background: transparent !important;
@@ -1136,7 +1136,7 @@ html.bc #grades_summary .graded_icon {
   color: #067647;
 }
 
-/* ---------- /calendar ---------- */
+/* /calendar */
 html.bc .calendar_header {
   background: transparent !important;
   border: 0 !important;
@@ -1377,9 +1377,8 @@ html.bc #minical .fc-toolbar h2 {
   font-weight: 600;
 }
 
-/* Hendelsesdetaljer (popoveren når du klikker på noe i kalenderen).
-   Kort med fast bredde, overskrift øverst og innhold som ruller loddrett inni kortet.
-   Canvas plasserer den med JavaScript, så vi rører ikke top/left. */
+/* Hendelsesdetaljer: kort med fast bredde og innhold som ruller inni. Canvas plasserer
+   popoveren med JavaScript, så top/left står urørt. */
 html.bc .event-details:not(.events_list *) {
   width: 440px !important;
   max-width: calc(100vw - 32px) !important;
@@ -1546,7 +1545,7 @@ html.bc #calendar-feed-button {
   font-weight: 500 !important;
 }
 
-/* ---------- /grades: alle emner ---------- */
+/* /grades: alle emner */
 html.bc table.course_details.student_grades {
   width: 100%;
   max-width: 760px;
@@ -1584,7 +1583,7 @@ html.bc table.course_details.student_grades td.percent {
   font-size: var(--bc-fs-heading);
 }
 
-/* ---------- /conversations (innboks) ---------- */
+/* /conversations (innboks) */
 html.bc [data-testid="tool-bar"],
 html.bc [data-testid="desktop-message-action-header"] {
   background: var(--bc-surface) !important;
@@ -1644,7 +1643,7 @@ html.bc body:has([data-testid="tool-bar"]) svg[name="IconEmail"] {
   color: var(--bc-border-strong) !important;
 }
 
-/* ---------- Felles: søkefelt og filtre ---------- */
+/* Felles: søkefelt og filtre */
 html.bc :is(input[type="search"], .ic-Input[type="search"]) {
   min-height: 40px;
   padding-left: 12px;

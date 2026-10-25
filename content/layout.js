@@ -1,9 +1,6 @@
-// Små justeringer av sideoppsettet som CSS ikke klarer alene:
-//   - Høyre kolonne (#right-side) skjules når den er tom, så innholdet får hele bredden. På
-//     oppgavesider står den ofte tom før du har levert, og ga en bred grå stripe til høyre.
-//   - Knappen som skjuler kursmenyen står øverst i kursmenyen, ved det den styrer, i stedet for
-//     i brødsmulelinjen. Når menyen er skjult, står Canvas sin egen knapp der for å vise den igjen.
-// Canvas tegner deler av siden med React etter innlasting, så begge følges med en observer.
+// Sideoppsett CSS ikke klarer alene: tom høyre kolonne skjules (vanlig på oppgavesider før
+// levering), og kursmenyen får en knapp for å skjule seg. Canvas tegner med React etter
+// innlasting, så begge følges med en observer.
 (() => {
   if (window.__bedreCanvasLayout) return;
   window.__bedreCanvasLayout = true;

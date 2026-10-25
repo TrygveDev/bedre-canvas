@@ -19,7 +19,6 @@
   const fmtLong = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long" });
   const fmtTime = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit" });
 
-  // ---------- Hjelpere ----------
 
   const el = (tag, attrs = {}, ...kids) => {
     const n = document.createElement(tag);
@@ -158,7 +157,7 @@
     };
   }
 
-  // ---------- Avhuking (samme API som Canvas sin planner) ----------
+  // Avhuking (samme API som Canvas sin planner)
 
   function csrfToken() {
     const raw = /(?:^|;\s*)_csrf_token=([^;]+)/.exec(document.cookie)?.[1];
@@ -215,7 +214,6 @@
     return box;
   }
 
-  // ---------- Komponenter ----------
 
   const OPEN_LABEL = {
     assignment: "Åpne oppgaven",
@@ -467,7 +465,6 @@
     );
   }
 
-  // ---------- Montering ----------
 
   // Vår visning legges der Canvas sin listevisning står. Canvas sin topplinje med
   // gjøremål, karakterer, varsler og visningsmeny blir stående over den.

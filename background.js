@@ -1,7 +1,5 @@
-// Når utvidelsen installeres eller oppdateres, mister skriptene i Canvas-faner som allerede er
-// åpne kontakten med den. Da virker ikke av/på, tema og farge før fanen lastes inn på nytt.
-// Vi legger derfor designet inn på nytt i alle åpne Canvas-faner, også på skoler med eget
-// domene som brukeren har slått på.
+// Etter installering eller oppdatering mister åpne Canvas-faner kontakten med utvidelsen, så
+// designet legges inn på nytt i dem, også på skoler med eget domene.
 
 async function scriptSets() {
   const [fromManifest] = chrome.runtime.getManifest().content_scripts;

@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 
 $("#enabled").addEventListener("change", (e) => save({ enabled: e.target.checked }));
 
-// ---- Fargevelger ----
+// Fargevelger
 
 let accent = DEFAULTS.accent;
 let customAccent = DEFAULTS.customAccent;
@@ -258,7 +258,7 @@ hexInput.addEventListener("keydown", (e) => {
 chrome.storage.sync.get(DEFAULTS, render);
 chrome.storage.onChanged.addListener(() => chrome.storage.sync.get(DEFAULTS, render));
 
-// ---- Canvas på egne domener (f.eks. canvas.skolen.no) ----
+// Canvas på egne domener (f.eks. canvas.skolen.no)
 
 async function setupSiteSection() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

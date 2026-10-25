@@ -42,9 +42,8 @@
     }
   };
 
-  // Hendelsesdetaljer: Canvas plasserer popoveren ut fra sin egen (høyere) størrelse, så den
-  // havnet øverst og dekket hendelsen. Vi legger den ved siden av hendelsen du klikket på,
-  // midt på den i høyden, og alltid innenfor vinduet.
+  // Canvas plasserer hendelsesdetaljene ut fra sin egen, høyere størrelse, så de dekket
+  // hendelsen. De legges ved siden av hendelsen i stedet, innenfor vinduet.
   const GAP = 12;
   const EDGE = 8;
   let anchor = null;
