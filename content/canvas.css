@@ -122,23 +122,27 @@ html.bc textarea:focus-visible {
 }
 
 /* ---------- Global meny ----------
-   Menyen er en frittstående pille til venstre, med skolelogoen over seg uten bakgrunn eller kant.
-   Pillen har menyfargen: skolens egen, eller hvit når brukeren har valgt egen farge. Bare ikoner
-   synes; navnet vises som verktøytips ved hover og tastaturfokus, og skjermlesere leser det som før.
-   Valgt side får en pille bak ikonet: hvit på skolefarger (det Canvas sin aktiv-farge er laget for),
-   aksenten ved egen farge. Canvas sin knapp for å minimere menyen skjules, siden menyen alltid er smal.
+   Tre utseender, valgt i popupen (data-bc-nav på <html>):
+   - modern (standard): en frittstående pille til venstre med bare ikoner, og skolelogoen over
+     uten bakgrunn eller kant. Navnet vises som verktøytips ved hover og tastaturfokus, og
+     skjermlesere leser det som før. Pillen har menyfargen: skolens egen, eller hvit når brukeren
+     har valgt egen farge. Valgt side får en pille bak ikonet: hvit på skolefarger (det Canvas sin
+     aktiv-farge er laget for), aksenten ved egen farge. Knappen for å minimere menyen skjules.
+   - wide: samme pille, men bredere med navnet ved siden av ikonet, som en sidemeny i en app.
+   - canvas: Canvas sin egen meny i full høyde med navnet under ikonet, og minimeringsknappen
+     beholdt. Bare ikonene, skriften og valgt punkt ved egen farge er justert.
    Under 768px bytter Canvas til egen mobilmeny, så alt her gjelder bare bredere skjermer. */
 @media (min-width: 768px) {
-  html.bc {
+  html.bc:not([data-bc-nav="canvas"]) {
     --bc-nav-pill: #fff;
     --bc-nav-space: 96px;
   }
 
-  html.bc:not([data-bc-accent="school"]) {
+  html.bc:not([data-bc-nav="canvas"]):not([data-bc-accent="school"]) {
     --bc-nav-pill: var(--bc-accent-soft);
   }
 
-  html.bc #header.ic-app-header {
+  html.bc:not([data-bc-nav="canvas"]) #header.ic-app-header {
     display: flex !important;
     flex-direction: column;
     align-items: center;
@@ -150,11 +154,11 @@ html.bc textarea:focus-visible {
     overflow: visible !important;
   }
 
-  html.bc #wrapper.ic-Layout-wrapper {
+  html.bc:not([data-bc-nav="canvas"]) #wrapper.ic-Layout-wrapper {
     margin-left: var(--bc-nav-space) !important;
   }
 
-  html.bc .ic-app-header__main-navigation {
+  html.bc:not([data-bc-nav="canvas"]) .ic-app-header__main-navigation {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -162,20 +166,20 @@ html.bc textarea:focus-visible {
     width: 100%;
   }
 
-  html.bc .ic-app-header__logomark-container {
+  html.bc:not([data-bc-nav="canvas"]) .ic-app-header__logomark-container {
     width: 72px;
     background: transparent !important;
     border: 0 !important;
   }
 
-  html.bc .ic-app-header__logomark {
+  html.bc:not([data-bc-nav="canvas"]) .ic-app-header__logomark {
     height: 64px !important;
     background-size: contain !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
   }
 
-  html.bc #menu {
+  html.bc:not([data-bc-nav="canvas"]) #menu {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -187,22 +191,22 @@ html.bc textarea:focus-visible {
   }
 
   /* Hvit pille på lys grå side trenger en kant for å skille seg ut. Skolefarger gjør ikke det. */
-  html.bc:not([data-bc-accent="school"]) #menu {
+  html.bc:not([data-bc-nav="canvas"]):not([data-bc-accent="school"]) #menu {
     border: 1px solid var(--bc-border);
   }
 
-  html.bc .ic-app-header__secondary-navigation {
+  html.bc:not([data-bc-nav="canvas"]) .ic-app-header__secondary-navigation {
     display: none !important;
   }
 
-  html.bc #menu .ic-app-header__menu-list-item {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-item {
     width: auto;
     padding: 0;
   }
 
-  html.bc #menu .ic-app-header__menu-list-link,
-  html.bc #menu .ic-app-header__menu-list-link:hover,
-  html.bc #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link,
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link:hover,
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link {
     position: relative;
     display: flex !important;
     width: auto;
@@ -212,7 +216,7 @@ html.bc textarea:focus-visible {
     box-shadow: none !important;
   }
 
-  html.bc #menu .menu-item-icon-container {
+  html.bc:not([data-bc-nav="canvas"]) #menu .menu-item-icon-container {
     position: relative;
     display: grid;
     place-items: center;
@@ -222,22 +226,22 @@ html.bc textarea:focus-visible {
     transition: background-color 0.15s ease;
   }
 
-  html.bc #menu .menu-item-icon-container svg {
+  html.bc:not([data-bc-nav="canvas"]) #menu .menu-item-icon-container svg {
     width: 24px !important;
     height: 24px !important;
   }
 
   /* Hinne i ikonfargen, så hover synes både på hvit meny og på mørke og lyse skolefarger. */
-  html.bc #menu .ic-app-header__menu-list-link:hover .menu-item-icon-container {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link:hover .menu-item-icon-container {
     background: color-mix(in srgb, var(--ic-brand-global-nav-ic-icon-svg-fill) 10%, transparent);
   }
 
-  html.bc #menu .ic-app-header__menu-list-item--active .menu-item-icon-container,
-  html.bc #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link:hover .menu-item-icon-container {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-item--active .menu-item-icon-container,
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link:hover .menu-item-icon-container {
     background: var(--bc-nav-pill) !important;
   }
 
-  html.bc #menu .menu-item__text {
+  html.bc:not([data-bc-nav="canvas"]) #menu .menu-item__text {
     position: absolute;
     left: calc(100% + 10px);
     top: 50%;
@@ -257,26 +261,134 @@ html.bc textarea:focus-visible {
     transition: opacity 0.12s ease;
   }
 
-  html.bc #menu .ic-app-header__menu-list-link:hover .menu-item__text,
-  html.bc #menu .ic-app-header__menu-list-link:focus-visible .menu-item__text {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link:hover .menu-item__text,
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link:focus-visible .menu-item__text {
     opacity: 1;
   }
 
   /* Fokusringen følger pillen rundt ikonet i stedet for den firkantede lenken. */
-  html.bc #menu .ic-app-header__menu-list-link:focus-visible {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link:focus-visible {
     outline: none !important;
   }
 
-  html.bc #menu .ic-app-header__menu-list-link:focus-visible .menu-item-icon-container {
+  html.bc:not([data-bc-nav="canvas"]) #menu .ic-app-header__menu-list-link:focus-visible .menu-item-icon-container {
     outline: 2px solid var(--bc-accent-ink);
     outline-offset: 2px;
   }
 
   /* Lave vinduer: menyen må kunne rulle, selv om verktøytipsene da klippes. */
   @media (max-height: 640px) {
-    html.bc #header.ic-app-header {
+    html.bc:not([data-bc-nav="canvas"]) #header.ic-app-header {
       overflow-y: auto !important;
     }
+  }
+
+  /* ---- Utvidet: pillen blir en sidemeny med navnet ved ikonet. Hele raden er valgt og hover. */
+  html.bc[data-bc-nav="wide"] {
+    --bc-nav-space: 232px;
+  }
+
+  html.bc[data-bc-nav="wide"] .ic-app-header__logomark-container {
+    width: 100%;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu {
+    align-items: stretch;
+    gap: 2px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+  }
+
+  html.bc[data-bc-nav="wide"] :is(#header.ic-app-header, #menu .ic-app-header__menu-list-link) {
+    box-sizing: border-box;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item {
+    width: 100%;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-link,
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-link:hover,
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link {
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 4px 12px 4px 4px !important;
+    text-align: left;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: background-color 0.15s ease;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-link:hover {
+    background: color-mix(in srgb, var(--ic-brand-global-nav-ic-icon-svg-fill) 10%, transparent) !important;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link,
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link:hover {
+    background: var(--bc-nav-pill) !important;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .menu-item-icon-container,
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-link:hover .menu-item-icon-container,
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item--active .menu-item-icon-container,
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link:hover .menu-item-icon-container {
+    flex: none;
+    width: 32px;
+    margin: 0;
+    background: transparent !important;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .menu-item__text {
+    position: static;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    text-align: left;
+    color: var(--ic-brand-global-nav-menu-item__text-color) !important;
+    font-size: var(--bc-fs-small);
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-item--active .menu-item__text {
+    color: var(--ic-brand-global-nav-menu-item__text-color--active) !important;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-link:focus-visible {
+    outline: 2px solid var(--bc-accent-ink) !important;
+    outline-offset: 2px;
+  }
+
+  html.bc[data-bc-nav="wide"] #menu .ic-app-header__menu-list-link:focus-visible .menu-item-icon-container {
+    outline: none;
+  }
+
+  /* ---- Canvas: Canvas sin egen meny. Profilikonet står midt i ruten som de andre ikonene. */
+  html.bc[data-bc-nav="canvas"] #menu .menu-item-icon-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  html.bc[data-bc-nav="canvas"] #menu .menu-item__text {
+    font-family: var(--bc-font);
+  }
+
+  /* Ved egen farge er menyen hvit, og Canvas sin hvite boks rundt valgt punkt forsvinner. Valgt
+     punkt får en svak flate i aksenten, og menyen en kant mot siden. */
+  html.bc[data-bc-nav="canvas"]:not([data-bc-accent="school"]) #header.ic-app-header {
+    border-right: 1px solid var(--bc-border);
+  }
+
+  html.bc[data-bc-nav="canvas"]:not([data-bc-accent="school"]) .ic-app-header__menu-list-item--active .ic-app-header__menu-list-link {
+    background: var(--bc-accent-soft) !important;
   }
 }
 

@@ -1,6 +1,7 @@
 const DEFAULTS = {
   enabled: true,
   theme: "light",
+  nav: "modern", // modern | canvas | wide
   accent: "school",
   customAccent: "#7c3aed", // siste farge fra fargevelgeren, så den kan velges igjen med ett klikk
 };
@@ -15,6 +16,7 @@ const ACCENTS = [
 ];
 
 const THEMES = ["light", "auto", "dark"];
+const NAVS = ["modern", "canvas", "wide"];
 
 // Samme grense som i Canvas (content.js): under 4.5:1 mot hvit tekst får knappen mørk tekst.
 function isLight(hex) {
@@ -50,7 +52,11 @@ function render(s) {
   document.querySelectorAll("button[data-accent]").forEach((b) => {
     b.setAttribute("aria-checked", String(b.dataset.accent === s.accent));
   });
+  document.querySelectorAll("button[data-nav]").forEach((b) => {
+    b.setAttribute("aria-checked", String(b.dataset.nav === s.nav));
+  });
   $("#themes").style.setProperty("--i", Math.max(0, THEMES.indexOf(s.theme)));
+  $("#navs").style.setProperty("--i", Math.max(0, NAVS.indexOf(s.nav)));
   const preset = s.accent === "school" || ACCENTS.some(([c]) => c === s.accent);
   customButton.setAttribute("aria-checked", String(!preset));
   $("#accent-name").textContent =
@@ -89,9 +95,10 @@ customButton.setAttribute("aria-expanded", "false");
 swatches.append(customButton);
 
 document.addEventListener("click", (e) => {
-  const t = e.target.closest("button[data-theme], button[data-accent]");
+  const t = e.target.closest("button[data-theme], button[data-nav], button[data-accent]");
   if (!t) return;
   if (t.dataset.theme) save({ theme: t.dataset.theme });
+  if (t.dataset.nav) save({ nav: t.dataset.nav });
   if (t.dataset.accent) {
     save({ accent: t.dataset.accent });
     closePicker();

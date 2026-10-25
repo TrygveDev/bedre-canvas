@@ -6,6 +6,7 @@
   const DEFAULTS = {
     enabled: true,
     theme: "light", // light | auto | dark
+    nav: "modern", // modern | canvas | wide, se «Global meny» i canvas.css
     accent: "school", // "school" = fargene skolen har satt i Canvas, ellers en hex-farge
   };
 
@@ -69,6 +70,7 @@
   function apply(s) {
     root.classList.toggle("bc", s.enabled);
     root.dataset.bcTheme = s.theme;
+    root.dataset.bcNav = s.nav;
     if (s.accent === "school") {
       root.dataset.bcAccent = "school";
       root.style.removeProperty("--bc-accent");
@@ -100,7 +102,7 @@
   function update(s) {
     apply(s);
     try {
-      localStorage.setItem(CACHE, JSON.stringify({ enabled: s.enabled, theme: s.theme, accent: s.accent }));
+      localStorage.setItem(CACHE, JSON.stringify({ enabled: s.enabled, theme: s.theme, nav: s.nav, accent: s.accent }));
     } catch {}
   }
 

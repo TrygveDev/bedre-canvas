@@ -57,6 +57,7 @@ Hva du får
 • En smal sidemeny med tydelige ikoner. Valgt side er markert, og navnet vises når du holder musen over.
 • Emnelisten i menyen viser hvert emne med en fargebrikke i emnefargen din, så du finner riktig fag med et blikk.
 • Roligere sider: moduler, oppgaver, karakterer, kalender og innboks får lik og lettlest typografi, der det viktigste på siden står tydeligst.
+• Velg utseende på sidemenyen: moderne pille, Canvas sin egen eller utvidet med navn.
 • Skolens egne Canvas-farger som standard, eller en ferdig farge eller hvilken som helst farge fra fargevelgeren.
 • Lyst, mørkt eller automatisk tema.
 
@@ -211,6 +212,9 @@ erklæringen og datoen i den i samme pull request.
 - Lyse egne farger (som rosa eller gul) er lesbare i Canvas: knapper og merker beholder fargen,
   men får mørk tekst, og lenker, aksentfarget tekst og fokusringer bruker en mørkere utgave med
   minst 4.5:1 kontrast mot hvitt. Mørke farger som blå og rød er uendret.
+- Nytt valg i popupen: «Sidemeny» med tre utseender for sidemenyen. «Moderne» (standard) er pillen
+  med bare ikoner, «Canvas» er Canvas sin egen meny i full høyde med navn under ikonene, og
+  «Utvidet» er pillen som en bredere sidemeny med navnet ved siden av ikonet.
 
 ### 0.1.0
 
