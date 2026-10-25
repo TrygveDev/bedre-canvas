@@ -8,8 +8,9 @@ endres.
 
 ## Status før neste opplasting
 
-- [x] **Versjon:** 0.2.0 ble lastet opp for hånd 2026-10-25 og venter på gjennomgang. Senere
-      versjoner slippes som beskrevet i [RELEASING.md](RELEASING.md).
+- [x] **Versjon:** 0.2.1 ble sendt til gjennomgang med release-workflowen 2026-10-25. 0.2.0
+      ble lastet opp for hånd samme dag. Senere versjoner slippes som beskrevet i
+      [RELEASING.md](RELEASING.md).
 - [x] **Personvernerklæring:** [docs/personvern.md](docs/personvern.md), publiseres med GitHub
       Pages. Sjekk at adressen under «Personvernerklæring» laster før innsending.
 - [x] **Navn:** beholder «Bedre Canvas». Se «Kjente problemer» nederst.
@@ -204,10 +205,15 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
+| 0.2.1 | 2026-10-25 | Ikonet er en snarvei til Canvas fra andre sider | Til gjennomgang |
 | 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Til gjennomgang |
 | 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
 
 ### Ikke publisert
+
+Ingenting ennå.
+
+### 0.2.1
 
 - Ikonet er en snarvei til Canvas: første gang en Canvas-side lastes, husker utvidelsen adressen
   (`chrome.storage.local`, bare på maskinen). Klikk på ikonet fra en annen side går til Canvas-fanen

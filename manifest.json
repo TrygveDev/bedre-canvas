@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Bedre Canvas",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Et renere og mer moderne design for Canvas LMS.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "scripting", "activeTab", "sidePanel"],
