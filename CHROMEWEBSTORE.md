@@ -63,7 +63,8 @@ Hva du får
 Slik bruker du den
 1. Installer utvidelsen og åpne Canvas. Designet er på med en gang.
 2. Klikk på utvidelsesikonet for å åpne innstillingene i sidepanelet. Der velger du tema og farge, eller slår designet av. Klikk igjen for å lukke.
-3. Bruker skolen et eget Canvas-domene (f.eks. canvas.skolen.no)? Åpne Canvas, klikk på ikonet og velg «Bruk på denne siden» i sidepanelet.
+3. Står du på en annen side, tar ikonet deg til Canvas med innstillingene ved siden av, i fanen du allerede har eller i en ny. Utvidelsen husker hvilken Canvas du bruker etter første besøk.
+4. Bruker skolen et eget Canvas-domene (f.eks. canvas.skolen.no)? Åpne Canvas, klikk på ikonet og velg «Bruk på denne siden» i sidepanelet.
 
 Personvern
 Bedre Canvas samler ikke inn, selger eller deler noe om deg. Fristene og emnene dine hentes fra Canvas-nettstedet du allerede er logget inn på, og vises bare i nettleseren din. Innstillingene dine lagres i Chrome.
@@ -119,11 +120,11 @@ Hver linje limes inn i sitt felt under «Privacy practices» i konsollen.
 
 | Tillatelse | Type | Begrunnelse |
 | --- | --- | --- |
-| `storage` | permissions | Lagrer innstillingene brukeren velger i sidepanelet (av/på, lyst/mørkt/auto tema og farge), så de gjelder på alle Canvas-sider og på alle brukerens nettlesere. |
+| `storage` | permissions | Lagrer innstillingene brukeren velger i sidepanelet (av/på, lyst/mørkt/auto tema og farge), så de gjelder på alle Canvas-sider og på alle brukerens nettlesere. Husker også adressen til brukerens Canvas lokalt på maskinen, så ikonet kan åpne Canvas fra andre sider. |
 | `scripting` | permissions | Når brukeren klikker «Bruk på denne siden» i sidepanelet, legger utvidelsen designet inn på skolens Canvas-nettsted med eget domene. Brukes også til å sjekke at siden faktisk er Canvas før knappen vises. |
-| Bakgrunnsskript (service worker) | background | Ikke en tillatelse, men nevnes for gjennomgåeren: kjører bare når utvidelsen installeres eller oppdateres, og legger da designet inn på nytt i Canvas-faner som allerede er åpne, så innstillingene virker uten at brukeren må laste siden på nytt. Bruker de samme tillatelsene som over. |
+| Bakgrunnsskript (service worker) | background | Ikke en tillatelse, men nevnes for gjennomgåeren: når utvidelsen installeres eller oppdateres, legger det designet inn på nytt i Canvas-faner som allerede er åpne, så innstillingene virker uten at brukeren må laste siden på nytt. Det styrer også sidepanelet: panelet vises i Canvas-faner, og klikk på ikonet fra en annen side går til Canvas, i en åpen fane eller en ny. Bruker de samme tillatelsene som over. |
 | `activeTab` | permissions | Lar sidepanelet se adressen til fanen brukeren står i når ikonet klikkes, så det kan tilby å slå på designet for en skole med eget Canvas-domene. Gir ingen tilgang til andre faner. |
-| `sidePanel` | permissions | Innstillingene (av/på, tema, sidemeny og farge) vises i Chromes sidepanel ved siden av Canvas i stedet for i en popup. Ikonet åpner og lukker panelet. Panelet hører til fanen det ble åpnet i og lukkes når brukeren bytter fane. Gir ingen tilgang til sider eller data. |
+| `sidePanel` | permissions | Innstillingene (av/på, tema, sidemeny og farge) vises i Chromes sidepanel ved siden av Canvas i stedet for i en popup. Ikonet åpner og lukker panelet, og fra andre sider går det til Canvas med panelet. Panelet hører til fanen det ble åpnet i og lukkes når brukeren bytter fane. Gir ingen tilgang til sider eller data. |
 | `https://*.instructure.com/*` | host_permissions | Canvas LMS-nettstedene som Instructure drifter for skolene. Designet og fristoversikten legges bare inn på disse sidene. |
 | `https://*/*` (valgfri) | optional_host_permissions | Bare for skoler som har Canvas på eget domene (f.eks. canvas.skolen.no). Spørres om først når brukeren klikker «Bruk på denne siden», og gjelder bare det ene domenet. Kan fjernes igjen fra sidepanelet. |
 
@@ -143,7 +144,7 @@ Dette er svarene i skjemaet «Personvernpraksis».
 | Autentiseringsinformasjon | Nei | Nei | Bruker innloggingen brukeren allerede har i Canvas, leser den ikke. |
 | Personlig kommunikasjon | Nei | Nei | |
 | Posisjon | Nei | Nei | |
-| Nettleserlogg | Nei | Nei | |
+| Nettleserlogg | Nei | Nei | Husker bare adressen til brukerens eget Canvas-nettsted, lokalt, ikke hvilke sider brukeren besøker. |
 | Brukeraktivitet | Nei | Nei | |
 | Innhold på nettsteder | Nei | Nei | Leser brukerens egne oppgaver, emner og kunngjøringer fra Canvas-nettstedet og viser dem på siden. Lagres ikke og sendes ikke noe annet sted. |
 
@@ -159,6 +160,9 @@ Slik henger det sammen, så skjemaet og koden stemmer overens:
 - Innstillingene lagres i `chrome.storage.sync`. Chrome synkroniserer dem via brukerens
   Google-konto, så de forlater enheten, men bare til Google som en del av Chrome selv, ikke
   til utvikleren. Det er bare av/på, tema og farge, ingen opplysninger om brukeren.
+- Adressen til Canvas (bare opprinnelsen, f.eks. `https://skolen.instructure.com/`) lagres i
+  `chrome.storage.local` når en Canvas-side lastes. Den blir på maskinen og brukes bare til å
+  åpne Canvas fra ikonet.
 - Ingen analyse, sporing, informasjonskapsler eller tredjeparter.
 
 **Erklæringer** (alle tre bekreftes):
@@ -205,7 +209,12 @@ erklæringen og datoen i den i samme pull request.
 
 ### Ikke publisert
 
-Ingenting ennå.
+- Ikonet er en snarvei til Canvas: første gang en Canvas-side lastes, husker utvidelsen adressen
+  (`chrome.storage.local`, bare på maskinen). Klikk på ikonet fra en annen side går til Canvas-fanen
+  hvis den allerede er åpen i vinduet, og åpner ellers Canvas i en ny fane ved siden av. Begge
+  med sidepanelet åpent. Fra en tom ny fane går fanen selv til Canvas. I
+  Canvas-faner åpner og lukker ikonet panelet som før. Fram til adressen er kjent, virker ikonet
+  som før i alle faner. Ingen nye tillatelser. Personvernerklæringen er oppdatert.
 
 ### 0.2.0
 
