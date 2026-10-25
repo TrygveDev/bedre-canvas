@@ -1,0 +1,23 @@
+
+
+# type(område): beskrivelse, maks 72 tegn, liten forbokstav, ingen punktum
+#
+# Typer:
+#   feat      ny funksjon brukeren merker (nytt valg, ny side som styles)
+#   fix       retter noe som var feil eller ødelagt
+#   design    endrer utseendet uten ny funksjon (avstand, farger, typografi)
+#   docs      README, CONTRIBUTING, CHROMEWEBSTORE.md o.l.
+#   refactor  ryddigere kode, samme oppførsel
+#   perf      raskere eller lettere
+#   chore     vedlikehold, verktøy, avhengigheter
+#   ci        GitHub Actions
+#   build     pakking og ikoner (tools/)
+#   revert    angrer en tidligere commit
+#
+# Områder (valgfritt): popup, nav, dashboard, calendar, trays, pages, theme, store
+# Brudd på noe brukerne er vant med: utropstegn etter type, f.eks. «feat(nav)!: ...»
+#
+# Eksempler:
+#   feat(popup): fargevelger for egen farge
+#   fix(pages): kursmenyen havnet utenfor skjermen
+#   design(nav): rundere pille på valgt side

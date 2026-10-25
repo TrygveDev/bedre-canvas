@@ -23,7 +23,8 @@ DevTools (F12) for å finne klassenavnene du vil style.
 - **Ett tema per pull request.** Små pull requests er lettere å se gjennom.
 - **Skjermbilder** før og etter gjør det mye lettere å vurdere designendringer. Pass på at
   navnet ditt og andres ikke synes.
-- CI sjekker at skriptene og manifestet er gyldige og at pakken kan bygges.
+- **Commit-meldingene følger formatet** under «Commit-meldinger».
+- CI sjekker commit-meldingene, at skriptene og manifestet er gyldige og at pakken kan bygges.
 
 ## Retningslinjer for koden
 
@@ -43,6 +44,46 @@ DevTools (F12) for å finne klassenavnene du vil style.
 - **Ingen data skal sendes noe annet sted enn til Canvas-nettstedet selv.** Ingen analyse,
   sporing eller tredjeparter.
 - **Respekter `prefers-reduced-motion`** for animasjoner.
+
+## Commit-meldinger
+
+Vi bruker [Conventional Commits](https://www.conventionalcommits.org/): `type(område): beskrivelse`.
+Beskrivelsen er på norsk, med liten forbokstav, uten punktum, og hele linjen er maks 72 tegn.
+Området er valgfritt.
+
+| Type | Når |
+| --- | --- |
+| `feat` | Ny funksjon brukeren merker: et nytt valg i popupen, en ny side som styles |
+| `fix` | Retter noe som var feil eller ødelagt |
+| `design` | Endrer utseendet uten ny funksjon: avstand, farger, typografi |
+| `docs` | README, CONTRIBUTING, `CHROMEWEBSTORE.md` og lignende |
+| `refactor` | Ryddigere kode med samme oppførsel |
+| `perf` | Raskere eller lettere |
+| `chore` | Vedlikehold, verktøy og avhengigheter |
+| `ci` | GitHub Actions |
+| `build` | Pakking og ikoner (`tools/`) |
+| `revert` | Angrer en tidligere commit |
+
+Vanlige områder: `popup`, `nav`, `dashboard`, `calendar`, `trays`, `pages`, `theme`, `store`.
+Endrer du noe brukerne er vant med på en måte de vil merke, sett et utropstegn etter typen.
+
+```text
+feat(popup): fargevelger for egen farge
+fix(pages): kursmenyen havnet utenfor skjermen
+design(nav): rundere pille på valgt side
+feat(nav)!: moderne meny er ny standard
+```
+
+CI sjekker meldingene i hver pull request. Vil du få beskjed allerede når du committer, slå på
+hooken og malen i din egen klone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+```bash
+git config commit.template .gitmessage
+```
 
 ## Endringslogg
 

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Sjekker commit-meldingen før commiten lagres. Slå på med: git config core.hooksPath .githooks
+exec node tools/check-commit.mjs "$1"

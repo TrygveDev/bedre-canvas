@@ -16,6 +16,7 @@
 
 ## Sjekkliste
 
+- [ ] Commit-meldingene følger `type(område): beskrivelse` (se CONTRIBUTING.md)
 - [ ] Nye regler starter med `html.bc`
 - [ ] Ingen nye tillatelser i `manifest.json` (eller begrunnet over og i `CHROMEWEBSTORE.md`)
 - [ ] Brukersynlige endringer har en linje under «Ikke publisert» i `CHROMEWEBSTORE.md`

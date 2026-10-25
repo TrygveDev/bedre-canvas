@@ -1,4 +1,5 @@
-# Sjekker hver pull request: at skriptene og manifestet er gyldige, og at pakken kan bygges.
+# Sjekker hver pull request: commit-meldingene, at skriptene og manifestet er gyldige, og at
+# pakken kan bygges.
 name: CI
 
 on:
@@ -14,10 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # hele historikken, så commitene i pull requesten kan sjekkes
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Commit-meldinger
+        if: github.event_name == 'pull_request'
+        run: node tools/check-commit.mjs "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
 
       - name: Syntaks i skriptene
         run: |
