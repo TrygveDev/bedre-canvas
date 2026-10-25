@@ -1,0 +1,47 @@
+# Sjekker at nøklene til Chrome Web Store virker, uten å laste opp eller publisere noe.
+# Kjør den fra Actions-fanen, eller med: gh workflow run cws-check.yml
+name: Sjekk nøklene til Chrome Web Store
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    steps:
+      - name: Hent access token og les status
+        env:
+          CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+        run: |
+          for name in CLIENT_ID CLIENT_SECRET REFRESH_TOKEN PUBLISHER_ID EXTENSION_ID; do
+            if [ -z "${!name}" ]; then echo "::error::CWS_$name mangler"; missing=1; fi
+          done
+          [ -z "$missing" ] || exit 1
+
+          # Svaret inneholder selve tokenet, så bare feilkoden skrives ut.
+          response=$(curl -s https://oauth2.googleapis.com/token \
+            -d client_id="$CLIENT_ID" -d client_secret="$CLIENT_SECRET" \
+            -d refresh_token="$REFRESH_TOKEN" -d grant_type=refresh_token)
+          token=$(echo "$response" | jq -r '.access_token // empty')
+          if [ -z "$token" ]; then
+            echo "::error::Google godtok ikke nøklene: $(echo "$response" | jq -r '.error, .error_description' | paste -sd ' ')"
+            exit 1
+          fi
+          echo "::add-mask::$token"
+          echo "Klient-ID, klienthemmelighet og refresh token virker."
+
+          status=$(curl -s -H "Authorization: Bearer $token" \
+            "https://chromewebstore.googleapis.com/v2/publishers/$PUBLISHER_ID/items/$EXTENSION_ID:fetchStatus")
+          echo "$status" | jq .
+          if echo "$status" | jq -e '.error' > /dev/null; then
+            echo "::error::Chrome Web Store avviste forespørselen. Se svaret over."
+            exit 1
+          fi
+          echo "Tilgangen til utvidelsen i Chrome Web Store virker."

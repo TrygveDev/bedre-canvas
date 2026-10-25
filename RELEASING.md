@@ -61,6 +61,14 @@ GitHub-releasen, men pakken må lastes opp for hånd i utviklerkonsollen.
 
    (og tilsvarende for de andre; `gh variable set` for variablene).
 
+Sjekk at nøklene virker uten å publisere noe:
+
+```bash
+gh workflow run cws-check.yml
+```
+
+Workflowen henter et access token og leser bare statusen til utvidelsen i Chrome Web Store.
+
 Nøklene gir tilgang til å publisere utvidelsen. Del dem aldri, og legg dem aldri i koden.
 
 ## Første publisering
