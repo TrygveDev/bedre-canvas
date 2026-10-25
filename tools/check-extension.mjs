@@ -18,8 +18,9 @@ if (m.browser_action || m.page_action) fail("browser_action/page_action er Manif
 const referenced = [
   m.background.service_worker,
   m.action.default_popup,
+  m.side_panel?.default_path,
   ...m.content_scripts.flatMap((c) => [...(c.css || []), ...(c.js || [])]),
-];
+].filter(Boolean);
 for (const f of referenced) if (!existsSync(f)) fail(`manifestet viser til ${f}, som ikke finnes`);
 
 // Ikonene må finnes og ha størrelsen de står oppført med. Bredde og høyde står i PNG-ens IHDR.
