@@ -5,17 +5,21 @@ permalink: /personvern/
 
 # Personvernerklæring for Bedre Canvas
 
-Sist oppdatert: 24. oktober 2026
+Sist oppdatert: 25. oktober 2026
 
 Bedre Canvas endrer utseendet på Canvas LMS i nettleseren din. Utvidelsen samler ikke inn,
 selger eller deler opplysninger om deg.
 
 ## Hva utvidelsen lagrer
 
-Bare innstillingene du velger i utvidelsen: om den er slått på, tema (lyst, mørkt eller auto)
+Innstillingene du velger i utvidelsen: om den er slått på, tema (lyst, mørkt eller auto)
 og farge. De lagres i Chrome og synkroniseres mellom nettleserne der du er logget inn med
 samme Google-konto, slik Chrome gjør med andre innstillinger. Utvidelsen har ingen egen server
 og sender dem ingen andre steder.
+
+Utvidelsen husker også adressen til Canvas-nettstedet ditt (f.eks. https://skolen.instructure.com/),
+så ikonet kan åpne Canvas når du står på en annen side. Adressen lagres bare på denne
+datamaskinen, ikke i Google-kontoen, og sendes ingen steder.
 
 Slår du på utvidelsen for en skole med eget Canvas-domene, husker Chrome at du har gitt
 tillatelse for det domenet. Du kan fjerne det igjen fra utvidelsesikonet.

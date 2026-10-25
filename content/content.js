@@ -110,6 +110,21 @@
   if (document.readyState === "loading") apply(cached());
   chrome.storage.sync.get(DEFAULTS, update);
 
+  // Adressen til Canvas huskes, så ikonet kan åpne Canvas fra andre sider (se background.js).
+  // Bare når siden faktisk er Canvas, ikke f.eks. innloggingen eller community.instructure.com.
+  function rememberCanvas() {
+    if (!document.querySelector("#application.ic-app, .ic-app")) return;
+    const canvasUrl = location.origin + "/";
+    chrome.storage.local.get("canvasUrl", (saved) => {
+      if (saved.canvasUrl !== canvasUrl) chrome.storage.local.set({ canvasUrl });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", rememberCanvas, { once: true });
+  } else {
+    rememberCanvas();
+  }
+
   // Endringer fra popupen vises med en gang. Bytte av tema tones over (se canvas.css), men ikke
   // første gang innstillingene leses når siden lastes.
   chrome.storage.onChanged.addListener((_changes, area) => {
