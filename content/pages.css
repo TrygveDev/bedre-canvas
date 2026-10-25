@@ -216,7 +216,7 @@ html.bc :is(.courses-tray a[href="/courses"], .groups-tray a[href="/groups"]) {
   align-items: center;
   min-height: 44px;
   margin: 0 0 4px 10px;
-  color: var(--bc-accent) !important;
+  color: var(--bc-accent-ink) !important;
   font-weight: 600;
   text-decoration: none !important;
 }
@@ -293,7 +293,7 @@ html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-b
 }
 
 html.bc :is(.courses-tray li[data-bc-course], .navigation-tray-container [data-bc-row]):has(a:focus-visible) {
-  outline: 2px solid var(--bc-accent);
+  outline: 2px solid var(--bc-accent-ink);
   outline-offset: -2px;
 }
 
@@ -859,6 +859,7 @@ html.bc .announcements-v2__wrapper [class*="-select"]:has(#announcement-filter) 
 html.bc .ic-unread-badge__unread-count,
 html.bc .ic-unread-badge__count {
   background: var(--bc-accent) !important;
+  color: var(--bc-on-accent) !important;
 }
 
 /* ---------- /courses/:id/assignments ---------- */
@@ -1156,7 +1157,7 @@ html.bc #calendar-app .fc-day-top.fc-today .fc-day-number {
   height: 26px;
   border-radius: 13px;
   background: var(--bc-accent);
-  color: #fff !important;
+  color: var(--bc-on-accent) !important;
   font-weight: 600;
   margin: 4px;
 }
@@ -1527,7 +1528,7 @@ html.bc [data-testid="desktop-message-action-header"] {
 html.bc button[data-testid="compose"] [class*="baseButton__content"] {
   background: var(--bc-accent) !important;
   border-color: var(--bc-accent) !important;
-  color: #fff !important;
+  color: var(--bc-on-accent) !important;
 }
 
 html.bc [data-testid="list-items-desktop"] [class*="-view-listItem"],

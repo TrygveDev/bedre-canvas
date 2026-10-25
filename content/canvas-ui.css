@@ -367,7 +367,7 @@ html.bc [role="menu"] [class*="-menuItem"]:is([role="menuitem"], [role="menuitem
 }
 
 html.bc [role="menu"] [class*="-menuItem"]:is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]):focus-visible {
-  outline: 2px solid var(--bc-accent) !important;
+  outline: 2px solid var(--bc-accent-ink) !important;
   outline-offset: -2px;
 }
 
@@ -455,7 +455,7 @@ html.bc .UpdateItemTray-styles__root button[data-testid="save"] [class*="baseBut
   border-radius: var(--bc-radius-sm) !important;
   background: var(--bc-accent) !important;
   border-color: var(--bc-accent) !important;
-  color: #fff !important;
+  color: var(--bc-on-accent) !important;
 }
 
 html.bc .UpdateItemTray-styles__root button[data-testid="save"]:disabled [class*="baseButton__content"] {
@@ -532,7 +532,7 @@ html.bc .ic-DashboardCard__action-badge {
   padding: 0 5px;
   border-radius: 9px;
   background: var(--bc-accent) !important;
-  color: #fff !important;
+  color: var(--bc-on-accent) !important;
   font-size: 0.7rem;
   font-weight: 600;
   line-height: 18px;
@@ -596,7 +596,7 @@ html.bc #dashboard-activity .unread-count {
   padding: 0 5px;
   border-radius: 9px;
   background: var(--bc-accent) !important;
-  color: #fff !important;
+  color: var(--bc-on-accent) !important;
   font-size: 0.7rem;
   font-weight: 600;
   line-height: 18px;
@@ -615,7 +615,7 @@ html.bc #dashboard-activity .toggle-details {
   letter-spacing: 0 !important;
   font-size: var(--bc-fs-small) !important;
   font-weight: 600;
-  color: var(--bc-accent) !important;
+  color: var(--bc-accent-ink) !important;
   text-decoration: none !important;
 }
 

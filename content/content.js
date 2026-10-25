@@ -42,12 +42,38 @@
     if (ok !== candidates[0]) root.style.setProperty("--bc-accent", ok || "#1d2433");
   }
 
+  // Mørkner en farge mot svart til den har minst 4.5:1 kontrast mot hvitt.
+  function darken(hex) {
+    const rgb = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    for (let k = 1; k >= 0; k -= 0.02) {
+      const out = "#" + rgb.map((c) => Math.round(c * k).toString(16).padStart(2, "0")).join("");
+      if (contrast(out, "#ffffff") >= 4.5) return out;
+    }
+    return "#000000";
+  }
+
+  // En lys egen farge (f.eks. rosa) beholdes på flater som knapper og merker, men får mørk tekst
+  // oppå seg. Tekst, lenker og fokusringer bruker en mørkere utgave, så de er lesbare på hvitt.
+  function setCustomAccent(hex) {
+    root.style.setProperty("--bc-accent", hex);
+    const light = contrast(hex, "#ffffff") < 4.5;
+    for (const [name, value] of [
+      ["--bc-accent-ink", light && darken(hex)],
+      ["--bc-on-accent", light && contrast(hex, "#1d2433") > contrast(hex, "#ffffff") && "#1d2433"],
+    ]) {
+      if (value) root.style.setProperty(name, value);
+      else root.style.removeProperty(name);
+    }
+  }
+
   function apply(s) {
     root.classList.toggle("bc", s.enabled);
     root.dataset.bcTheme = s.theme;
     if (s.accent === "school") {
       root.dataset.bcAccent = "school";
       root.style.removeProperty("--bc-accent");
+      root.style.removeProperty("--bc-accent-ink");
+      root.style.removeProperty("--bc-on-accent");
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", checkSchoolAccent, { once: true });
       } else {
@@ -55,7 +81,7 @@
       }
     } else {
       root.dataset.bcAccent = "custom";
-      root.style.setProperty("--bc-accent", s.accent);
+      setCustomAccent(s.accent);
     }
   }
 

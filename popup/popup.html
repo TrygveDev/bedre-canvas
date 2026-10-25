@@ -27,7 +27,18 @@
   <section class="group">
     <h2 id="accent-label">Farge <span id="accent-name"></span></h2>
     <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="accent-label">
-      <button class="school" data-accent="school" role="radio">Skolens</button>
+      <button class="school" data-accent="school" role="radio">Skole</button>
+    </div>
+    <div class="picker" id="picker" hidden>
+      <div class="sv" id="sv" tabindex="0" role="slider" aria-label="Metning og lysstyrke">
+        <span class="sv-thumb"></span>
+      </div>
+      <input class="hue" id="hue" type="range" min="0" max="360" step="1" aria-label="Fargetone">
+      <label class="hex">
+        <span class="hex-dot" aria-hidden="true"></span>
+        <span class="hex-label">Hex</span>
+        <input id="hex" type="text" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Hex-kode">
+      </label>
     </div>
   </section>
 

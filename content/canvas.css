@@ -27,6 +27,11 @@ html.bc {
   --bc-accent: #2563eb;
   --bc-accent-soft: color-mix(in srgb, var(--bc-accent) 11%, transparent);
   --bc-accent-strong: color-mix(in srgb, var(--bc-accent) 82%, black);
+  /* Tekst og lenker i aksentfargen, og tekst oppå den. Like aksenten og hvitt, med mindre en
+     lys egen farge er valgt (se content.js). */
+  --bc-accent-ink: var(--bc-accent);
+  --bc-accent-ink-strong: color-mix(in srgb, var(--bc-accent-ink) 82%, black);
+  --bc-on-accent: #fff;
 
   --bc-bg: #f6f7f9;
   --bc-surface: #ffffff;
@@ -63,18 +68,18 @@ html.bc:not([data-bc-accent="school"]) {
   --ic-brand-primary-darkened-5: var(--bc-accent-strong) !important;
   --ic-brand-primary-darkened-10: var(--bc-accent-strong) !important;
   --ic-brand-primary-darkened-15: var(--bc-accent-strong) !important;
-  --ic-link-color: var(--bc-accent) !important;
-  --ic-link-color-darkened-10: var(--bc-accent-strong) !important;
+  --ic-link-color: var(--bc-accent-ink) !important;
+  --ic-link-color-darkened-10: var(--bc-accent-ink-strong) !important;
   --ic-brand-button--primary-bgd: var(--bc-accent) !important;
   --ic-brand-button--primary-bgd-darkened-5: var(--bc-accent-strong) !important;
   --ic-brand-button--primary-bgd-darkened-15: var(--bc-accent-strong) !important;
-  --ic-brand-button--primary-text: #fff !important;
+  --ic-brand-button--primary-text: var(--bc-on-accent) !important;
 
   --ic-brand-global-nav-bgd: var(--bc-surface) !important;
   --ic-brand-global-nav-ic-icon-svg-fill: var(--bc-muted) !important;
-  --ic-brand-global-nav-ic-icon-svg-fill--active: var(--bc-accent) !important;
+  --ic-brand-global-nav-ic-icon-svg-fill--active: var(--bc-accent-ink) !important;
   --ic-brand-global-nav-menu-item__text-color: var(--bc-muted) !important;
-  --ic-brand-global-nav-menu-item__text-color--active: var(--bc-accent) !important;
+  --ic-brand-global-nav-menu-item__text-color--active: var(--bc-accent-ink) !important;
   --ic-brand-global-nav-avatar-border: var(--bc-border) !important;
   --ic-brand-global-nav-logo-bgd: var(--bc-surface) !important;
 }
@@ -112,7 +117,7 @@ html.bc [role="button"]:focus-visible,
 html.bc input:focus-visible,
 html.bc select:focus-visible,
 html.bc textarea:focus-visible {
-  outline: 2px solid var(--bc-accent) !important;
+  outline: 2px solid var(--bc-accent-ink) !important;
   outline-offset: 2px;
 }
 
@@ -263,7 +268,7 @@ html.bc textarea:focus-visible {
   }
 
   html.bc #menu .ic-app-header__menu-list-link:focus-visible .menu-item-icon-container {
-    outline: 2px solid var(--bc-accent);
+    outline: 2px solid var(--bc-accent-ink);
     outline-offset: 2px;
   }
 
@@ -331,7 +336,7 @@ html.bc #section-tabs li a:hover {
 
 html.bc #section-tabs li a.active {
   background: var(--bc-accent-soft) !important;
-  color: var(--bc-accent-strong) !important;
+  color: var(--bc-accent-ink-strong) !important;
   font-weight: 500;
 }
 
@@ -463,7 +468,7 @@ html.bc :is(.Button, .btn) > i[class*="icon-"]::before {
 html.bc :is(a, button, input):is(.Button--primary, .btn-primary) {
   background-color: var(--bc-accent) !important;
   border-color: var(--bc-accent) !important;
-  color: #fff !important;
+  color: var(--bc-on-accent) !important;
 }
 
 html.bc :is(a, button, input):is(.Button--primary, .btn-primary):hover {
@@ -474,7 +479,7 @@ html.bc :is(a, button, input):is(.Button--primary, .btn-primary):hover {
 html.bc :is(a, button):is(.Button--link, .btn-link, .Button--icon-action) {
   background-color: transparent !important;
   border-color: transparent !important;
-  color: var(--bc-accent) !important;
+  color: var(--bc-accent-ink) !important;
 }
 
 html.bc :is(a, button):is(.Button--link, .btn-link, .Button--icon-action):hover {
@@ -501,7 +506,7 @@ html.bc :is(input[type="text"], input[type="search"], input[type="email"], input
 
 /* Fokusring rundt feltet erstatter Canvas sin egen, så det er tydelig hvor du skriver. */
 html.bc :is(input, select, textarea, .ic-Input):focus {
-  border-color: var(--bc-accent) !important;
+  border-color: var(--bc-accent-ink) !important;
   box-shadow: 0 0 0 3px var(--bc-accent-soft) !important;
 }
 

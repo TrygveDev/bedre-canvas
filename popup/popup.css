@@ -190,6 +190,133 @@ h2 span {
   color: var(--surface);
 }
 
+/* Egen farge: en regnbuesirkel. Valgt får den samme ring som de andre. */
+.swatches button.custom {
+  background: conic-gradient(from 90deg, #f43f5e, #f59e0b, #84cc16, #06b6d4, #6366f1, #d946ef, #f43f5e);
+}
+
+.swatches button.custom[aria-checked="true"] {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent-ink);
+}
+
+/* ---------- Fargevelger ---------- */
+.picker {
+  --hue: hsl(220 100% 50%);
+  --picked: #2563eb;
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.picker[hidden] {
+  display: none;
+}
+
+/* Metning fra venstre mot høyre, lysstyrke ovenfra og ned, på valgt fargetone. */
+.sv {
+  --x: 1;
+  --y: 0;
+  position: relative;
+  height: 140px;
+  border-radius: 8px;
+  background:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, transparent),
+    var(--hue);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.sv-thumb {
+  position: absolute;
+  left: calc(var(--x) * 100%);
+  top: calc(var(--y) * 100%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--picked);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 1px 3px rgb(0 0 0 / 0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.hue {
+  width: 100%;
+  height: 14px;
+  margin: 0;
+  border-radius: 7px;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+  appearance: none;
+  cursor: pointer;
+}
+
+.hue::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--hue);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 1px 3px rgb(0 0 0 / 0.3);
+  appearance: none;
+}
+
+.hex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.hex-dot {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--picked);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+}
+
+.hex-label {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.hex input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: 500 0.875rem/1 ui-monospace, "Cascadia Mono", Consolas, monospace;
+  text-align: right;
+  outline: none;
+}
+
+.hex:focus-within {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
+.hex:has(input[aria-invalid]) {
+  outline-color: #dc2626;
+}
+
+.sv:focus-visible,
+.hue:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
 /* ---------- Knapp ---------- */
 .primary {
   width: 100%;
@@ -204,6 +331,15 @@ h2 span {
 }
 
 :root[data-scheme="dark"] .primary {
+  color: #16171a;
+}
+
+/* Lys egen farge (f.eks. rosa): mørk tekst, som på knappene i Canvas. */
+:root[data-light-accent] .primary {
+  color: var(--text);
+}
+
+:root[data-scheme="dark"][data-light-accent] .primary {
   color: #16171a;
 }
 

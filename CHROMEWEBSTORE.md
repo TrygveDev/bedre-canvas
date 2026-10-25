@@ -57,7 +57,7 @@ Hva du får
 • En smal sidemeny med tydelige ikoner. Valgt side er markert, og navnet vises når du holder musen over.
 • Emnelisten i menyen viser hvert emne med en fargebrikke i emnefargen din, så du finner riktig fag med et blikk.
 • Roligere sider: moduler, oppgaver, karakterer, kalender og innboks får lik og lettlest typografi, der det viktigste på siden står tydeligst.
-• Skolens egne Canvas-farger som standard, eller en farge du velger selv.
+• Skolens egne Canvas-farger som standard, eller en ferdig farge eller hvilken som helst farge fra fargevelgeren.
 • Lyst, mørkt eller automatisk tema.
 
 Slik bruker du den
@@ -203,7 +203,14 @@ erklæringen og datoen i den i samme pull request.
 
 ### Ikke publisert
 
-Ingenting ennå.
+- Popupen: fargevalgene er nå Skole, Blå, Grønn, Rød og Rosa (#FF8DA1), og det siste valget er
+  en regnbuesirkel som åpner en fargevelger med palett, fargetone og hex-felt. Egen farge
+  lagres når du slipper, så popupen ikke bruker opp skrivekvoten til `chrome.storage.sync`.
+  «Skolens» heter nå «Skole». Klikk på regnbuesirkelen velger fargen i velgeren med en gang, og
+  siste egne farge huskes, så den kan velges igjen med ett klikk.
+- Lyse egne farger (som rosa eller gul) er lesbare i Canvas: knapper og merker beholder fargen,
+  men får mørk tekst, og lenker, aksentfarget tekst og fokusringer bruker en mørkere utgave med
+  minst 4.5:1 kontrast mot hvitt. Mørke farger som blå og rød er uendret.
 
 ### 0.1.0
 
