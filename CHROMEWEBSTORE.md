@@ -8,9 +8,10 @@ endres.
 
 ## Status før neste opplasting
 
-- [x] **Versjon:** 0.1.0 er første versjon. Ingenting er lastet opp ennå (utviklerkonsollen har
-      ingen elementer per 2026-10-24). Senere versjoner slippes som beskrevet i
-      [RELEASING.md](RELEASING.md).
+- [ ] **Versjon:** 0.2.0 er tagget 2026-10-25. Pakken ligger på GitHub-releasen og må lastes
+      opp for hånd i utviklerkonsollen, siden nøklene til automatisk publisering mangler. Den nye
+      tillatelsen `sidePanel` trenger begrunnelsen fra tabellen under. Senere versjoner slippes
+      som beskrevet i [RELEASING.md](RELEASING.md).
 - [x] **Personvernerklæring:** [docs/personvern.md](docs/personvern.md), publiseres med GitHub
       Pages. Sjekk at adressen under «Personvernerklæring» laster før innsending.
 - [x] **Navn:** beholder «Bedre Canvas». Se «Kjente problemer» nederst.
@@ -201,9 +202,14 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
+| 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Ikke sendt inn |
 | 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
 
 ### Ikke publisert
+
+Ingenting ennå.
+
+### 0.2.0
 
 - Innstillingene åpnes i Chromes sidepanel ved siden av Canvas i stedet for i en popup. Klikk
   på ikonet åpner panelet, og et nytt klikk lukker det. Panelet hører til fanen det ble åpnet i:
