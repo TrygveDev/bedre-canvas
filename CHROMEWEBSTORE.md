@@ -208,11 +208,16 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
+| 0.2.2 | 2026-10-26 | Virker på NTNU og BI uten oppsett | Ikke sendt ennå |
 | 0.2.1 | 2026-10-25 | Ikonet er en snarvei til Canvas fra andre sider | Til gjennomgang |
 | 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Avbrutt, kommer med 0.2.1 |
 | 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
 
 ### Ikke publisert
+
+Ingenting ennå.
+
+### 0.2.2
 
 - Virker uten oppsett på NTNU (`canvas.ntnu.no`) og BI (`canvas.bi.no`), som har Canvas på eget
   domene. Nye vertstillatelser i manifestet, så Chrome ber eksisterende brukere godta dem, og
