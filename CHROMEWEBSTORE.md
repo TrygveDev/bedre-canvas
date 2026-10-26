@@ -8,10 +8,8 @@ endres.
 
 ## Status før neste opplasting
 
-- [x] **Versjon:** 0.2.1 ble sendt til gjennomgang med release-workflowen 2026-10-25. Gjennomgangen
-      av 0.2.0 ble avbrutt først, siden butikken ikke tar imot en ny pakke mens en annen er til
-      gjennomgang. 0.2.1 inneholder alt fra 0.2.0. Senere versjoner slippes som beskrevet i
-      [RELEASING.md](RELEASING.md).
+- [x] **Versjon:** 0.2.2 ble sendt til gjennomgang med release-workflowen 2026-10-26
+      (`PENDING_REVIEW`). Senere versjoner slippes som beskrevet i [RELEASING.md](RELEASING.md).
 - [x] **Personvernerklæring:** [docs/personvern.md](docs/personvern.md), publiseres med GitHub
       Pages. Sjekk at adressen under «Personvernerklæring» laster før innsending.
 - [x] **Navn:** beholder «Bedre Canvas». Se «Kjente problemer» nederst.
@@ -208,7 +206,7 @@ erklæringen og datoen i den i samme pull request.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
-| 0.2.2 | 2026-10-26 | Virker på NTNU og BI uten oppsett | Ikke sendt ennå |
+| 0.2.2 | 2026-10-26 | Virker på NTNU og BI uten oppsett | Til gjennomgang |
 | 0.2.1 | 2026-10-25 | Ikonet er en snarvei til Canvas fra andre sider | Til gjennomgang |
 | 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Avbrutt, kommer med 0.2.1 |
 | 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
