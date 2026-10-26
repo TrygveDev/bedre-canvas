@@ -33,7 +33,8 @@ Bedre Canvas er ikke laget av eller tilknyttet Instructure, som lager Canvas LMS
 3. Klikk **Last inn upakket** og velg mappen
 4. Åpne Canvas
 
-Utvidelsen kjører automatisk på `*.instructure.com`. Bruker skolen din et eget domene
+Utvidelsen kjører automatisk på `*.instructure.com`, `canvas.ntnu.no` og `canvas.bi.no`.
+Bruker skolen din et annet eget domene
 (f.eks. `canvas.skolen.no`), åpner du Canvas, klikker på utvidelsesikonet og velger
 **Bruk på denne siden**.
 

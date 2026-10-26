@@ -271,7 +271,9 @@ async function setupSiteSection() {
   if (!tab?.url?.startsWith("https://")) return;
 
   const host = new URL(tab.url).hostname;
-  if (host.endsWith(".instructure.com")) return; // dekkes allerede av manifestet
+  // Dekkes allerede av manifestet (*.instructure.com og skolene med kjent eget domene).
+  const known = chrome.runtime.getManifest().content_scripts[0].matches.map((p) => p.match(/^https:\/\/([^/]+)\//)[1]);
+  if (known.some((h) => (h.startsWith("*.") ? host.endsWith(h.slice(1)) : host === h))) return;
 
   // activeTab gir lov til å se om siden faktisk er Canvas før vi tilbyr noe.
   let isCanvas = false;

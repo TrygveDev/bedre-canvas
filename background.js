@@ -153,6 +153,13 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await chrome.sidePanel.setOptions({ enabled: false }); // bare panelene per fane
   await panelForActiveTabs();
   if (reason !== "install" && reason !== "update") return;
+  // Domener som brukeren slo på selv, men som nå står i manifestet, ville ellers fått designet
+  // lagt inn to ganger.
+  const [fromManifest] = chrome.runtime.getManifest().content_scripts;
+  const covered = (await chrome.scripting.getRegisteredContentScripts())
+    .filter((set) => set.matches.every((m) => fromManifest.matches.some((p) => matchesPattern(p, m.replace(/\*$/, "")))))
+    .map((set) => set.id);
+  if (covered.length) await chrome.scripting.unregisterContentScripts({ ids: covered });
   for (const set of await scriptSets()) {
     const tabs = await chrome.tabs.query({ url: set.matches, status: "complete" });
     await Promise.all(tabs.map((tab) => reinject(tab.id, set)));

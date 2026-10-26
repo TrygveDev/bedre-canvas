@@ -1,6 +1,6 @@
 # Chrome Web Store – Bedre Canvas
 
-> Sist oppdatert: 2026-10-25
+> Sist oppdatert: 2026-10-26
 
 Alt som trengs for å publisere og oppdatere Bedre Canvas i Chrome Web Store, klart til å
 kopiere inn i utviklerkonsollen. Hold filen oppdatert når tillatelser, funksjoner eller versjon
@@ -66,7 +66,7 @@ Slik bruker du den
 1. Installer utvidelsen og åpne Canvas. Designet er på med en gang.
 2. Klikk på utvidelsesikonet for å åpne innstillingene i sidepanelet. Der velger du tema og farge, eller slår designet av. Klikk igjen for å lukke.
 3. Står du på en annen side, tar ikonet deg til Canvas med innstillingene ved siden av, i fanen du allerede har eller i en ny. Utvidelsen husker hvilken Canvas du bruker etter første besøk.
-4. Bruker skolen et eget Canvas-domene (f.eks. canvas.skolen.no)? Åpne Canvas, klikk på ikonet og velg «Bruk på denne siden» i sidepanelet.
+4. Virker på alle skoler med Canvas på instructure.com, og på NTNU og BI. Bruker skolen et annet eget Canvas-domene (f.eks. canvas.skolen.no)? Åpne Canvas, klikk på ikonet og velg «Bruk på denne siden» i sidepanelet.
 
 Personvern
 Bedre Canvas samler ikke inn, selger eller deler noe om deg. Fristene og emnene dine hentes fra Canvas-nettstedet du allerede er logget inn på, og vises bare i nettleseren din. Innstillingene dine lagres i Chrome.
@@ -128,6 +128,8 @@ Hver linje limes inn i sitt felt under «Privacy practices» i konsollen.
 | `activeTab` | permissions | Lar sidepanelet se adressen til fanen brukeren står i når ikonet klikkes, så det kan tilby å slå på designet for en skole med eget Canvas-domene. Gir ingen tilgang til andre faner. |
 | `sidePanel` | permissions | Innstillingene (av/på, tema, sidemeny og farge) vises i Chromes sidepanel ved siden av Canvas i stedet for i en popup. Ikonet åpner og lukker panelet, og fra andre sider går det til Canvas med panelet. Panelet hører til fanen det ble åpnet i og lukkes når brukeren bytter fane. Gir ingen tilgang til sider eller data. |
 | `https://*.instructure.com/*` | host_permissions | Canvas LMS-nettstedene som Instructure drifter for skolene. Designet og fristoversikten legges bare inn på disse sidene. |
+| `https://canvas.ntnu.no/*` | host_permissions | Canvas LMS for NTNU, som ligger på eget domene i stedet for instructure.com. Designet og fristoversikten legges bare inn på Canvas-sidene der. |
+| `https://canvas.bi.no/*` | host_permissions | Canvas LMS for Handelshøyskolen BI, som ligger på eget domene i stedet for instructure.com. Designet og fristoversikten legges bare inn på Canvas-sidene der. |
 | `https://*/*` (valgfri) | optional_host_permissions | Bare for skoler som har Canvas på eget domene (f.eks. canvas.skolen.no). Spørres om først når brukeren klikker «Bruk på denne siden», og gjelder bare det ene domenet. Kan fjernes igjen fra sidepanelet. |
 
 **Fjernkode:** Nei. All kode ligger i pakken, og utvidelsen laster ikke skript fra nettet.
@@ -212,7 +214,14 @@ erklæringen og datoen i den i samme pull request.
 
 ### Ikke publisert
 
-Ingenting ennå.
+- Virker uten oppsett på NTNU (`canvas.ntnu.no`) og BI (`canvas.bi.no`), som har Canvas på eget
+  domene. Nye vertstillatelser i manifestet, så Chrome ber eksisterende brukere godta dem, og
+  utvidelsen står avslått til de gjør det. Har en bruker slått på et av domenene selv med «Bruk på
+  denne siden», fjernes den registreringen ved oppdateringen, så designet ikke legges inn to ganger.
+- Sjekket 2026-10-26 hvilke norske universiteter og høyskoler som bruker Canvas. Alle andre som ble
+  funnet ligger på `*.instructure.com` (eller sender `canvas.<skole>.no` videre dit, som UiO, HVL og
+  NHH), og var dekket fra før.
+- **Merknad til gjennomgangen:** de to nye domenene er bare Canvas-installasjonene til NTNU og BI.
 
 ### 0.2.1
 
