@@ -202,6 +202,26 @@ erklæringen og datoen i den i samme pull request.
 
 **Kildekode:** åpen, [GPL-3.0](LICENSE)
 
+## Firefox Add-ons
+
+Samme kode som i Chrome. `python tools/package.py` lager `dist/bedre-canvas-firefox-<versjon>.zip`,
+der manifestet er laget fra `manifest.json` av `firefox_manifest` i `tools/package.py`:
+
+- `background.scripts` i stedet for `background.service_worker`, som Firefox ikke støtter i MV3.
+- Uten `sidePanel` og `minimum_chrome_version`. Ikonet åpner innstillingene som popup
+  (`action.default_popup`), og `background.js` hopper over alt med sidepanelet.
+- `browser_specific_settings.gecko`: ID `bedre-canvas@trygvedev.github.io` (kan ikke endres etter
+  første opplasting), Firefox 140 eller nyere (142 på Android), og
+  `data_collection_permissions: none`, som AMO krever av nye tillegg.
+
+Sjekket med `npx web-ext lint` i den utpakkede zip-filen: 0 feil. Advarslene gjelder bare
+`chrome.sidePanel`, som ikke kalles i Firefox.
+
+Ikke publisert på addons.mozilla.org ennå. Første opplasting gjøres for hånd i
+[utviklerkonsollen](https://addons.mozilla.org/developers/addon/submit/). Tekstene over kan brukes,
+men «sidepanelet» i den lange beskrivelsen heter «innstillingene» i Firefox. AMO vil ha kildekoden
+bare når koden er minifisert eller bygget, og det er den ikke her.
+
 ## Versjonshistorikk
 
 | Versjon | Dato | Endringer | Status |
@@ -213,7 +233,12 @@ erklæringen og datoen i den i samme pull request.
 
 ### Ikke publisert
 
-Ingenting ennå.
+- Egen pakke for Firefox: `tools/package.py` lager også `dist/bedre-canvas-firefox-<versjon>.zip`
+  med et manifest for Firefox. Endrer ingenting i Chrome-pakken.
+- Et domene brukeren gir tilgang til, slås nå også på fra bakgrunnen (`permissions.onAdded`), og
+  fjernes igjen hvis tilgangen trekkes tilbake i nettleserens innstillinger (`permissions.onRemoved`).
+  Ingen nye tillatelser.
+- Rullefeltene og fargevelgeren i innstillingene har fått stiler for Firefox.
 
 ### 0.2.2
 

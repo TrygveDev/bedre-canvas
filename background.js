@@ -7,8 +7,12 @@
 //
 // Når vi vet hvor brukerens Canvas er (content.js husker adressen), har bare Canvas-faner et
 // panel. På andre sider gjør klikket det samme som et bokmerke: Canvas åpnes med panelet.
+//
+// Firefox har ikke chrome.sidePanel. Der åpner ikonet innstillingene som en vanlig popup
+// (default_popup i manifestet som tools/package.py lager), og alt med panelet hoppes over.
 const PANEL = "popup/popup.html";
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(console.error);
+const HAS_PANEL = !!chrome.sidePanel;
+if (HAS_PANEL) chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(console.error);
 
 // Mønstrene våre er alltid https://<vert>/*, så bare verten trenger å sjekkes.
 function matchesPattern(pattern, url) {
@@ -26,6 +30,7 @@ async function isCanvasTab(tab) {
 }
 
 async function panelFor(tabId, windowId, force = false) {
+  if (!HAS_PANEL) return;
   const key = `panel-${windowId}`;
   const jumpKey = `jump-${windowId}`;
   const { [key]: previous, [jumpKey]: jump } = await chrome.storage.session.get([key, jumpKey]);
@@ -53,6 +58,7 @@ async function panelFor(tabId, windowId, force = false) {
 }
 
 async function panelForActiveTabs() {
+  if (!HAS_PANEL) return;
   const tabs = await chrome.tabs.query({ active: true });
   await Promise.all(tabs.map((tab) => panelFor(tab.id, tab.windowId)));
 }
@@ -150,7 +156,7 @@ async function reinject(tabId, { css = [], js = [] }) {
 }
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  await chrome.sidePanel.setOptions({ enabled: false }); // bare panelene per fane
+  if (HAS_PANEL) await chrome.sidePanel.setOptions({ enabled: false }); // bare panelene per fane
   await panelForActiveTabs();
   if (reason !== "install" && reason !== "update") return;
   // Domener som brukeren slo på selv, men som nå står i manifestet, ville ellers fått designet
@@ -164,4 +170,34 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     const tabs = await chrome.tabs.query({ url: set.matches, status: "complete" });
     await Promise.all(tabs.map((tab) => reinject(tab.id, set)));
   }
+});
+
+// Et domene brukeren har gitt tilgang til, slås på her og ikke bare i popupen: Firefox lukker
+// popupen når den ber om tillatelsen, så popupen rekker ikke alltid å gjøre det selv. Den som
+// registrerer skriptet først, laster fanene på nytt. Brede mønstre som https://*/* hoppes over.
+chrome.permissions.onAdded.addListener(async ({ origins = [] }) => {
+  for (const origin of origins) {
+    const host = origin.match(/^https:\/\/([^/*]+)\/\*$/)?.[1];
+    // Firefox lar brukeren slå vertstillatelsene i manifestet av og på, og de har skript fra før.
+    const [fromManifest] = chrome.runtime.getManifest().content_scripts;
+    if (!host || fromManifest.matches.some((p) => matchesPattern(p, `https://${host}/`))) continue;
+    const id = "bc-" + host;
+    if ((await chrome.scripting.getRegisteredContentScripts({ ids: [id] })).length) continue;
+    const { css, js } = fromManifest;
+    try {
+      await chrome.scripting.registerContentScripts([{ id, matches: [origin], css, js, runAt: "document_start" }]);
+    } catch {
+      continue; // popupen kom først
+    }
+    const tabs = await chrome.tabs.query({ url: origin });
+    await Promise.all(tabs.map((tab) => chrome.tabs.reload(tab.id)));
+  }
+});
+
+// Trekker brukeren tilgangen tilbake i nettleserens innstillinger, fjernes skriptet også.
+chrome.permissions.onRemoved.addListener(async ({ origins = [] }) => {
+  const ids = origins.map((o) => o.match(/^https:\/\/([^/*]+)\/\*$/)?.[1]).filter(Boolean).map((h) => "bc-" + h);
+  if (!ids.length) return;
+  const registered = await chrome.scripting.getRegisteredContentScripts({ ids });
+  if (registered.length) await chrome.scripting.unregisterContentScripts({ ids: registered.map((r) => r.id) });
 });

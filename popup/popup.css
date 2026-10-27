@@ -53,6 +53,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html[data-popup] body {
+  width: 340px;
+  min-height: 0;
+}
+
 button {
   font: inherit;
   color: inherit;
@@ -266,6 +271,21 @@ h2 span {
   background: var(--hue);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 1px 3px rgb(0 0 0 / 0.3);
   appearance: none;
+}
+
+/* Firefox: samme håndtak, og sporet er gjennomsiktig så regnbuen synes. */
+.hue::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--hue);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+.hue::-moz-range-track {
+  background: transparent;
 }
 
 .hex {

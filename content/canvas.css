@@ -739,7 +739,14 @@ html.bc .discussion_entry {
   border-radius: var(--bc-radius);
 }
 
-/* Rullefelt */
+/* Rullefelt. Firefox kjenner ikke ::-webkit-scrollbar og bruker scrollbar-* i stedet. */
+@supports not selector(::-webkit-scrollbar) {
+  html.bc {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--bc-muted) 35%, transparent) transparent;
+  }
+}
+
 html.bc ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

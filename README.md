@@ -33,6 +33,16 @@ Bedre Canvas er ikke laget av eller tilknyttet Instructure, som lager Canvas LMS
 3. Klikk **Last inn upakket** og velg mappen
 4. Åpne Canvas
 
+**I Firefox (140 eller nyere):**
+
+1. Kjør `python tools/package.py`, eller last ned `bedre-canvas-firefox-<versjon>.zip` fra en
+   [release](https://github.com/TrygveDev/bedre-canvas/releases)
+2. Åpne `about:debugging#/runtime/this-firefox` og klikk **Last inn midlertidig tillegg**
+3. Velg zip-filen og åpne Canvas
+
+Et midlertidig tillegg forsvinner når Firefox lukkes. I Firefox åpnes innstillingene som en popup
+fra ikonet i stedet for i sidepanelet.
+
 Utvidelsen kjører automatisk på `*.instructure.com`, `canvas.ntnu.no` og `canvas.bi.no`.
 Bruker skolen din et annet eget domene
 (f.eks. `canvas.skolen.no`), åpner du Canvas, klikker på utvidelsesikonet og velger
@@ -80,13 +90,15 @@ Ikonene er [Phosphor Icons](https://phosphoricons.com) (Regular, MIT-lisens) og 
 node tools/build-icons.mjs
 ```
 
-## Pakke for Chrome Web Store
+## Pakke for Chrome Web Store og Firefox
 
 ```bash
 python tools/package.py
 ```
 
-Lager `dist/bedre-canvas-<versjon>.zip` med bare det Chrome trenger. Alt annet om oppføringen
+Lager `dist/bedre-canvas-<versjon>.zip` med bare det Chrome trenger, og
+`dist/bedre-canvas-firefox-<versjon>.zip` med samme kode og et manifest tilpasset Firefox
+(bakgrunnsskript i stedet for service worker, popup i stedet for sidepanel og en Gecko-ID). Alt annet om oppføringen
 (tekster, tillatelser, personvern, skjermbilder) står i `CHROMEWEBSTORE.md`.
 
 ## Lisens

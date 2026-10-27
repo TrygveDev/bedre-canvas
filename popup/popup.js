@@ -31,6 +31,9 @@ const root = document.documentElement;
 const save = (patch) => chrome.storage.sync.set(patch);
 const systemDark = matchMedia("(prefers-color-scheme: dark)");
 
+// I Firefox er innstillingene en popup og ikke et sidepanel, så den trenger en fast bredde.
+root.toggleAttribute("data-popup", !chrome.sidePanel);
+
 // Popupen følger temaet du har valgt for Canvas. Siste valg huskes lokalt, så popupen ikke
 // blinker lys før innstillingene er lest.
 let theme = "light";
@@ -321,9 +324,15 @@ async function setupSiteSection() {
       try {
         // Samme filer som manifestet bruker på *.instructure.com, så listene ikke glir fra hverandre.
         const { css, js } = chrome.runtime.getManifest().content_scripts[0];
-        await chrome.scripting.registerContentScripts([
-          { id, matches: [origin], css, js, runAt: "document_start" },
-        ]);
+        try {
+          await chrome.scripting.registerContentScripts([
+            { id, matches: [origin], css, js, runAt: "document_start" },
+          ]);
+        } catch (err) {
+          // background.js kan ha rukket det først (permissions.onAdded), og laster da fanen selv.
+          if ((await chrome.scripting.getRegisteredContentScripts({ ids: [id] })).length) return;
+          throw err;
+        }
         await chrome.tabs.reload(tab.id);
       } catch (err) {
         text.textContent = `Fikk ikke slått på Bedre Canvas for ${host}. Prøv igjen.`;

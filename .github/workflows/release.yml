@@ -36,6 +36,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" "dist/bedre-canvas-${{ steps.version.outputs.version }}.zip" \
+            "dist/bedre-canvas-firefox-${{ steps.version.outputs.version }}.zip" \
             --title "Bedre Canvas ${{ steps.version.outputs.version }}" --generate-notes
 
       - name: Last opp og send til gjennomgang i Chrome Web Store
