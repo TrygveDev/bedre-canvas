@@ -231,7 +231,9 @@ der manifestet er laget fra `manifest.json` av `firefox_manifest` i `tools/packa
 Sjekket med `npx web-ext lint` i den utpakkede zip-filen: 0 feil. Advarslene gjelder bare
 `chrome.sidePanel`, som ikke kalles i Firefox.
 
-Første versjon (0.2.2) ble lastet opp for hånd 2026-10-27, og var ikke offentlig ennå da. Senere
+Første versjon (0.2.2) ble lastet opp for hånd 2026-10-27. 0.3.0 ble sendt med `web-ext sign`
+samme dag, før gjennomgangen av 0.2.2. AMO slo da av 0.2.2, så 0.3.0 er den som står til første
+gjennomgang (tillegget er `nominated`). Senere
 versjoner sendes av jobben `firefox` i release-workflowen med `web-ext sign --channel listed`,
 når `AMO_JWT_ISSUER` og `AMO_JWT_SECRET` er satt opp (se [RELEASING.md](RELEASING.md)). Den
 venter ikke på gjennomgangen. Første opplasting gjøres i
