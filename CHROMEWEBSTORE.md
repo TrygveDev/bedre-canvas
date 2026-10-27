@@ -231,7 +231,10 @@ der manifestet er laget fra `manifest.json` av `firefox_manifest` i `tools/packa
 Sjekket med `npx web-ext lint` i den utpakkede zip-filen: 0 feil. Advarslene gjelder bare
 `chrome.sidePanel`, som ikke kalles i Firefox.
 
-Ikke publisert på addons.mozilla.org ennå. Første opplasting gjøres for hånd i
+Første versjon (0.2.2) ble lastet opp for hånd 2026-10-27, og var ikke offentlig ennå da. Senere
+versjoner sendes av jobben `firefox` i release-workflowen med `web-ext sign --channel listed`,
+når `AMO_JWT_ISSUER` og `AMO_JWT_SECRET` er satt opp (se [RELEASING.md](RELEASING.md)). Den
+venter ikke på gjennomgangen. Første opplasting gjøres i
 [utviklerkonsollen](https://addons.mozilla.org/developers/addon/submit/). Tekstene over kan brukes,
 men «sidepanelet» i den lange beskrivelsen heter «innstillingene» i Firefox. AMO vil ha kildekoden
 bare når koden er minifisert eller bygget, og det er den ikke her.

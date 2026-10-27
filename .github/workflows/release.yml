@@ -1,7 +1,7 @@
 # Ny versjon: øk "version" i manifest.json, commit, og push en tagg med samme nummer
-# (git tag v0.2.0 && git push origin v0.2.0). Da bygges pakken, legges ved en GitHub-release
-# og sendes til Chrome Web Store for gjennomgang. Brukerne får den automatisk når Google har
-# godkjent den. Oppsettet av nøklene står i RELEASING.md.
+# (git tag v0.2.0 && git push origin v0.2.0). Da bygges pakkene, legges ved en GitHub-release
+# og sendes til gjennomgang i Chrome Web Store og Firefox Add-ons (AMO). Brukerne får den
+# automatisk når Google og Mozilla har godkjent den. Oppsettet av nøklene står i RELEASING.md.
 name: Release
 
 on:
@@ -85,3 +85,50 @@ jobs:
             echo "::error::Publiseringen feilet. Se svaret over."
             exit 1
           fi
+
+  # Egen jobb, så en feil hos Mozilla ikke stopper Chrome-utgivelsen, og omvendt.
+  firefox:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Taggen må stemme med manifestet
+        id: version
+        run: |
+          version=$(node -p 'require("./manifest.json").version')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Taggen $GITHUB_REF_NAME stemmer ikke med version $version i manifest.json"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Bygg pakken
+        run: python3 tools/package.py
+
+      # web-ext laster opp den samme pakken som ligger på GitHub-releasen, som en ny versjon av
+      # tillegget som allerede finnes på AMO. Den venter ikke på gjennomgangen, som kan ta dager.
+      - name: Send til gjennomgang i Firefox Add-ons
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+          ZIP: dist/bedre-canvas-firefox-${{ steps.version.outputs.version }}.zip
+        run: |
+          if [ -z "$AMO_JWT_ISSUER" ] || [ -z "$AMO_JWT_SECRET" ]; then
+            echo "::warning::Nøklene til Firefox Add-ons er ikke satt opp. Pakken ligger på GitHub-releasen; last den opp for hånd, eller se RELEASING.md."
+            exit 0
+          fi
+          mkdir "$RUNNER_TEMP/firefox"
+          unzip -q "$ZIP" -d "$RUNNER_TEMP/firefox"
+          npx --yes web-ext@10.8.0 sign \
+            --source-dir "$RUNNER_TEMP/firefox" \
+            --artifacts-dir "$RUNNER_TEMP/web-ext" \
+            --channel listed \
+            --approval-timeout 0 \
+            --api-key "$AMO_JWT_ISSUER" \
+            --api-secret "$AMO_JWT_SECRET"

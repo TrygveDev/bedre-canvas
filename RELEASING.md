@@ -20,8 +20,8 @@ Chrome Web Store. Det som trengs her, er å få den nye versjonen dit.
    git push origin v0.2.0
    ```
 
-Workflowen `Release` bygger pakken, lager en GitHub-release med zip-filen og sender den til
-gjennomgang i Chrome Web Store. Gjennomgangen tar vanligvis fra noen timer til et par dager.
+Workflowen `Release` bygger pakkene, lager en GitHub-release med zip-filene og sender dem til
+gjennomgang i Chrome Web Store og Firefox Add-ons. Gjennomgangen tar vanligvis fra noen timer til et par dager.
 Brukerne får den nye versjonen av seg selv når den er godkjent.
 
 ## Engangsoppsett: nøkler til Chrome Web Store
@@ -70,6 +70,35 @@ gh workflow run cws-check.yml
 Workflowen henter et access token og leser bare statusen til utvidelsen i Chrome Web Store.
 
 Nøklene gir tilgang til å publisere utvidelsen. Del dem aldri, og legg dem aldri i koden.
+
+## Engangsoppsett: nøkler til Firefox Add-ons
+
+Jobben `firefox` i release-workflowen laster opp Firefox-pakken som en ny versjon på
+addons.mozilla.org (AMO) med `web-ext sign`, og venter ikke på gjennomgangen. Uten nøklene
+hopper den over opplastingen med en advarsel, og pakken må lastes opp for hånd fra
+GitHub-releasen. Tillegget må allerede finnes på AMO, med ID-en `bedre-canvas@trygvedev.github.io`
+fra `tools/package.py`. Det er det, siden første versjon ble lastet opp for hånd.
+
+1. Logg inn på AMO og gå til
+   [Manage API Keys](https://addons.mozilla.org/developers/addon/api/key/). Klikk «Generate new
+   credentials».
+2. Legg dem inn som secrets på repoet:
+
+   | Navn | Verdi |
+   | --- | --- |
+   | `AMO_JWT_ISSUER` | «JWT issuer» (f.eks. `user:12345:67`) |
+   | `AMO_JWT_SECRET` | «JWT secret» |
+
+   ```bash
+   gh secret set AMO_JWT_ISSUER
+   ```
+
+   ```bash
+   gh secret set AMO_JWT_SECRET
+   ```
+
+Nøklene gir tilgang til alle tilleggene på AMO-kontoen. Del dem aldri, og legg dem aldri i
+koden. Lag nye under «Manage API Keys» hvis de lekker; da slutter de gamle å virke.
 
 ## Første publisering
 
