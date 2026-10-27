@@ -1,6 +1,6 @@
 # Chrome Web Store – Bedre Canvas
 
-> Sist oppdatert: 2026-10-26
+> Sist oppdatert: 2026-10-27
 
 Alt som trengs for å publisere og oppdatere Bedre Canvas i Chrome Web Store, klart til å
 kopiere inn i utviklerkonsollen. Hold filen oppdatert når tillatelser, funksjoner eller versjon
@@ -8,8 +8,11 @@ endres.
 
 ## Status før neste opplasting
 
-- [x] **Versjon:** 0.2.2 ble sendt til gjennomgang med release-workflowen 2026-10-26
-      (`PENDING_REVIEW`). Senere versjoner slippes som beskrevet i [RELEASING.md](RELEASING.md).
+- [x] **Versjon:** 0.3.0 sendes til gjennomgang med release-workflowen 2026-10-27. 0.2.2 var
+      publisert (`PUBLISHED`, 100 %) da, sjekket med `cws-check.yml`. Senere versjoner slippes som
+      beskrevet i [RELEASING.md](RELEASING.md).
+- [ ] **Lang beskrivelse:** ny linje om raskere lasting under «Hva du får». Workflowen oppdaterer
+      bare pakken, så teksten må limes inn i utviklerkonsollen for hånd.
 - [x] **Personvernerklæring:** [docs/personvern.md](docs/personvern.md), publiseres med GitHub
       Pages. Sjekk at adressen under «Personvernerklæring» laster før innsending.
 - [x] **Navn:** beholder «Bedre Canvas». Se «Kjente problemer» nederst.
@@ -59,6 +62,7 @@ Hva du får
 • Velg utseende på sidemenyen: moderne pille, Canvas sin egen eller utvidet med navn.
 • Skolens egne Canvas-farger som standard, eller en ferdig farge eller hvilken som helst farge fra fargevelgeren.
 • Lyst, mørkt eller automatisk tema.
+• Raskere Canvas: fristene vises med en gang du åpner dashboardet, og sidene du sannsynligvis åpner, som kalenderen, innboksen og neste oppgave, lastes før du klikker.
 
 Slik bruker du den
 1. Installer utvidelsen og åpne Canvas. Designet er på med en gang.
@@ -148,7 +152,7 @@ Dette er svarene i skjemaet «Personvernpraksis».
 | Posisjon | Nei | Nei | |
 | Nettleserlogg | Nei | Nei | Husker bare adressen til brukerens eget Canvas-nettsted, lokalt, ikke hvilke sider brukeren besøker. |
 | Brukeraktivitet | Nei | Nei | |
-| Innhold på nettsteder | Nei | Nei | Leser brukerens egne oppgaver, emner og kunngjøringer fra Canvas-nettstedet og viser dem på siden. Lagres ikke og sendes ikke noe annet sted. |
+| Innhold på nettsteder | Nei | Nei | Leser brukerens egne oppgaver, emner og kunngjøringer fra Canvas-nettstedet og viser dem på siden. Siste fristoversikt huskes i nettleserens minne til nettleseren lukkes. Sendes ikke noe annet sted. |
 
 Slik henger det sammen, så skjemaet og koden stemmer overens:
 
@@ -165,6 +169,15 @@ Slik henger det sammen, så skjemaet og koden stemmer overens:
 - Adressen til Canvas (bare opprinnelsen, f.eks. `https://skolen.instructure.com/`) lagres i
   `chrome.storage.local` når en Canvas-side lastes. Den blir på maskinen og brukes bare til å
   åpne Canvas fra ikonet.
+- Siste svar til fristoversikten (bare feltene den viser) lagres i `chrome.storage.session`, som
+  ligger i minnet og tømmes når nettleseren lukkes, så dashboardet kan tegnes med en gang.
+  Nøkkelen er Canvas-adressen og bruker-ID-en fra Canvas, så en annen bruker i samme nettleser
+  ikke får se den. `background.js` gir innholdsskriptene tilgang med `setAccessLevel`.
+- Lenker til trygge Canvas-sider (dashboard, kalender, innboks, karakterer, emneforsider,
+  moduler og oppgaver) lastes på forhånd med Speculation Rules: menyen og «Åpne oppgaven» med en
+  gang, lenkene på dashboardet med en gang (bare HTML), og resten når musen hviler på dem. Det
+  er vanlige forespørsler til samme Canvas-nettsted. Kunngjøringer, diskusjoner, quizforsøk,
+  eksterne verktøy og nedlastinger lastes aldri på forhånd, siden de kan endre noe i Canvas.
 - Ingen analyse, sporing, informasjonskapsler eller tredjeparter.
 
 **Erklæringer** (alle tre bekreftes):
@@ -226,12 +239,17 @@ bare når koden er minifisert eller bygget, og det er den ikke her.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
-| 0.2.2 | 2026-10-26 | Virker på NTNU og BI uten oppsett | Til gjennomgang |
+| 0.3.0 | 2026-10-27 | Raskere dashboard, forhåndslasting, skjeletter, egen Firefox-pakke | Til gjennomgang |
+| 0.2.2 | 2026-10-26 | Virker på NTNU og BI uten oppsett | Publisert (sjekket 2026-10-27) |
 | 0.2.1 | 2026-10-25 | Ikonet er en snarvei til Canvas fra andre sider | Til gjennomgang |
 | 0.2.0 | 2026-10-25 | Sidepanel, fargevelger, valg for sidemeny, lesbare lyse farger | Avbrutt, kommer med 0.2.1 |
 | 0.1.0 | 2026-10-24 | Første offentlige versjon | Publisert 2026-10-25 |
 
 ### Ikke publisert
+
+Ingenting ennå.
+
+### 0.3.0
 
 - Egen pakke for Firefox: `tools/package.py` lager også `dist/bedre-canvas-firefox-<versjon>.zip`
   med et manifest for Firefox. Endrer ingenting i Chrome-pakken.
@@ -239,6 +257,19 @@ bare når koden er minifisert eller bygget, og det er den ikke her.
   fjernes igjen hvis tilgangen trekkes tilbake i nettleserens innstillinger (`permissions.onRemoved`).
   Ingen nye tillatelser.
 - Rullefeltene og fargevelgeren i innstillingene har fått stiler for Firefox.
+- Raskere dashboard: fristene hentes mens Canvas fortsatt laster siden, og siste oversikt huskes
+  til nettleseren lukkes, så dashboardet vises med en gang og oppdateres når Canvas svarer.
+  Fristene tegnes uten å vente på emnekortene (det tregeste kallet), med skjeletter for farge og
+  emnenavn til de kommer. Målt på OsloMet: fra ~1,65 s til ~0,55 s med oversikten husket, og
+  ~0,77 s uten.
+- Skjeletter i stedet for tomme flater og snurrende sirkler mens dashboardet, kalenderen og
+  innboksen lastes.
+- Dashboardet hopper ikke lenger ned når Canvas tegner topplinjen med «Dashboard»: plassen
+  holdes av med et skjelett, og raden har fast høyde mens planner-knappene laster.
+- Sider lastes på forhånd i Chrome: dashboard, kalender og innboks i menyen og «Åpne oppgaven»
+  bygges ferdig med en gang, lenkene på dashboardet hentes med en gang, og andre trygge lenker
+  (karakterer, emner, moduler, oppgaver) når musen hviler på dem. Kalenderen åpnet ~600 ms
+  raskere i målingen.
 
 ### 0.2.2
 
@@ -348,6 +379,12 @@ bare når koden er minifisert eller bygget, og det er den ikke her.
   tilknyttet Instructure. Vurder i tillegg å endre navnet til «Bedre Canvas – for Canvas LMS».
 - **Skolelogoer laget for mørk meny:** logoen står rett på den lyse siden. En skole som har lastet
   opp en hvit logo, får en logo som nesten ikke synes. Bare testet med OsloMet (svart logo).
+- **Forhåndslasting og sidevisninger:** en side som lastes på forhånd, logges som en sidevisning i
+  Canvas også om brukeren ikke klikker. Kalender, innboks og oppgaven i «Neste frist» logges
+  derfor ved hvert besøk på dashboardet, og oppgavene på dashboardet hentes hver gang.
+  Bare sider uten bivirkninger lastes på forhånd. Full prerender ble ikke
+  bekreftet i testen (Chrome styrt via DevTools falt tilbake til forhåndshenting av HTML); sjekk
+  i DevTools → Application → Speculative loads i en vanlig økt.
 - **Valgfri tilgang til alle https-sider:** `https://*/*` kan få en gjennomgåer til å stoppe opp.
   Den er valgfri, spørres om per domene og trengs for skoler med eget Canvas-domene. Begrunnelsen
   over forklarer det.
