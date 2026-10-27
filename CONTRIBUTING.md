@@ -5,7 +5,10 @@ eller engelsk.
 
 ## Kom i gang
 
-Utvidelsen er vanlig JavaScript og CSS uten byggesteg.
+Utvidelsen er vanlig JavaScript og CSS uten byggesteg, og den samme koden kjører i Chrome og
+Firefox.
+
+**Chrome**
 
 1. Fork og klon repoet
 2. Åpne `chrome://extensions`, slå på **Utviklermodus** og klikk **Last inn upakket**
@@ -14,6 +17,16 @@ Utvidelsen er vanlig JavaScript og CSS uten byggesteg.
 Etter en endring: klikk på oppdateringsknappen på utvidelsen i `chrome://extensions`. Åpne
 Canvas-faner får den nye koden av seg selv, men last siden på nytt hvis noe ser rart ut. Bruk
 DevTools (F12) for å finne klassenavnene du vil style.
+
+**Firefox** (140 eller nyere)
+
+1. Kjør `python tools/package.py`. Den lager Firefox-versjonen i `dist/firefox/`, med et eget
+   manifest for Firefox.
+2. Åpne `about:debugging#/runtime/this-firefox` og klikk **Last inn midlertidig tillegg**
+3. Velg `dist/firefox/manifest.json` og åpne Canvas
+
+Etter en endring: kjør `python tools/package.py` på nytt og klikk **Last inn på nytt** i
+`about:debugging`. I Firefox åpner ikonet innstillingene som en popup, ikke i et sidepanel.
 
 ## Før du lager en pull request
 
@@ -25,16 +38,23 @@ DevTools (F12) for å finne klassenavnene du vil style.
   navnet ditt og andres ikke synes.
 - **Commit-meldingene og tittelen følger formatet** under «Commit-meldinger». Tittelen blir
   commit-meldingen når pull requesten flettes.
+- **Test i både Chrome og Firefox.** Si i pull requesten hvilke nettlesere du testet i. Har du
+  bare én, si det, så tester noen andre den andre.
 - **Kjør sjekkene lokalt** før du pusher:
 
   ```bash
   node tools/check-extension.mjs
   ```
 
-  Den sjekker at manifestet følger Manifest V3, at ikonene har riktig størrelse, at hver
+  ```bash
+  python tools/package.py && node tools/check-firefox.mjs
+  ```
+
+  Den første sjekker at manifestet følger Manifest V3, at ikonene har riktig størrelse, at hver
   tillatelse er begrunnet i `CHROMEWEBSTORE.md`, at det ikke er `eval` eller kode fra nettet, og
-  at alle CSS-regler starter med `html.bc`. CI kjører den samme sjekken, pluss commit-meldingene,
-  ikonbygget og pakken.
+  at alle CSS-regler starter med `html.bc`. Den andre kjører Mozillas egen linter på
+  Firefox-versjonen og stopper på API-er som Firefox ikke har (se «Chrome og Firefox» under).
+  CI kjører begge, pluss commit-meldingene, ikonbygget og pakkene.
 
 ## Retningslinjer for koden
 
@@ -54,6 +74,37 @@ DevTools (F12) for å finne klassenavnene du vil style.
 - **Ingen data skal sendes noe annet sted enn til Canvas-nettstedet selv.** Ingen analyse,
   sporing eller tredjeparter.
 - **Respekter `prefers-reduced-motion`** for animasjoner.
+
+## Chrome og Firefox
+
+Bedre Canvas skal virke i både Chrome og Firefox så langt det er mulig. Skriv koden for begge fra
+starten, og la det som bare finnes i én nettleser, være et tillegg der, ikke noe resten avhenger av.
+
+- **Bruk `chrome.*`.** Firefox støtter det samme navnet i Manifest V3, så ikke bytt til
+  `browser.*` og ikke legg til en polyfill.
+- **Sjekk at et API finnes før du bruker det**, hvis det ikke finnes i begge, og ha en løsning
+  for den andre nettleseren. Mønsteret står øverst i `background.js`:
+
+  ```js
+  const HAS_PANEL = !!chrome.sidePanel;
+  if (HAS_PANEL) chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+  ```
+
+  Et nytt API som bare finnes i Chrome, legges i `CHROME_ONLY` i `tools/check-firefox.mjs` med en
+  begrunnelse, ellers stopper CI. Står det der, må det også stå hva Firefox gjør i stedet.
+- **Bare ett manifest.** `manifest.json` er for Chrome. Det Firefox trenger annerledes
+  (bakgrunnsskript, popup i stedet for sidepanel, Gecko-ID), lages av `firefox_manifest` i
+  `tools/package.py`. Rediger ikke manifestet i `dist/`.
+- **CSS med prefiks trenger en motpart.** `::-webkit-scrollbar` følges av `scrollbar-width` og
+  `scrollbar-color`, og `::-webkit-slider-thumb` av `::-moz-range-thumb`. Bruk
+  `@supports` når de to ikke kan stå side om side, som rullefeltene i `content/canvas.css`.
+- **Forhåndslasting og lignende kan være bare for Chrome**, så lenge siden virker like godt uten.
+  Firefox hopper over `speculationrules`, og det er greit.
+- **Nettleserlagringen er ikke helt lik.** Tilgangen til `chrome.storage.session` fra
+  innholdsskript styres ulikt i de to, så bruk den bare som en snarvei koden virker uten (se
+  mellomlageret i `content/dashboard.js`).
+- **Går det ikke i én av dem**, si det i pull requesten og skriv det i Firefox-delen av
+  `CHROMEWEBSTORE.md`, så det er kjent og kan løses senere.
 
 ## Commit-meldinger
 

@@ -63,7 +63,7 @@ hvordan du kommer i gang, og [RELEASING.md](RELEASING.md) for hvordan nye versjo
 
 | Fil | Hva den gjør |
 | --- | --- |
-| `manifest.json` | Oppsett for Chrome (Manifest V3) |
+| `manifest.json` | Oppsett for Chrome (Manifest V3). Firefox-manifestet lages fra det av `tools/package.py` |
 | `background.js` | Legger designet inn på nytt i åpne Canvas-faner når utvidelsen installeres eller oppdateres |
 | `content/content.js` | Leser innstillinger og setter klasser på `<html>` |
 | `content/canvas.css` | Grunnlaget for designet: tokens, typografi, meny, knapper, skjema. Alt er avgrenset til `html.bc` |
@@ -98,7 +98,8 @@ python tools/package.py
 
 Lager `dist/bedre-canvas-<versjon>.zip` med bare det Chrome trenger, og
 `dist/bedre-canvas-firefox-<versjon>.zip` med samme kode og et manifest tilpasset Firefox
-(bakgrunnsskript i stedet for service worker, popup i stedet for sidepanel og en Gecko-ID). Alt annet om oppføringen
+(bakgrunnsskript i stedet for service worker, popup i stedet for sidepanel og en Gecko-ID), og den
+samme Firefox-versjonen upakket i `dist/firefox/`. Alt annet om oppføringen
 (tekster, tillatelser, personvern, skjermbilder) står i `CHROMEWEBSTORE.md`.
 
 ## Lisens
