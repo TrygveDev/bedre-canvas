@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bedre Canvas – et renere Canvas LMS</title>
-  <meta name="description" content="Chrome-utvidelse som gir Canvas LMS et renere og mer moderne design, med neste frist øverst på dashboardet.">
+  <meta name="description" content="Utvidelse for Chrome og Firefox som gjør Canvas LMS renere og raskere, med neste frist øverst på dashboardet.">
   <meta property="og:title" content="Bedre Canvas">
   <meta property="og:description" content="Ryddigere Canvas, med neste frist øverst på dashboardet.">
   <meta property="og:image" content="https://trygvedev.github.io/bedre-canvas/assets/og.png">
@@ -335,6 +335,84 @@
         center / 12px no-repeat;
     }
 
+    /* ---------- Raskere ---------- */
+    /* Stolpene deler én skala (lengste måling = 100 %), så de kan sammenlignes på tvers. */
+    .speed {
+      --before: #7d8696;
+      --after: #2563eb;
+      margin: 0;
+      padding: clamp(22px, 4vw, 32px);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .speed { --before: #727780; --after: #5b8def; }
+    }
+
+    .speed-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .speed-legend span { display: inline-flex; align-items: center; gap: 8px; }
+
+    .speed-legend span::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: var(--swatch);
+    }
+
+    .speed-row { margin-top: 28px; }
+
+    .speed-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px 16px;
+      margin-bottom: 12px;
+    }
+
+    .speed-head h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+
+    .speed-gain { color: var(--accent); font-size: 1.5rem; font-weight: 650; letter-spacing: -0.02em; }
+
+    .bar {
+      display: grid;
+      grid-template-columns: 3rem minmax(0, 1fr) 4.75rem;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .bar + .bar { margin-top: 2px; }
+
+    .bar-track { height: 22px; }
+
+    .bar-fill {
+      display: block;
+      width: calc(var(--ms) / 1502 * 100%);
+      height: 100%;
+      border-radius: 0 4px 4px 0;
+      background: var(--before);
+      transform-origin: left;
+    }
+
+    .bar-after .bar-fill { background: var(--after); }
+
+    .bar-value { color: var(--text); font-variant-numeric: tabular-nums; text-align: right; }
+
+    .speed-note { margin: 24px 0 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.5; }
+
     /* ---------- Personvern og åpen kildekode ---------- */
     .cards {
       display: grid;
@@ -405,9 +483,31 @@
         @keyframes reveal {
           from { opacity: 0; transform: translateY(24px); }
         }
+
+        .bar-fill {
+          animation: grow linear both;
+          animation-timeline: view();
+          animation-range: entry 20% cover 35%;
+        }
+
+        @keyframes grow {
+          from { transform: scaleX(0); }
+        }
       }
     }
+
+    /* Knappen for nettleseren du bruker: Firefox får Firefox Add-ons, alle andre Chrome Web Store.
+       Uten JavaScript vises Chrome-knappen. */
+    html:not([data-browser="firefox"]) .for-firefox,
+    html[data-browser="firefox"] .for-chrome {
+      display: none;
+    }
+
+    .note a { color: inherit; }
   </style>
+  <script>
+    if (/\bFirefox\//.test(navigator.userAgent)) document.documentElement.dataset.browser = "firefox";
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -418,6 +518,7 @@
       </a>
       <nav class="nav-links" aria-label="Sider">
         <a href="#funksjoner">Funksjoner</a>
+        <a href="#raskere">Raskere</a>
         <a href="#personvern">Personvern</a>
         <a href="https://github.com/TrygveDev/bedre-canvas">GitHub</a>
       </nav>
@@ -428,18 +529,26 @@
     <div class="hero wrap">
       <img class="hero-icon" src="assets/icon-128.png" alt="" width="88" height="88">
       <h1>Canvas, bare bedre.</h1>
-      <p class="lede">En gratis Chrome-utvidelse som rydder opp i Canvas LMS og viser neste frist øverst på dashboardet.</p>
+      <p class="lede">En gratis utvidelse for Chrome og Firefox som gjør Canvas LMS ryddigere og raskere, og viser neste frist øverst på dashboardet.</p>
       <div class="actions">
-        <a class="button button-primary" href="https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl">
+        <a class="button button-primary for-chrome" href="https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl">
           <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 152v56a16 16 0 0 1-16 16H48a16 16 0 0 1-16-16v-56a8 8 0 0 1 16 0v56h160v-56a8 8 0 0 1 16 0Zm-101.66 5.66a8 8 0 0 0 11.32 0l40-40a8 8 0 0 0-11.32-11.32L136 132.69V40a8 8 0 0 0-16 0v92.69l-26.34-26.35a8 8 0 0 0-11.32 11.32Z"/></svg>
           Legg til i Chrome
+        </a>
+        <a class="button button-primary for-firefox" href="https://addons.mozilla.org/firefox/addon/bedre-canvas/">
+          <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 152v56a16 16 0 0 1-16 16H48a16 16 0 0 1-16-16v-56a8 8 0 0 1 16 0v56h160v-56a8 8 0 0 1 16 0Zm-101.66 5.66a8 8 0 0 0 11.32 0l40-40a8 8 0 0 0-11.32-11.32L136 132.69V40a8 8 0 0 0-16 0v92.69l-26.34-26.35a8 8 0 0 0-11.32 11.32Z"/></svg>
+          Legg til i Firefox
         </a>
         <a class="button button-secondary" href="https://github.com/TrygveDev/bedre-canvas">
           <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32ZM200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48 8 8 0 0 0 1.1-7.69 43.81 43.81 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.81 43.81 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.72 41.72 0 0 1 7 22.52Z"/></svg>
           Se koden
         </a>
       </div>
-      <p class="note">Gratis i Chrome Web Store. Virker på Canvas hos Instructure, og på skoler med eget Canvas-domene.</p>
+      <p class="note">
+        <span class="for-chrome">Gratis i Chrome Web Store. Bruker du Firefox? <a href="https://addons.mozilla.org/firefox/addon/bedre-canvas/">Hent den i Firefox Add-ons</a>.</span>
+        <span class="for-firefox">Gratis i Firefox Add-ons. Bruker du Chrome eller Edge? <a href="https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl">Hent den i Chrome Web Store</a>.</span>
+        Virker på Canvas hos Instructure, og på skoler med eget Canvas-domene.
+      </p>
 
       <div class="window reveal">
         <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -484,6 +593,64 @@
           <h3>Skolens farger</h3>
           <p>Bruker fargene skolen din har i Canvas, eller en farge du velger selv.</p>
         </article>
+      </div>
+    </section>
+
+    <section id="raskere" class="wrap">
+      <div class="split reverse">
+        <div class="split-text reveal">
+          <p class="eyebrow">Raskere</p>
+          <h2>Mindre venting på Canvas.</h2>
+          <p class="section-lede">Bedre Canvas henter det du trenger mens Canvas fortsatt laster. Fristene står klare på under et sekund, og oppgaver åpnes nesten med en gang.</p>
+          <ul class="checklist">
+            <li><strong>Fristene hentes med en gang.</strong> Dashboardet venter ikke på at Canvas blir ferdig med sine egne skript.</li>
+            <li><strong>Husker siste oversikt.</strong> Neste gang står dashboardet klart på rundt et halvt sekund, og oppdateres når Canvas svarer.</li>
+            <li><strong>Sider lastes før du klikker.</strong> Kalender, innboks og oppgaver er klare når du trenger dem.</li>
+            <li><strong>Ingenting hopper.</strong> Du ser hvor innholdet kommer mens det lastes, og siden står stille.</li>
+          </ul>
+        </div>
+        <figure class="speed reveal">
+          <figcaption class="speed-legend">
+            <span style="--swatch: var(--before)">Uten Bedre Canvas</span>
+            <span style="--swatch: var(--after)">Med Bedre Canvas</span>
+          </figcaption>
+
+          <div class="speed-row">
+            <div class="speed-head">
+              <h3>Dashboardet, første besøk</h3>
+              <span class="speed-gain">56&nbsp;% raskere</span>
+            </div>
+            <div class="bar">
+              <span>Uten</span>
+              <span class="bar-track"><span class="bar-fill" style="--ms: 1502"></span></span>
+              <span class="bar-value">1&nbsp;502&nbsp;ms</span>
+            </div>
+            <div class="bar bar-after">
+              <span>Med</span>
+              <span class="bar-track"><span class="bar-fill" style="--ms: 661"></span></span>
+              <span class="bar-value">661&nbsp;ms</span>
+            </div>
+          </div>
+
+          <div class="speed-row">
+            <div class="speed-head">
+              <h3>«Åpne oppgaven»</h3>
+              <span class="speed-gain">89&nbsp;% raskere</span>
+            </div>
+            <div class="bar">
+              <span>Uten</span>
+              <span class="bar-track"><span class="bar-fill" style="--ms: 1068"></span></span>
+              <span class="bar-value">1&nbsp;068&nbsp;ms</span>
+            </div>
+            <div class="bar bar-after">
+              <span>Med</span>
+              <span class="bar-track"><span class="bar-fill" style="--ms: 116"></span></span>
+              <span class="bar-value">116&nbsp;ms</span>
+            </div>
+          </div>
+
+          <p class="speed-note">Tid til innholdet er synlig, kortere er bedre. Median av fem målinger på Canvas hos OsloMet i Chrome, oktober 2026. Sidene lastes på forhånd bare i Chrome, så i Firefox åpnes oppgaver i vanlig fart.</p>
+        </figure>
       </div>
     </section>
 
@@ -537,7 +704,8 @@
       <h2 class="reveal">Klar for et bedre Canvas?</h2>
       <p class="section-lede">Gratis, og på plass med en gang du åpner Canvas.</p>
       <div class="actions">
-        <a class="button button-primary" href="https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl">Legg til i Chrome</a>
+        <a class="button button-primary for-chrome" href="https://chromewebstore.google.com/detail/bedre-canvas/bceihlocdogakenkkccccekeggahmkpl">Legg til i Chrome</a>
+        <a class="button button-primary for-firefox" href="https://addons.mozilla.org/firefox/addon/bedre-canvas/">Legg til i Firefox</a>
       </div>
     </section>
   </main>
