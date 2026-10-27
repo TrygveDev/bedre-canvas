@@ -63,6 +63,15 @@
   }
 
   const courseCode = (c) => (c?.code || "").split(/[-\s]/)[0] || "Emne";
+  // Før emnene er hentet: koden står først i navnet Canvas sender med hver frist.
+  const codeOf = (course, contextName) =>
+    course ? courseCode(course) : (contextName || "").split(/[-\s]/)[0] || "Emne";
+
+  // Emnene er ikke hentet ennå (se render). Da får fargebrikker og emnenavn skjeletter.
+  let coursesPending = false;
+  const skel = (width, kind = "") => el("span", { class: `bcd-skel ${kind}`, style: width && `width:${width}` });
+  const skelPanel = (title) =>
+    el("section", { class: "bcd-panel" }, el("h2", {}, title), skel("85%"), skel("60%", "is-small"), skel("72%"), skel("50%", "is-small"));
   const courseName = (c, fallback) => {
     if (!c) return fallback || "";
     const n = c.name || "";
@@ -93,27 +102,84 @@
     }
   }
 
-  async function load() {
+  // Fristene og emnene hentes hver for seg: fristene svarer etter et par hundre millisekunder,
+  // emnekortene først etter nesten et sekund, og de trengs bare til emnenavn og farger. Siden
+  // tegnes med fristene så snart de er hentet (se render).
+  const load = () => ({ items: loadItems(), courses: loadCourses() });
+
+  // Bare feltene normalise bruker, så mellomlageret blir lite og kan sammenlignes med et nytt svar.
+  async function loadItems() {
     const now = new Date();
     const start = addDays(now, -PAST_DAYS).toISOString();
     const end = addDays(now, FUTURE_DAYS).toISOString();
-    const [items, cards, colors] = await Promise.all([
-      getAll(`/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=100`),
+    const items = await getAll(`/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=100`);
+    return items.map((i) => ({
+      course_id: i.course_id,
+      submissions: i.submissions,
+      planner_override: i.planner_override && {
+        id: i.planner_override.id,
+        marked_complete: i.planner_override.marked_complete,
+      },
+      plannable_type: i.plannable_type,
+      plannable: i.plannable && {
+        title: i.plannable.title,
+        name: i.plannable.name,
+        details: i.plannable.details,
+        points_possible: i.plannable.points_possible,
+      },
+      plannable_date: i.plannable_date,
+      html_url: i.html_url,
+      new_activity: i.new_activity,
+      context_name: i.context_name,
+      plannable_id: i.plannable_id,
+    }));
+  }
+
+  // Feiler kallene, vises emnene uten navn og farge, som før. Gir aldri en feil videre.
+  async function loadCourses() {
+    const [cards, colors] = await Promise.all([
       getAll("/api/v1/dashboard/dashboard_cards").catch(() => []),
       getColors(),
     ]);
+    return cards.map((c) => ({
+      id: c.id,
+      code: c.courseCode,
+      name: c.originalName || c.shortName,
+      href: c.href,
+      color: colors.custom_colors?.[`course_${c.id}`] || c.color || "#667085",
+    }));
+  }
 
-    const courses = new Map();
-    for (const c of cards) {
-      courses.set(String(c.id), {
-        id: c.id,
-        code: c.courseCode,
-        name: c.originalName || c.shortName,
-        href: c.href,
-        color: colors.custom_colors?.[`course_${c.id}`] || c.color || "#667085",
-      });
+  // Siste svar huskes i chrome.storage.session, som bare ligger i minnet og tømmes når nettleseren
+  // lukkes. Da tegnes dashboardet med en gang neste gang, og oppdateres når Canvas har svart.
+  // Nøkkelen har med bruker-ID-en, så en annen som logger inn i samme nettleser ikke ser dine
+  // frister. Uten tilgang til lageret (f.eks. i Firefox) hentes alt på nytt som før.
+  const CACHE_AGE = 12 * 36e5;
+  let cacheKey;
+  function getCacheKey() {
+    if (cacheKey === undefined) {
+      // Canvas legger ENV i et innebygd skript i <head>, før dashboardet.
+      const env = [...document.scripts].find((s) => !s.src && s.text.includes('"current_user_id"'));
+      const id = env && /"current_user_id":"?(\d+)/.exec(env.text)?.[1];
+      cacheKey = id ? `dash:${location.origin}:${id}` : null;
     }
-    return { items, courses };
+    return cacheKey;
+  }
+
+  async function readCache() {
+    const key = getCacheKey();
+    if (!key) return null;
+    try {
+      const { [key]: saved } = await chrome.storage.session.get(key);
+      return saved && Date.now() - saved.at < CACHE_AGE ? saved.data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeCache(data) {
+    const key = getCacheKey();
+    if (key) chrome.storage.session?.set({ [key]: { at: Date.now(), data } }).catch(() => {});
   }
 
   function normalise(item, courses) {
@@ -225,6 +291,9 @@
   };
 
   function chip(course, contextName) {
+    if (!course && coursesPending) {
+      return el("span", { class: "bcd-chip" }, skel(null, "is-swatch"), codeOf(null, contextName));
+    }
     return el(
       "span",
       { class: "bcd-chip", title: course?.name || contextName || "" },
@@ -292,7 +361,7 @@
         { class: "bcd-hero-course" },
         chip(next.course, next.contextName),
         " ",
-        courseName(next.course, next.contextName)
+        !next.course && coursesPending ? skel("180px", "is-inline") : courseName(next.course, next.contextName)
       ),
       el(
         "p",
@@ -322,7 +391,7 @@
             "li",
             {},
             el("a", { href: m.href }, m.title),
-            el("span", { class: "bcd-item-meta" }, `${courseCode(m.course)} · frist ${fmtDay.format(m.date)}`)
+            el("span", { class: "bcd-item-meta" }, `${codeOf(m.course, m.contextName)} · frist ${fmtDay.format(m.date)}`)
           )
         )
       )
@@ -427,7 +496,7 @@
                 a.isNew ? el("span", { class: "bcd-new" }, "Ulest") : null,
                 a.title
               ),
-              el("span", { class: "bcd-item-meta" }, `${courseCode(a.course)} · ${relative(a.date, now)}`)
+              el("span", { class: "bcd-item-meta" }, `${codeOf(a.course, a.contextName)} · ${relative(a.date, now)}`)
             )
           )
         )
@@ -441,6 +510,7 @@
   }
 
   function courseList(courses) {
+    if (coursesPending) return skelPanel("Emner");
     if (!courses.size) return null;
     return el(
       "section",
@@ -473,6 +543,7 @@
     // Også en visning fra en eldre versjon av utvidelsen som fortsatt står i fanen.
     document.querySelectorAll("#bedre-dashboard").forEach((n) => n.remove());
     mounted = node;
+    shownJson = "";
     const planner = document.querySelector("#dashboard-planner");
     const header = document.querySelector("#dashboard_header_container");
     if (planner) planner.before(node);
@@ -494,42 +565,72 @@
     return Math.ceil(((t - y) / DAY + 1) / 7);
   }
 
-  // quiet: oppdater i bakgrunnen uten å vise «Henter …» (brukes etter at et gjøremål er lagt til).
+  // Plassholdere med samme form som dashboardet, så ingenting hopper når fristene kommer.
+  function skeleton() {
+    const bar = skel;
+    const item = (width) =>
+      el(
+        "li",
+        { class: "bcd-item" },
+        bar("18px", "is-box"),
+        bar("56px", "is-chip"),
+        el("div", { class: "bcd-item-main" }, bar(width), bar("30%", "is-small"))
+      );
+    const day = (...widths) =>
+      el(
+        "li",
+        { class: "bcd-day" },
+        el("div", { class: "bcd-date" }, bar("64px")),
+        el("ul", { class: "bcd-items" }, widths.map(item))
+      );
+    return el(
+      "div",
+      { class: "bcd-grid is-loading", "aria-busy": "true" },
+      el("p", { class: "screenreader-only", role: "status" }, "Henter frister fra Canvas …"),
+      el(
+        "div",
+        { class: "bcd-col-main" },
+        el("section", { class: "bcd-hero" }, bar("88px", "is-small"), bar("68%", "is-title"), bar("38%"), bar("140px", "is-button")),
+        el(
+          "section",
+          { class: "bcd-timeline" },
+          el("div", { class: "bcd-section-head" }, el("h2", {}, "Frister")),
+          el("ol", { class: "bcd-days" }, day("62%"), day("48%", "70%"), day("55%"))
+        )
+      ),
+      el("aside", { class: "bcd-col-side" }, skelPanel("Kunngjøringer"), skelPanel("Emner"))
+    );
+  }
+
+  // Fristene og mellomlageret hentes så snart skriptet kjører, mens Canvas fortsatt laster siden
+  // (se apply). Svaret fra lageret kan bli liggende til Canvas er ferdig med skriptene sine, så
+  // skjelettet vises med en gang hvis det ikke har kommet.
+  let pending = null;
+  const LATER = Symbol();
+
+  // quiet: oppdater i bakgrunnen uten skjelett (brukes etter at et gjøremål er lagt til).
   async function render({ quiet = false } = {}) {
     silencePlannerAlerts();
     watchTodoTray();
-    if (!quiet || !mounted) {
-      shell(header(), el("p", { class: "bcd-loading", role: "status" }, "Henter frister fra Canvas …"));
-    }
+    const { items, courses, cache } = pending || { ...load(), cache: quiet ? null : readCache() };
+    pending = null;
+    let cached = await Promise.race([cache, LATER]);
+    if (cached === LATER || (!cached && (!quiet || !mounted))) shell(header(), skeleton());
+    if (cached === LATER) cached = await cache;
+    if (cached) show(cached);
+
+    // Fristene tegnes så snart de er hentet. Har emnene ikke kommet ennå, brukes de som allerede
+    // står på siden eller i mellomlageret, ellers skjeletter der de mangler.
+    let data;
     try {
-      const { items, courses } = await load();
-      const now = new Date();
-      const all = items.map((i) => normalise(i, courses)).sort((a, b) => a.date - b.date);
-      const news = all.filter((i) => i.type === "announcement").reverse();
-      const deadlines = all.filter((i) => i.type !== "announcement");
-      const next = deadlines.find((i) => i.date >= now && !i.complete);
-      const missing = deadlines.filter((i) => i.status?.[1] === "missing");
-
-      shell(
-        header(),
-        el(
-          "div",
-          { class: "bcd-grid" },
-          el("div", { class: "bcd-col-main" }, hero(next, now), missingBlock(missing), timeline(deadlines, now)),
-          el("aside", { class: "bcd-col-side" }, announcements(news, now), courseList(courses))
-        )
-      );
-
-      clearInterval(tick);
-      tick = setInterval(() => {
-        if (!alive()) return clearInterval(tick);
-        const t = new Date();
-        mounted?.querySelectorAll("[data-at]").forEach((n) => {
-          n.textContent = relative(new Date(+n.dataset.at), t);
-        });
-      }, 60e3);
+      const fresh = await items;
+      const known = await Promise.race([courses, LATER]);
+      data = { items: fresh, courses: known === LATER ? (shown?.courses ?? cached?.courses ?? null) : known };
+      show(data);
     } catch (err) {
-      shell(
+      // Det som står der fra mellomlageret, er bedre enn en feilmelding.
+      if (cached) return console.warn("Bedre Canvas: fikk ikke oppdatert dashboardet", err);
+      return shell(
         header(),
         el(
           "div",
@@ -539,7 +640,7 @@
           el(
             "div",
             { class: "bcd-error-actions" },
-            el("button", { type: "button", class: "bcd-button", onclick: render }, "Prøv igjen"),
+            el("button", { type: "button", class: "bcd-button", onclick: () => render() }, "Prøv igjen"),
             el(
               "button",
               {
@@ -556,6 +657,50 @@
         )
       );
     }
+    data = { ...data, courses: await courses };
+    show(data);
+    writeCache(data);
+  }
+
+  // Tegner bare når noe faktisk er endret, så fokus og åpne detaljer ikke forsvinner.
+  let shown = null;
+  let shownJson = "";
+  function show(data) {
+    const json = JSON.stringify(data);
+    if (mounted && json === shownJson) return;
+    draw(data);
+    shown = data;
+    shownJson = json;
+  }
+
+  function draw(data) {
+    coursesPending = !data.courses;
+    const courses = new Map((data.courses || []).map((c) => [String(c.id), c]));
+    const now = new Date();
+    const all = data.items.map((i) => normalise(i, courses)).sort((a, b) => a.date - b.date);
+    const news = all.filter((i) => i.type === "announcement").reverse();
+    const deadlines = all.filter((i) => i.type !== "announcement");
+    const next = deadlines.find((i) => i.date >= now && !i.complete);
+    const missing = deadlines.filter((i) => i.status?.[1] === "missing");
+
+    shell(
+      header(),
+      el(
+        "div",
+        { class: "bcd-grid" },
+        el("div", { class: "bcd-col-main" }, hero(next, now), missingBlock(missing), timeline(deadlines, now)),
+        el("aside", { class: "bcd-col-side" }, announcements(news, now), courseList(courses))
+      )
+    );
+
+    clearInterval(tick);
+    tick = setInterval(() => {
+      if (!alive()) return clearInterval(tick);
+      const t = new Date();
+      mounted?.querySelectorAll("[data-at]").forEach((n) => {
+        n.textContent = relative(new Date(+n.dataset.at), t);
+      });
+    }, 60e3);
   }
 
   // Canvas sin skjulte planner kjører fortsatt og varsler «Nothing planned today. Selecting
@@ -607,11 +752,29 @@
     root.classList.toggle("bc-dash", on);
     if (!on) return unmount();
     if (mounted) return;
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => document.querySelector("#dashboard") && render(), { once: true });
-    } else if (document.querySelector("#dashboard")) {
-      render();
+    // Canvas bruker et halvt sekund til på skriptene sine etter at dashboardet står i HTML-en, så
+    // vi henter og tegner med en gang plassen vår finnes, uten å vente på DOMContentLoaded.
+    pending ||= { ...load(), cache: readCache() };
+    pending.items.catch(() => {}); // feilen vises av render
+    whenReady(render);
+  }
+
+  function whenReady(fn) {
+    const ready = () => document.querySelector("#dashboard-planner");
+    if (ready() || document.readyState !== "loading") {
+      if (document.querySelector("#dashboard")) fn();
+      return;
     }
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      observer.disconnect();
+      if (document.querySelector("#dashboard")) fn();
+    };
+    const observer = new MutationObserver(() => ready() && go());
+    observer.observe(document, { childList: true, subtree: true });
+    document.addEventListener("DOMContentLoaded", go, { once: true });
   }
 
   chrome.storage.sync.get(DEFAULTS, apply);

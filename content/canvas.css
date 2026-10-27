@@ -40,6 +40,7 @@ html.bc {
   --bc-border-strong: #c9ced6;
   --bc-text: #1d2433;
   --bc-muted: #5b6474;
+  --bc-skel: color-mix(in srgb, var(--bc-text) 9%, transparent); /* plassholdere mens noe lastes */
 
   --bc-fs-title: 1.75rem;
   --bc-fs-heading: 1.125rem;
@@ -776,6 +777,16 @@ html.bc-live,
 html.bc-live :is(img, video, iframe, canvas, picture, [style*="background-image"],
   .ic-DashboardCard__header_hero, .ic-avatar, .fs-exclude, .bcd-swatch) {
   transition: filter 0.35s ease;
+}
+
+/* Skjeletter pulserer rolig mens Canvas svarer (dashboardet, kalenderen og innboksen). */
+@keyframes bc-skel {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.45;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

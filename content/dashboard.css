@@ -474,9 +474,75 @@ html.bc .bcd-courses .bcd-swatch {
 }
 
 /* Tilstander */
-html.bc .bcd-loading {
-  color: var(--bc-muted);
-  padding: 24px 0;
+/* Skjelettet har samme flater som dashboardet, med grå streker der teksten kommer. */
+html.bc .bcd-skel {
+  display: block;
+  max-width: 100%;
+  height: 0.875rem;
+  border-radius: var(--bc-radius-xs);
+  background: var(--bc-skel);
+  animation: bc-skel 0.9s ease-in-out infinite alternate;
+}
+
+html.bc .bcd-skel + .bcd-skel {
+  margin-top: 10px;
+}
+
+html.bc .bcd-item > .bcd-skel {
+  margin: 0;
+}
+
+html.bc .bcd-skel.is-small {
+  height: 0.6875rem;
+}
+
+html.bc .bcd-skel.is-title {
+  height: 1.75rem;
+  margin-block: 12px 14px;
+  border-radius: var(--bc-radius-sm);
+}
+
+html.bc .bcd-skel.is-button {
+  height: 36px;
+  margin-top: 18px;
+  border-radius: var(--bc-radius-sm);
+}
+
+html.bc .bcd-skel.is-box {
+  height: 18px;
+  border-radius: var(--bc-radius-xs);
+}
+
+html.bc .bcd-skel.is-chip {
+  height: 22px;
+  border-radius: 999px;
+}
+
+/* Fargebrikke og emnenavn mens emnene fortsatt hentes. Koden står der allerede. */
+html.bc .bcd-skel.is-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+html.bc .bcd-skel.is-inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+html.bc .bcd-panel .bcd-skel:first-of-type {
+  margin-top: 14px;
+}
+
+html.bc .bcd-date .bcd-skel {
+  margin-top: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.bc .bcd-skel {
+    animation: none;
+  }
 }
 
 html.bc .bcd-error {

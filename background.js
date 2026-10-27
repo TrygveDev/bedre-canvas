@@ -14,6 +14,10 @@ const PANEL = "popup/popup.html";
 const HAS_PANEL = !!chrome.sidePanel;
 if (HAS_PANEL) chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(console.error);
 
+// Dashboardet husker siste svar fra Canvas i session-lageret (se content/dashboard.js). Det ligger
+// bare i minnet og tømmes når nettleseren lukkes. Firefox har ikke setAccessLevel.
+chrome.storage.session.setAccessLevel?.({ accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS" })?.catch(console.error);
+
 // Mønstrene våre er alltid https://<vert>/*, så bare verten trenger å sjekkes.
 function matchesPattern(pattern, url) {
   const host = pattern.match(/^https:\/\/([^/]+)\//)?.[1];

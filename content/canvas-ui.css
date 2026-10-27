@@ -57,6 +57,24 @@ html.bc .ic-Dashboard-header__layout {
   border-bottom: 0 !important;
 }
 
+/* Canvas tegner topplinjen et halvt sekund etter resten av siden. Til da holdes plassen av, med
+   et skjelett der «Dashboard» kommer, ellers skyves alt under 56px ned når den dukker opp.
+   Målt i Canvas: med raden på plass står innholdet under 64px lenger ned enn uten. */
+html.bc #dashboard_header_container:empty::before {
+  content: "";
+  display: block;
+  height: 64px;
+  background: linear-gradient(var(--bc-skel), var(--bc-skel)) 0 6px / 132px 30px no-repeat;
+}
+
+/* Planner-knappene viser «Loading…» et øyeblikk, og den er høyere enn raden. Fast høyde, så
+   ingenting hopper. På smale skjermer kan raden brytes, så der får den vokse. */
+@media (min-width: 768px) {
+  html.bc .ic-Dashboard-header__layout {
+    height: 56px;
+  }
+}
+
 html.bc #dashboard_header_container [class*="-view-heading"] {
   font-size: var(--bc-fs-title) !important;
   font-weight: 600 !important;

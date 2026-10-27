@@ -67,8 +67,60 @@
     }
   }
 
+  // Sider brukeren sannsynligvis åpner, lastes i bakgrunnen før klikket, så de vises med en gang.
+  // Bare sider som ikke endrer noe når de åpnes: kunngjøringer og diskusjoner merkes som lest, og
+  // quizforsøk og eksterne verktøy kan starte, så de står utenfor.
+  //  - Menyen (dashboard, kalender, innboks) og «Åpne oppgaven» bygges ferdig med en gang siden
+  //    er lastet, uten å vente på musen. Det er de klikkene som skjer oftest.
+  //  - De andre lenkene på dashboardet hentes med en gang, men bare HTML-en, som er billig.
+  //  - Alle andre trygge lenker bygges når musen hviler litt på dem eller trykkes ned. Å bygge
+  //    alt med en gang ville gitt opptil ti fulle Canvas-sider per side du åpner, og Canvas
+  //    logger en sidevisning for hver av dem.
+  // Firefox og eldre Chrome kjenner ikke speculationrules og hopper over reglene.
+  const SAFE_PATHS = [
+    "/",
+    "/calendar",
+    "/conversations",
+    "/grades",
+    "/courses/:id",
+    "/courses/:id/assignments",
+    "/courses/:id/assignments/:item",
+    "/courses/:id/modules",
+    "/courses/:id/grades",
+  ].map((p) => (p === "/" ? p : p + "{/}?"));
+  const SKIP = { not: { selector_matches: "[download], [target=_blank], [data-method]" } };
+  const safe = (selector, eagerness) => ({
+    source: "document",
+    where: { and: [{ href_matches: SAFE_PATHS }, ...(selector ? [{ selector_matches: selector }] : []), SKIP] },
+    eagerness,
+  });
+  const RULES = {
+    prerender: [safe("#menu a, .bcd-hero a", "immediate"), safe(null, "moderate")],
+    // Når Chrome ikke vil bygge siden (f.eks. med Minnesparing på), har menyen og «Åpne oppgaven»
+    // likevel HTML-en klar.
+    prefetch: [safe("#menu a, #bedre-dashboard a", "immediate")],
+  };
+  let rules = null;
+  function speculate(on) {
+    if (!HTMLScriptElement.supports?.("speculationrules")) return;
+    if (on && !rules) {
+      rules = document.createElement("script");
+      rules.type = "speculationrules";
+      rules.textContent = JSON.stringify(RULES);
+      (document.head || root).append(rules);
+    } else if (!on && rules) {
+      rules.remove(); // avbryter det som er bygget
+      rules = null;
+    }
+  }
+
+  // Innboksen har ingen egen klasse fra Canvas før appen er tegnet, så skjelettet i pages.css
+  // trenger denne.
+  if (location.pathname.startsWith("/conversations")) root.dataset.bcPage = "inbox";
+
   function apply(s) {
     root.classList.toggle("bc", s.enabled);
+    speculate(s.enabled);
     root.dataset.bcTheme = s.theme;
     root.dataset.bcNav = s.nav;
     if (s.accent === "school") {

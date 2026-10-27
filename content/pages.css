@@ -1526,6 +1526,54 @@ html.bc #right-side .element_toggler {
   font-weight: 600;
 }
 
+/* Mens kalenderen lastes. Canvas tegner rutenettet først et halvt sekund etter at siden er
+   lastet, så til da står et tomt månedsrutenett der kalenderen kommer. Hendelsene kommer enda
+   senere: mens de hentes, har oppdateringsknappen klassen .loading, og da får noen av dagene en
+   grå plassholder. Det gjelder også når du blar til en annen måned. */
+html.bc #calendar-app:empty {
+  height: var(--bc-cal-avail, calc(100vh - 220px));
+  min-height: 320px;
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  background:
+    linear-gradient(to right, var(--bc-border) 1px, transparent 1px) 0 0 / calc(100% / 7) 100%,
+    linear-gradient(to bottom, var(--bc-border) 1px, transparent 1px) 0 0 / 100% calc(100% / 6),
+    var(--bc-surface);
+}
+
+/* Verktøylinjen over kalenderen er også tom til da. Den får høyden sin, så rutenettet ikke hopper. */
+html.bc #calendar_header:empty {
+  height: 68px;
+}
+
+html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-month-view .fc-bg .fc-day {
+  position: relative;
+}
+
+html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-month-view .fc-row:nth-child(odd) .fc-bg .fc-day:nth-child(3n + 2)::after,
+html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-month-view .fc-row:nth-child(even) .fc-bg .fc-day:nth-child(3n + 1)::after,
+html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-month-view .fc-row:nth-child(4n + 1) .fc-bg .fc-day:nth-child(7n + 5)::before {
+  content: "";
+  position: absolute;
+  inset: 36px 6px auto;
+  height: 16px;
+  border-radius: var(--bc-radius-xs);
+  background: var(--bc-skel);
+  animation: bc-skel 0.9s ease-in-out infinite alternate;
+}
+
+html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-month-view .fc-row:nth-child(4n + 1) .fc-bg .fc-day:nth-child(7n + 5)::before {
+  top: 58px;
+  right: 30%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-day::after,
+  html.bc body:has(#refresh_calendar_link.loading) #calendar-app .fc-day::before {
+    animation: none;
+  }
+}
+
 /* Kalenderlisten: navnene i vanlig vekt og liten skrift. Canvas setter dem i 13px fet. */
 html.bc #calendar-list-holder .context_list_context,
 html.bc #calendars-context-list li,
@@ -1641,6 +1689,64 @@ html.bc body:has([data-testid="tool-bar"]) [class*="-flexItem"]:has(> svg[name="
 html.bc body:has([data-testid="tool-bar"]) svg[name="IconEmail"] {
   font-size: 48px !important;
   color: var(--bc-border-strong) !important;
+}
+
+/* Mens innboksen lastes. Først er siden tom til Canvas har lastet appen, og så snurrer en
+   sirkel i listen mens samtalene hentes (også når du bytter innboks eller emne). Begge deler blir
+   et skjelett av samtalelisten i stedet: to grå streker per samtale og en skillelinje. */
+html.bc[data-bc-page="inbox"] #content:not(:has(*))::before,
+html.bc [data-testid="list-items-desktop"]:has(> [data-testid="menu-loading-spinner"])::before {
+  --row: 76px;
+  content: "";
+  display: block;
+  background:
+    repeating-linear-gradient(transparent 0 18px, var(--bc-skel) 18px 30px, transparent 30px var(--row)) 20px var(--top, 0) / 180px 100% no-repeat,
+    repeating-linear-gradient(transparent 0 42px, var(--bc-skel) 42px 52px, transparent 52px var(--row)) 20px var(--top, 0) / min(300px, 75%) 100% no-repeat,
+    repeating-linear-gradient(transparent 0 calc(var(--row) - 1px), var(--bc-border) calc(var(--row) - 1px) var(--row)) 0 var(--top, 0) / min(400px, 100%) 100% no-repeat;
+  animation: bc-skel 0.9s ease-in-out infinite alternate;
+}
+
+/* Før appen finnes: hele innboksen som én flate, med verktøylinjen og de to nedtrekksmenyene
+   øverst og listen til venstre, i samme mål som Canvas tegner dem. Den står bare et øyeblikk, så
+   flaten pulserer ikke. */
+html.bc[data-bc-page="inbox"] #content:not(:has(*))::before {
+  --top: 81px;
+  height: calc(100vh - 56px);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
+  background-color: var(--bc-surface);
+  background-image:
+    repeating-linear-gradient(transparent 0 18px, var(--bc-skel) 18px 30px, transparent 30px var(--row)),
+    repeating-linear-gradient(transparent 0 42px, var(--bc-skel) 42px 52px, transparent 52px var(--row)),
+    repeating-linear-gradient(transparent 0 calc(var(--row) - 1px), var(--bc-border) calc(var(--row) - 1px) var(--row)),
+    linear-gradient(var(--bc-border), var(--bc-border)),
+    linear-gradient(var(--bc-border), var(--bc-border)),
+    linear-gradient(var(--bc-skel), var(--bc-skel)),
+    linear-gradient(var(--bc-skel), var(--bc-skel));
+  background-position: 20px var(--top), 20px var(--top), 0 var(--top), 0 80px, min(400px, 100%) 80px, 21px 22px, 380px 22px;
+  background-size: 180px 100%, min(300px, 75%) 100%, min(400px, 100%) 100%, 100% 1px, 1px 100%, 340px 36px, 340px 36px;
+  background-repeat: no-repeat;
+  animation: none;
+}
+
+html.bc [data-testid="list-items-desktop"]:has(> [data-testid="menu-loading-spinner"])::before {
+  height: calc(var(--row) * 6);
+}
+
+/* Sirkelen skjules bare for øyet, så skjermlesere fortsatt hører at listen lastes. */
+html.bc [data-testid="list-items-desktop"] > [data-testid="menu-loading-spinner"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.bc[data-bc-page="inbox"] #content::before,
+  html.bc [data-testid="list-items-desktop"]::before {
+    animation: none;
+  }
 }
 
 /* Felles: søkefelt og filtre */
