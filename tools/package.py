@@ -5,12 +5,13 @@ og appikonene. Phosphor-SVG-ene ligger allerede inne i content/icons.css, og sto
 dokumentasjonen hører ikke hjemme i pakken.
 
 Firefox-pakken får et eget manifest laget fra manifest.json (se firefox_manifest under). Koden er den
-samme i begge.
+samme i begge. dist/firefox/ er den samme Firefox-pakken upakket.
 
     python tools/package.py
 """
 
 import json
+import shutil
 import zipfile
 from pathlib import Path
 
@@ -62,3 +63,14 @@ for name, text in [("bedre-canvas", chrome), ("bedre-canvas-firefox", firefox)]:
         for f in files:
             z.write(f, f.relative_to(ROOT).as_posix())
     print(f"{out.relative_to(ROOT)}: {len(files) + 1} filer, {out.stat().st_size // 1024} kB")
+
+# Upakket Firefox-versjon: last den inn i about:debugging, og tools/check-firefox.mjs sjekker den.
+unpacked = ROOT / "dist" / "firefox"
+shutil.rmtree(unpacked, ignore_errors=True)
+unpacked.mkdir()
+(unpacked / "manifest.json").write_text(firefox, encoding="utf-8")
+for f in files:
+    target = unpacked / f.relative_to(ROOT)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(f, target)
+print(f"{unpacked.relative_to(ROOT)}: upakket for Firefox")

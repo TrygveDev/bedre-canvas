@@ -1,5 +1,6 @@
 # Sjekker hver pull request før den kan flettes: commit-meldingene og tittelen, at utvidelsen
-# følger Manifest V3 og kravene i Chrome Web Store, og at pakken kan bygges.
+# følger Manifest V3 og kravene i Chrome Web Store, at den virker i Firefox, og at pakkene kan
+# bygges.
 name: CI
 
 on:
@@ -63,8 +64,13 @@ jobs:
             echo "::warning::Koden er endret uten en linje under «Ikke publisert» i CHROMEWEBSTORE.md. Legg til en hvis brukerne merker endringen."
           fi
 
-      - name: Bygg pakken
+      - name: Bygg pakkene
         run: python3 tools/package.py
+
+      # Mozillas egen linter på Firefox-versjonen. Feiler på Chrome-API-er som Firefox ikke har,
+      # med mindre de står i CHROME_ONLY i tools/check-firefox.mjs.
+      - name: Firefox (web-ext lint)
+        run: node tools/check-firefox.mjs
 
       - uses: actions/upload-artifact@v7
         with:
