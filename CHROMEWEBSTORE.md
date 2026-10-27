@@ -8,7 +8,8 @@ endres.
 
 ## Status før neste opplasting
 
-- [x] **Versjon:** 0.3.0 sendes til gjennomgang med release-workflowen 2026-10-27. 0.2.2 var
+- [x] **Versjon:** 0.3.0 ble sendt til gjennomgang med release-workflowen 2026-10-27
+      (`PENDING_REVIEW`). 0.2.2 var
       publisert (`PUBLISHED`, 100 %) da, sjekket med `cws-check.yml`. Senere versjoner slippes som
       beskrevet i [RELEASING.md](RELEASING.md).
 - [ ] **Lang beskrivelse:** ny linje om raskere lasting under «Hva du får». Workflowen oppdaterer
