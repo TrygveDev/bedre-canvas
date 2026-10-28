@@ -69,6 +69,9 @@ Etter en endring: kjør `python tools/package.py` på nytt og klikk **Last inn p
 - **Rør ikke teksten Canvas tegner med React.** Sett data-attributter og CSS-variabler i stedet,
   som `content/trays.js` gjør.
 - **Kommentarer forklarer hvorfor**, ikke hva, på norsk som resten av koden.
+- **Tekst brukeren ser, står i `content/i18n.js`** på både norsk og engelsk, og hentes med
+  `bcI18n.t("nøkkel")` (eller `data-i18n` i `popup.html`). `node tools/check-extension.mjs` stopper
+  hvis en nøkkel mangler på ett av språkene.
 - **Ingen nye tillatelser** i `manifest.json` uten en god grunn. Trenger du en, forklar hvorfor i
   pull requesten, og oppdater begrunnelsen i `CHROMEWEBSTORE.md`.
 - **Ingen data skal sendes noe annet sted enn til Canvas-nettstedet selv.** Ingen analyse,

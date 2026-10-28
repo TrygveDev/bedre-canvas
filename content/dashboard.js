@@ -15,10 +15,17 @@
   let mounted = null;
   let tick = null;
 
-  const fmtDay = new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "numeric", month: "short" });
-  const fmtLong = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long" });
-  const fmtTime = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit" });
+  const { t } = bcI18n;
 
+  // Lages på nytt når språket byttes (se nederst).
+  let fmtDay, fmtLong, fmtTime;
+  function setFormats() {
+    const locale = bcI18n.locale;
+    fmtDay = new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short" });
+    fmtLong = new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long" });
+    fmtTime = new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" });
+  }
+  setFormats();
 
   const el = (tag, attrs = {}, ...kids) => {
     const n = document.createElement(tag);
@@ -41,9 +48,9 @@
 
   function dayLabel(d, now) {
     const diff = daysBetween(now, d);
-    if (diff === 0) return "I dag";
-    if (diff === 1) return "I morgen";
-    if (diff === -1) return "I går";
+    if (diff === 0) return t("today");
+    if (diff === 1) return t("tomorrow");
+    if (diff === -1) return t("yesterday");
     return fmtDay.format(d);
   }
 
@@ -54,18 +61,17 @@
     const h = Math.floor(mins / 60);
     const d = Math.floor(h / 24);
     let txt;
-    if (mins < 60) txt = `${mins} min`;
-    else if (h < 24) txt = `${h} t ${mins % 60} min`;
-    else if (d < 3 && h % 24) txt = `${d} ${d === 1 ? "dag" : "dager"} og ${h % 24} t`;
-    else if (d === 1) txt = "1 dag";
-    else txt = `${d} dager`;
-    return past ? `${txt} siden` : `om ${txt}`;
+    if (mins < 60) txt = t("minutes", mins);
+    else if (h < 24) txt = t("hoursMinutes", h, mins % 60);
+    else if (d < 3 && h % 24) txt = t("daysHours", d, h % 24);
+    else txt = t("days", d);
+    return past ? t("ago", txt) : t("in", txt);
   }
 
-  const courseCode = (c) => (c?.code || "").split(/[-\s]/)[0] || "Emne";
+  const courseCode = (c) => (c?.code || "").split(/[-\s]/)[0] || t("course");
   // Før emnene er hentet: koden står først i navnet Canvas sender med hver frist.
   const codeOf = (course, contextName) =>
-    course ? courseCode(course) : (contextName || "").split(/[-\s]/)[0] || "Emne";
+    course ? courseCode(course) : (contextName || "").split(/[-\s]/)[0] || t("course");
 
   // Emnene er ikke hentet ennå (se render). Da får fargebrikker og emnenavn skjeletter.
   let coursesPending = false;
@@ -83,7 +89,7 @@
     let next = url;
     while (next) {
       const r = await fetch(next, { headers: { Accept: "application/json" }, credentials: "same-origin" });
-      if (!r.ok) throw new Error(`${r.status} fra ${new URL(next, location.origin).pathname}`);
+      if (!r.ok) throw new Error(t("httpError", r.status, new URL(next, location.origin).pathname));
       const data = await r.json();
       out.push(...(Array.isArray(data) ? data : [data]));
       const link = r.headers.get("Link") || "";
@@ -182,32 +188,32 @@
     if (key) chrome.storage.session?.set({ [key]: { at: Date.now(), data } }).catch(() => {});
   }
 
+  const TYPE_LABEL = {
+    assignment: "typeAssignment",
+    quiz: "typeQuiz",
+    discussion_topic: "typeDiscussion",
+    wiki_page: "typePage",
+    calendar_event: "typeEvent",
+    planner_note: "typeNote",
+    assessment_request: "typePeerReview",
+  };
+
   function normalise(item, courses) {
     const course = courses.get(String(item.course_id));
     const s = item.submissions || {};
     const override = item.planner_override;
     let status = null;
-    if (s.graded) status = ["Vurdert", "done"];
-    else if (s.submitted) status = ["Levert", "done"];
-    else if (override?.marked_complete) status = ["Ferdig", "done"];
-    else if (s.missing) status = ["Mangler", "missing"];
+    if (s.graded) status = [t("statusGraded"), "done"];
+    else if (s.submitted) status = [t("statusSubmitted"), "done"];
+    else if (override?.marked_complete) status = [t("statusDone"), "done"];
+    else if (s.missing) status = [t("statusMissing"), "missing"];
     // Samme regel som Canvas sin planner: en avhuking vinner, ellers teller levert som ferdig.
     const complete = override ? !!override.marked_complete : !!(s.submitted || s.graded);
 
-    const types = {
-      assignment: "Oppgave",
-      quiz: "Quiz",
-      discussion_topic: "Diskusjon",
-      wiki_page: "Side",
-      calendar_event: "Hendelse",
-      planner_note: "Notat",
-      assessment_request: "Medstudentvurdering",
-    };
-
     return {
       type: item.plannable_type,
-      typeLabel: types[item.plannable_type] || "Element",
-      title: item.plannable?.title || item.plannable?.name || "Uten tittel",
+      typeLabel: t(TYPE_LABEL[item.plannable_type] || "typeOther"),
+      title: item.plannable?.title || item.plannable?.name || t("untitled"),
       date: new Date(item.plannable_date),
       // Egne gjøremål har ingen side i Canvas, så de vises som tekst og ikke som lenke.
       href: item.html_url || null,
@@ -259,7 +265,7 @@
     const box = el("input", {
       type: "checkbox",
       class: "bcd-check",
-      "aria-label": `Marker «${item.title}» som ferdig`,
+      "aria-label": t("markDone", item.title),
     });
     box.checked = item.complete;
     box.addEventListener("change", async () => {
@@ -272,7 +278,7 @@
         row.classList.toggle("is-complete", want);
       } catch {
         box.checked = !want;
-        row.append(el("span", { class: "bcd-save-error", role: "alert" }, "Kunne ikke lagre. Prøv igjen."));
+        row.append(el("span", { class: "bcd-save-error", role: "alert" }, t("saveFailed")));
       } finally {
         box.disabled = false;
       }
@@ -282,12 +288,12 @@
 
 
   const OPEN_LABEL = {
-    assignment: "Åpne oppgaven",
-    quiz: "Åpne quizen",
-    discussion_topic: "Åpne diskusjonen",
-    wiki_page: "Åpne siden",
-    calendar_event: "Åpne hendelsen",
-    assessment_request: "Åpne vurderingen",
+    assignment: "openAssignment",
+    quiz: "openQuiz",
+    discussion_topic: "openDiscussion",
+    wiki_page: "openPage",
+    calendar_event: "openEvent",
+    assessment_request: "openPeerReview",
   };
 
   function chip(course, contextName) {
@@ -298,7 +304,7 @@
       "span",
       { class: "bcd-chip", title: course?.name || contextName || "" },
       el("span", { class: "bcd-swatch", style: `background:${course?.color || "#667085"}` }),
-      course ? courseCode(course) : contextName || "Personlig"
+      course ? courseCode(course) : contextName || t("personal")
     );
   }
 
@@ -310,7 +316,7 @@
 
   function row(item) {
     const meta = [fmtTime.format(item.date), item.typeLabel];
-    if (item.points) meta.push(`${item.points} poeng`);
+    if (item.points) meta.push(t("points", item.points));
     return el(
       "li",
       { class: "bcd-item" + (item.complete ? " is-complete" : "") },
@@ -332,8 +338,8 @@
   function nowLine(now) {
     return el(
       "li",
-      { class: "bcd-now", "aria-label": `Nå, klokken ${fmtTime.format(now)}` },
-      el("span", { class: "bcd-now-label" }, `Nå ${fmtTime.format(now)}`)
+      { class: "bcd-now", "aria-label": t("nowAt", fmtTime.format(now)) },
+      el("span", { class: "bcd-now-label" }, t("now", fmtTime.format(now)))
     );
   }
 
@@ -342,9 +348,9 @@
       return el(
         "section",
         { class: "bcd-hero is-empty", "aria-labelledby": "bcd-hero-h" },
-        el("h2", { id: "bcd-hero-h", class: "bcd-label" }, "Neste frist"),
-        el("p", { class: "bcd-hero-title" }, `Ingen frister de neste ${FUTURE_DAYS / 7} ukene.`),
-        el("p", { class: "bcd-hero-when" }, "Nye oppgaver dukker opp her så snart de er publisert.")
+        el("h2", { id: "bcd-hero-h", class: "bcd-label" }, t("nextDeadline")),
+        el("p", { class: "bcd-hero-title" }, t("noDeadlinesAhead", FUTURE_DAYS / 7)),
+        el("p", { class: "bcd-hero-when" }, t("newShowUpHere"))
       );
     }
     const hours = (next.date - now) / 36e5;
@@ -352,7 +358,7 @@
     return el(
       "section",
       { class: `bcd-hero ${urgency}`, "aria-labelledby": "bcd-hero-h" },
-      el("h2", { id: "bcd-hero-h", class: "bcd-label" }, "Neste frist"),
+      el("h2", { id: "bcd-hero-h", class: "bcd-label" }, t("nextDeadline")),
       next.href
         ? el("a", { class: "bcd-hero-title", href: next.href }, next.title)
         : el("p", { class: "bcd-hero-title" }, next.title),
@@ -367,9 +373,9 @@
         "p",
         { class: "bcd-hero-when" },
         el("strong", { class: "bcd-countdown", "data-at": +next.date }, relative(next.date, now)),
-        el("span", {}, `${fmtLong.format(next.date)} kl. ${fmtTime.format(next.date)}`)
+        el("span", {}, t("dateAt", fmtLong.format(next.date), fmtTime.format(next.date)))
       ),
-      next.href ? el("a", { class: "bcd-button", href: next.href }, OPEN_LABEL[next.type] || "Åpne") : null
+      next.href ? el("a", { class: "bcd-button", href: next.href }, t(OPEN_LABEL[next.type] || "open")) : null
     );
   }
 
@@ -378,11 +384,7 @@
     return el(
       "section",
       { class: "bcd-missing", "aria-labelledby": "bcd-missing-h" },
-      el(
-        "h2",
-        { id: "bcd-missing-h", class: "bcd-label" },
-        `Ikke levert etter fristen (${missing.length})`
-      ),
+      el("h2", { id: "bcd-missing-h", class: "bcd-label" }, t("missing", missing.length)),
       el(
         "ul",
         {},
@@ -391,7 +393,7 @@
             "li",
             {},
             el("a", { href: m.href }, m.title),
-            el("span", { class: "bcd-item-meta" }, `${codeOf(m.course, m.contextName)} · frist ${fmtDay.format(m.date)}`)
+            el("span", { class: "bcd-item-meta" }, `${codeOf(m.course, m.contextName)} · ${t("due", fmtDay.format(m.date))}`)
           )
         )
       )
@@ -409,7 +411,7 @@
       }
       list.append(row(it));
     }
-    if (!items.length) list.append(el("li", { class: "bcd-quiet" }, "Ingen frister i dag."));
+    if (!items.length) list.append(el("li", { class: "bcd-quiet" }, t("noDeadlinesToday")));
     if (!nowPlaced) list.append(nowLine(now));
 
     return el(
@@ -430,7 +432,7 @@
   function gapRow(from, to) {
     const a = fmtDay.format(from);
     const b = fmtDay.format(to);
-    return el("li", { class: "bcd-gap" }, from.getTime() === to.getTime() ? `Ingen frister ${a}` : `Ingen frister ${a} – ${b}`);
+    return el("li", { class: "bcd-gap" }, from.getTime() === to.getTime() ? t("noDeadlinesOn", a) : t("noDeadlinesBetween", a, b));
   }
 
   function timeline(deadlines, now) {
@@ -467,13 +469,13 @@
       el(
         "div",
         { class: "bcd-section-head" },
-        el("h2", { id: "bcd-tl-h" }, "Frister")
+        el("h2", { id: "bcd-tl-h" }, t("deadlines"))
       ),
       pastCount
         ? el(
             "details",
             { class: "bcd-past" },
-            el("summary", {}, `Vis siste ${PAST_DAYS} dager (${pastCount})`),
+            el("summary", {}, t("showPast", PAST_DAYS, pastCount)),
             pastList
           )
         : null,
@@ -493,29 +495,29 @@
               el(
                 "a",
                 { href: a.href },
-                a.isNew ? el("span", { class: "bcd-new" }, "Ulest") : null,
+                a.isNew ? el("span", { class: "bcd-new" }, t("unread")) : null,
                 a.title
               ),
               el("span", { class: "bcd-item-meta" }, `${codeOf(a.course, a.contextName)} · ${relative(a.date, now)}`)
             )
           )
         )
-      : el("p", { class: "bcd-quiet" }, `Ingen kunngjøringer de siste ${PAST_DAYS} dagene.`);
+      : el("p", { class: "bcd-quiet" }, t("noAnnouncements", PAST_DAYS));
     return el(
       "section",
       { class: "bcd-panel", "aria-labelledby": "bcd-news-h" },
-      el("h2", { id: "bcd-news-h" }, "Kunngjøringer"),
+      el("h2", { id: "bcd-news-h" }, t("announcements")),
       body
     );
   }
 
   function courseList(courses) {
-    if (coursesPending) return skelPanel("Emner");
+    if (coursesPending) return skelPanel(t("courses"));
     if (!courses.size) return null;
     return el(
       "section",
       { class: "bcd-panel", "aria-labelledby": "bcd-courses-h" },
-      el("h2", { id: "bcd-courses-h" }, "Emner"),
+      el("h2", { id: "bcd-courses-h" }, t("courses")),
       el(
         "ul",
         { class: "bcd-courses" },
@@ -554,7 +556,7 @@
 
   function header() {
     const now = new Date();
-    return el("p", { class: "bcd-today" }, `I dag er ${fmtLong.format(now)}, uke ${isoWeek(now)}`);
+    return el("p", { class: "bcd-today" }, t("todayIs", fmtLong.format(now), isoWeek(now)));
   }
 
   function isoWeek(d) {
@@ -586,7 +588,7 @@
     return el(
       "div",
       { class: "bcd-grid is-loading", "aria-busy": "true" },
-      el("p", { class: "screenreader-only", role: "status" }, "Henter frister fra Canvas …"),
+      el("p", { class: "screenreader-only", role: "status" }, t("loading")),
       el(
         "div",
         { class: "bcd-col-main" },
@@ -594,11 +596,11 @@
         el(
           "section",
           { class: "bcd-timeline" },
-          el("div", { class: "bcd-section-head" }, el("h2", {}, "Frister")),
+          el("div", { class: "bcd-section-head" }, el("h2", {}, t("deadlines"))),
           el("ol", { class: "bcd-days" }, day("62%"), day("48%", "70%"), day("55%"))
         )
       ),
-      el("aside", { class: "bcd-col-side" }, skelPanel("Kunngjøringer"), skelPanel("Emner"))
+      el("aside", { class: "bcd-col-side" }, skelPanel(t("announcements")), skelPanel(t("courses")))
     );
   }
 
@@ -635,12 +637,12 @@
         el(
           "div",
           { class: "bcd-error", role: "alert" },
-          el("h2", {}, "Fikk ikke hentet fristene"),
-          el("p", {}, `Canvas svarte ikke som forventet (${err.message}). Du kan være logget ut, eller Canvas kan være treg akkurat nå.`),
+          el("h2", {}, t("loadFailed")),
+          el("p", {}, t("loadFailedText", err.message)),
           el(
             "div",
             { class: "bcd-error-actions" },
-            el("button", { type: "button", class: "bcd-button", onclick: () => render() }, "Prøv igjen"),
+            el("button", { type: "button", class: "bcd-button", onclick: () => render() }, t("retry")),
             el(
               "button",
               {
@@ -651,7 +653,7 @@
                   unmount();
                 },
               },
-              "Vis Canvas sin visning denne gangen"
+              t("showCanvasView")
             )
           )
         )
@@ -776,6 +778,16 @@
     observer.observe(document, { childList: true, subtree: true });
     document.addEventListener("DOMContentLoaded", go, { once: true });
   }
+
+  // Språket byttes fra popupen eller følger Canvas (se content/i18n.js). Det som står der, tegnes
+  // på nytt med de nye tekstene og datoformatene.
+  bcI18n.onChange(() => {
+    setFormats();
+    if (mounted && shown) {
+      shownJson = "";
+      show(shown);
+    }
+  });
 
   chrome.storage.sync.get(DEFAULTS, apply);
   chrome.storage.onChanged.addListener((_c, area) => {

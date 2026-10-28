@@ -8,7 +8,8 @@ En Chrome-utvidelse som gir Canvas LMS et renere og mer moderne utseende, med en
 fristene dine på dashboardet.
 
 *A Chrome extension that gives Canvas LMS a cleaner, more modern look and a clear overview of
-your deadlines. The interface and docs are in Norwegian; issues and pull requests in English are
+your deadlines. The extension is available in English and Norwegian, and by default follows the
+language you use in Canvas. The docs are in Norwegian; issues and pull requests in English are
 welcome too.*
 
 - Fristoversikt på dashboardet: neste frist øverst med nedtelling, oppgaver du ikke har levert,
@@ -19,6 +20,7 @@ welcome too.*
   historikken har en fargebrikke
 - Skolens egne Canvas-farger som standard, eller en farge du velger selv
 - Lyst, mørkt eller automatisk tema
+- På norsk eller engelsk, eller samme språk som du bruker i Canvas
 
 Bedre Canvas er ikke laget av eller tilknyttet Instructure, som lager Canvas LMS.
 
@@ -65,6 +67,7 @@ hvordan du kommer i gang, og [RELEASING.md](RELEASING.md) for hvordan nye versjo
 | --- | --- |
 | `manifest.json` | Oppsett for Chrome (Manifest V3). Firefox-manifestet lages fra det av `tools/package.py` |
 | `background.js` | Legger designet inn på nytt i åpne Canvas-faner når utvidelsen installeres eller oppdateres |
+| `content/i18n.js` | Tekstene på norsk og engelsk, og hvilket språk som brukes. Deles med popupen |
 | `content/content.js` | Leser innstillinger og setter klasser på `<html>` |
 | `content/canvas.css` | Grunnlaget for designet: tokens, typografi, meny, knapper, skjema. Alt er avgrenset til `html.bc` |
 | `content/canvas-ui.css` | Canvas sine egne deler: topplinje, popovere, menyer, sidepaneler, kort- og aktivitetsvisning |
@@ -75,6 +78,7 @@ hvordan du kommer i gang, og [RELEASING.md](RELEASING.md) for hvordan nye versjo
 | `content/calendar.js` | Får kalenderen til å passe i vinduet og plasserer hendelsesdetaljene |
 | `content/trays.js` | Fargebrikker i skuffene for emner, grupper, historikk og hjelp |
 | `popup/` | Innstillingene, som vises i Chromes sidepanel når du klikker på ikonet |
+| `_locales/` | Beskrivelsen av utvidelsen i nettleseren og nettbutikkene, på norsk og engelsk |
 | `icons/app/` | Utvidelsens ikon i 16, 32, 48 og 128 px |
 | `store/` | Skjermbilder og kampanjefliser til Chrome Web Store. Ikke en del av utvidelsen |
 | `docs/` | Nettsiden (GitHub Pages): forsiden i `index.html` og personvernerklæringen |

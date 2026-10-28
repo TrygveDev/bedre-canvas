@@ -14,6 +14,11 @@
     wrapper.toggleAttribute("data-bc-empty", empty);
   }
 
+  function labelClose(button) {
+    button.title = bcI18n.t("hideCourseMenu");
+    button.setAttribute("aria-label", button.title);
+  }
+
   function addCourseMenuClose() {
     const toggle = document.getElementById("courseMenuToggle");
     const left = document.getElementById("left-side");
@@ -21,8 +26,7 @@
     const close = document.createElement("button");
     close.type = "button";
     close.className = "bc-course-menu-close";
-    close.title = "Skjul kursmenyen";
-    close.setAttribute("aria-label", "Skjul kursmenyen");
+    labelClose(close);
     close.addEventListener("click", () => {
       toggle.click();
       // Fokus til knappen som viser menyen igjen, så tastaturbrukere ikke mister plassen sin.
@@ -33,6 +37,8 @@
     if (subtitle && left.contains(subtitle)) subtitle.before(close);
     else left.prepend(close);
   }
+
+  bcI18n.onChange(() => document.querySelectorAll(".bc-course-menu-close").forEach(labelClose));
 
   function run() {
     markEmptyRightSide();

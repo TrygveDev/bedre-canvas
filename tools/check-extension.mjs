@@ -1,6 +1,7 @@
 // Sjekker utvidelsen mot Manifest V3, kravene i Chrome Web Store og reglene i CONTRIBUTING.md.
 // Kjøres i CI på hver pull request, og lokalt med: node tools/check-extension.mjs
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { runInNewContext } from "node:vm";
 
 const errors = [];
 const fail = (msg) => errors.push(msg);
@@ -10,8 +11,42 @@ const read = (f) => readFileSync(f, "utf8");
 const m = JSON.parse(read("manifest.json"));
 if (m.manifest_version !== 3) fail("manifest_version må være 3");
 if (!/^\d+\.\d+\.\d+$/.test(m.version)) fail(`version «${m.version}» må være på formen 1.2.3`);
-if (m.name.length > 75) fail(`name er ${m.name.length} tegn, Chrome Web Store tillater 75`);
-if (m.description.length > 132) fail(`description er ${m.description.length} tegn, Chrome Web Store tillater 132`);
+// Navn og beskrivelse kan være «__MSG_nøkkel__» og hentes da fra hvert språk i _locales.
+const locales = existsSync("_locales") ? readdirSync("_locales") : [];
+if (locales.length && !locales.includes(m.default_locale)) fail(`default_locale «${m.default_locale}» mangler i _locales`);
+if (!locales.length && m.default_locale) fail("default_locale er satt, men _locales finnes ikke");
+const variants = (value) => {
+  const key = /^__MSG_(\w+)__$/.exec(value)?.[1];
+  if (!key) return [[null, value]];
+  return locales.map((l) => {
+    const msg = JSON.parse(read(`_locales/${l}/messages.json`))[key]?.message;
+    if (msg == null) fail(`_locales/${l}/messages.json mangler «${key}»`);
+    return [l, msg ?? ""];
+  });
+};
+const where = (l) => (l ? ` (${l})` : "");
+for (const [l, name] of variants(m.name)) {
+  if (name.length > 75) fail(`name er ${name.length} tegn${where(l)}, Chrome Web Store tillater 75`);
+}
+for (const [l, desc] of variants(m.description)) {
+  if (desc.length > 132) fail(`description er ${desc.length} tegn${where(l)}, Chrome Web Store tillater 132`);
+}
+
+// Tekstene i content/i18n.js: alle språk skal ha de samme nøklene, så ingen tekst mangler.
+const i18n = {};
+runInNewContext(read("content/i18n.js"), { globalThis: i18n, navigator: {} });
+const [base, ...others] = Object.entries(i18n.bcI18n.STRINGS);
+for (const [lang, strings] of others) {
+  for (const k of Object.keys(base[1])) if (!(k in strings)) fail(`content/i18n.js: «${k}» mangler på ${lang}`);
+  for (const k of Object.keys(strings)) if (!(k in base[1])) fail(`content/i18n.js: «${k}» mangler på ${base[0]}`);
+}
+// Og nøklene koden og popup.html bruker direkte, finnes.
+for (const f of ["popup/popup.html", "popup/popup.js", ...readdirSync("content").filter((f) => f.endsWith(".js")).map((f) => `content/${f}`)]) {
+  for (const x of read(f).matchAll(/\bt\("(\w+)"|data-i18n(?:-\w+)?="(\w+)"/g)) {
+    const k = x[1] || x[2];
+    if (!(k in base[1])) fail(`${f}: tekstnøkkelen «${k}» finnes ikke i content/i18n.js`);
+  }
+}
 if (m.background?.scripts) fail("background.scripts er Manifest V2, bruk background.service_worker");
 if (m.browser_action || m.page_action) fail("browser_action/page_action er Manifest V2, bruk action");
 

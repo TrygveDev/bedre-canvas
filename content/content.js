@@ -8,9 +8,12 @@
     theme: "light", // light | auto | dark
     nav: "modern", // modern | canvas | wide, se «Global meny» i canvas.css
     accent: "school", // "school" = fargene skolen har satt i Canvas, ellers en hex-farge
+    language: "auto", // auto | nb | en, se content/i18n.js
   };
 
   const root = document.documentElement;
+  // Språket Canvas er på, så «auto» kan følge det.
+  bcI18n.set({ hint: root.lang });
 
   // WCAG-kontrast mellom to farger på formen #rrggbb.
   function contrast(a, b) {
@@ -119,6 +122,7 @@
   if (location.pathname.startsWith("/conversations")) root.dataset.bcPage = "inbox";
 
   function apply(s) {
+    bcI18n.set({ language: s.language });
     root.classList.toggle("bc", s.enabled);
     speculate(s.enabled);
     root.dataset.bcTheme = s.theme;
@@ -153,7 +157,7 @@
   function update(s) {
     apply(s);
     try {
-      localStorage.setItem(CACHE, JSON.stringify({ enabled: s.enabled, theme: s.theme, nav: s.nav, accent: s.accent }));
+      localStorage.setItem(CACHE, JSON.stringify({ enabled: s.enabled, theme: s.theme, nav: s.nav, accent: s.accent, language: s.language }));
     } catch {}
   }
 
@@ -162,13 +166,15 @@
   if (document.readyState === "loading") apply(cached());
   chrome.storage.sync.get(DEFAULTS, update);
 
-  // Adressen til Canvas huskes, så ikonet kan åpne Canvas fra andre sider (se background.js).
-  // Bare når siden faktisk er Canvas, ikke f.eks. innloggingen eller community.instructure.com.
+  // Adressen til Canvas huskes, så ikonet kan åpne Canvas fra andre sider (se background.js), og
+  // språket, så popupen kan følge det på «auto». Bare når siden faktisk er Canvas, ikke f.eks.
+  // innloggingen eller community.instructure.com.
   function rememberCanvas() {
+    bcI18n.set({ hint: root.lang });
     if (!document.querySelector("#application.ic-app, .ic-app")) return;
-    const canvasUrl = location.origin + "/";
-    chrome.storage.local.get("canvasUrl", (saved) => {
-      if (saved.canvasUrl !== canvasUrl) chrome.storage.local.set({ canvasUrl });
+    const fresh = { canvasUrl: location.origin + "/", canvasLang: root.lang };
+    chrome.storage.local.get(Object.keys(fresh), (saved) => {
+      if (Object.keys(fresh).some((k) => saved[k] !== fresh[k])) chrome.storage.local.set(fresh);
     });
   }
   if (document.readyState === "loading") {
