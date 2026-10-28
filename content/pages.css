@@ -1583,9 +1583,68 @@ html.bc #calendars-context-list li label {
   line-height: 1.35;
 }
 
-html.bc #calendars-context-list li {
+/* Canvas legger listene i en hvit boks som ruller, med fargeboksen 15px inn og lange emnenavn
+   brutt over tre linjer. Her står de rett på sidekolonnen, i flukt med overskriften, og hver
+   rad får en flate når musen er over den. */
+html.bc :is(#calendars-context-list, #other-calendars-context-list) {
+  background: transparent !important;
+  padding: 4px 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+html.bc :is(#calendars-context-list, #other-calendars-context-list) .context_list_context {
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 4px 6px 8px !important;
+  margin: 0 -4px 0 -8px !important;
+  border-radius: var(--bc-radius-sm);
+  line-height: 1.35 !important;
+}
+
+html.bc :is(#calendars-context-list, #other-calendars-context-list) .context_list_context:hover {
+  background: var(--bc-surface-2) !important;
+}
+
+/* Fargeboksen midt på første linje av navnet. */
+html.bc :is(#calendars-context-list, #other-calendars-context-list) .context-list-toggle-box {
+  float: none !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin: calc((1.35em - 12px) / 2) 0 0 !important;
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+
+html.bc :is(#calendars-context-list, #other-calendars-context-list) label {
+  margin: 0 !important;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+/* Valgknappen står midt på første linje av navnet, som fargeboksen. */
+html.bc :is(#calendars-context-list, #other-calendars-context-list) .buttons-wrapper {
+  display: flex;
+  margin: -4px 0;
+}
+
+html.bc :is(#calendars-context-list, #other-calendars-context-list) .Button--icon-action {
+  float: none !important;
+  display: inline-flex;
   align-items: center;
-  padding: 5px 0;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--bc-radius-xs);
+  color: var(--bc-muted) !important;
+}
+
+html.bc :is(#calendars-context-list, #other-calendars-context-list) .Button--icon-action:hover {
+  background: var(--bc-border) !important;
+  color: var(--bc-text) !important;
 }
 
 html.bc #calendar-feed-button {
