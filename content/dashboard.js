@@ -283,7 +283,9 @@
         box.disabled = false;
       }
     });
-    return box;
+    // Trykkflaten er en label rundt boksen: nettleserne tegner ikke ramme på en vanlig avkrysningsboks,
+    // så den kan ikke gjøre flaten større selv.
+    return el("label", { class: "bcd-check-hit" }, box);
   }
 
 
@@ -575,7 +577,7 @@
         "li",
         { class: "bcd-item" },
         bar("18px", "is-box"),
-        bar("56px", "is-chip"),
+        el("span", { class: "bcd-chip" }, bar("56px", "is-chip")),
         el("div", { class: "bcd-item-main" }, bar(width), bar("30%", "is-small"))
       );
     const day = (...widths) =>
