@@ -428,9 +428,13 @@ html.bc .bcd-courses {
 
 /* Kunngjøringer: tittelen i vanlig vekt. Ulest får en prikk i venstremargen, som i Mail,
    og mellomvekt, i stedet for en etikett. Ordet «Ulest» står igjen for skjermlesere.
-   Alle radene har margen, så titlene står på linje enten de er lest eller ikke. */
+   Så lenge noe er ulest, har alle radene margen, så titlene står på linje. Er alt lest,
+   forsvinner den. */
 html.bc .bcd-news li {
   position: relative;
+}
+
+html.bc .bcd-news:has(.is-new) li {
   padding-left: 16px;
 }
 
