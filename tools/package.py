@@ -1,8 +1,8 @@
 """Lager zip-filene som lastes opp til Chrome Web Store og Firefox Add-ons (AMO).
 
-Tar bare med det nettleseren trenger for å kjøre utvidelsen: manifestet, background.js, content/, popup/
-og appikonene. Phosphor-SVG-ene ligger allerede inne i content/icons.css, og store/, tools/ og
-dokumentasjonen hører ikke hjemme i pakken.
+Tar bare med det nettleseren trenger for å kjøre utvidelsen: manifestet, background.js, _locales/,
+content/, popup/ og appikonene. Phosphor-SVG-ene ligger allerede inne i content/icons.css, og store/,
+tools/ og dokumentasjonen hører ikke hjemme i pakken.
 
 Firefox-pakken får et eget manifest laget fra manifest.json (se firefox_manifest under). Koden er den
 samme i begge. dist/firefox/ er den samme Firefox-pakken upakket.
@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 # Lisensene følger med, siden pakken inneholder Phosphor-ikonene (MIT) og vår egen kode (GPL-3.0).
-INCLUDE = ["background.js", "content", "popup", "icons/app", "LICENSE", "icons/phosphor/LICENSE"]
+INCLUDE = ["background.js", "_locales", "content", "popup", "icons/app", "LICENSE", "icons/phosphor/LICENSE"]
 
 # ID-en til utvidelsen på addons.mozilla.org. Den kan ikke endres etter første opplasting, og
 # chrome.storage.sync virker bare når den er satt.

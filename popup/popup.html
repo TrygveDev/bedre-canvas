@@ -9,62 +9,72 @@
   <header>
     <img src="../icons/app/icon-32.png" alt="" width="24" height="24">
     <h1>Bedre Canvas</h1>
-    <label class="switch" title="Slå av eller på">
-      <input type="checkbox" id="enabled" role="switch" aria-label="Bedre Canvas på">
+    <label class="switch" title="Slå av eller på" data-i18n-title="toggleTitle">
+      <input type="checkbox" id="enabled" role="switch" aria-label="Bedre Canvas på" data-i18n-label="toggleLabel">
       <span></span>
     </label>
   </header>
 
   <section class="group">
-    <h2 id="theme-label">Tema</h2>
+    <h2 id="theme-label" data-i18n="theme">Tema</h2>
     <div class="segmented" id="themes" role="radiogroup" aria-labelledby="theme-label">
-      <button data-theme="light" role="radio">Lyst</button>
-      <button data-theme="auto" role="radio">Auto</button>
-      <button data-theme="dark" role="radio">Mørkt</button>
+      <button data-theme="light" role="radio" data-i18n="themeLight">Lyst</button>
+      <button data-theme="auto" role="radio" data-i18n="themeAuto">Auto</button>
+      <button data-theme="dark" role="radio" data-i18n="themeDark">Mørkt</button>
     </div>
   </section>
 
   <section class="group">
-    <h2 id="nav-label">Sidemeny</h2>
+    <h2 id="nav-label" data-i18n="nav">Sidemeny</h2>
     <div class="segmented" id="navs" role="radiogroup" aria-labelledby="nav-label">
-      <button data-nav="modern" role="radio">Moderne</button>
-      <button data-nav="canvas" role="radio">Canvas</button>
-      <button data-nav="wide" role="radio">Utvidet</button>
+      <button data-nav="modern" role="radio" data-i18n="navModern">Moderne</button>
+      <button data-nav="canvas" role="radio" data-i18n="navCanvas">Canvas</button>
+      <button data-nav="wide" role="radio" data-i18n="navWide">Utvidet</button>
     </div>
   </section>
 
   <section class="group">
-    <h2 id="accent-label">Farge <span id="accent-name"></span></h2>
+    <h2 id="accent-label"><span data-i18n="accent">Farge</span> <span id="accent-name"></span></h2>
     <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="accent-label">
-      <button class="school" data-accent="school" role="radio">Skole</button>
+      <button class="school" data-accent="school" role="radio" data-i18n="accentSchool">Skole</button>
     </div>
     <div class="picker" id="picker" hidden>
-      <div class="sv" id="sv" tabindex="0" role="slider" aria-label="Metning og lysstyrke">
+      <div class="sv" id="sv" tabindex="0" role="slider" aria-label="Metning og lysstyrke" data-i18n-label="pickerSv">
         <span class="sv-thumb"></span>
       </div>
-      <input class="hue" id="hue" type="range" min="0" max="360" step="1" aria-label="Fargetone">
+      <input class="hue" id="hue" type="range" min="0" max="360" step="1" aria-label="Fargetone" data-i18n-label="pickerHue">
       <label class="hex">
         <span class="hex-dot" aria-hidden="true"></span>
         <span class="hex-label">Hex</span>
-        <input id="hex" type="text" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Hex-kode">
+        <input id="hex" type="text" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Hex-kode" data-i18n-label="pickerHex">
       </label>
     </div>
   </section>
 
+  <section class="group">
+    <h2 id="language-label" data-i18n="language">Språk</h2>
+    <div class="segmented" id="languages" role="radiogroup" aria-labelledby="language-label">
+      <button data-language="auto" role="radio" data-i18n="languageAuto">Auto</button>
+      <button data-language="nb" role="radio" lang="nb">Norsk</button>
+      <button data-language="en" role="radio" lang="en">English</button>
+    </div>
+  </section>
+
   <section class="group" id="site" hidden>
-    <h2>Denne siden</h2>
+    <h2 data-i18n="site">Denne siden</h2>
     <p class="hint" id="site-text"></p>
     <button class="primary" id="site-button"></button>
   </section>
 
   <footer>
-    <span>Laget av <a href="https://trygve.dev" target="_blank" rel="noopener">Trygve</a></span>
+    <span><span data-i18n="madeBy">Laget av</span> <a href="https://trygve.dev" target="_blank" rel="noopener">Trygve</a></span>
     <a class="github" href="https://github.com/TrygveDev/bedre-canvas" target="_blank" rel="noopener">
       <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-      Åpen kildekode på GitHub
+      <span data-i18n="sourceCode">Åpen kildekode på GitHub</span>
     </a>
   </footer>
 
+  <script src="../content/i18n.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

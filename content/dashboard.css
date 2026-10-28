@@ -282,15 +282,21 @@ html.bc .bcd-item.is-complete .bcd-item-title {
   text-decoration-color: color-mix(in srgb, var(--bc-muted) 60%, transparent);
 }
 
-/* Avhuking: 20px boks i et 44px trykkfelt (marginen gir trykkflaten). */
+/* Avhuking: 20px boks i et 44px trykkfelt. Den negative marginen gjør at feltet ikke tar mer
+   plass i raden enn boksen selv. */
+html.bc .bcd-check-hit {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -12px;
+  cursor: pointer;
+}
+
 html.bc .bcd-check {
   width: 20px;
   height: 20px;
-  margin: -12px;
-  padding: 0;
-  box-sizing: content-box;
-  border: 12px solid transparent;
-  background-clip: padding-box;
+  margin: 0;
   accent-color: var(--bc-accent);
   cursor: pointer;
 }
@@ -324,6 +330,12 @@ html.bc .bcd-chip {
   color: var(--bc-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+/* Lik bredde på emnet i hver rad, så titlene står på linje nedover tidslinjen. Lengre koder
+   får plassen de trenger. */
+html.bc .bcd-item > .bcd-chip {
+  min-width: 6.25rem;
 }
 
 html.bc .bcd-swatch {
@@ -415,9 +427,15 @@ html.bc .bcd-courses {
 }
 
 /* Kunngjøringer: tittelen i vanlig vekt. Ulest får en prikk i venstremargen, som i Mail,
-   og mellomvekt, i stedet for en etikett. Ordet «Ulest» står igjen for skjermlesere. */
+   og mellomvekt, i stedet for en etikett. Ordet «Ulest» står igjen for skjermlesere.
+   Så lenge noe er ulest, har alle radene margen, så titlene står på linje. Er alt lest,
+   forsvinner den. */
 html.bc .bcd-news li {
   position: relative;
+}
+
+html.bc .bcd-news:has(.is-new) li {
+  padding-left: 16px;
 }
 
 html.bc .bcd-news a {
@@ -438,7 +456,7 @@ html.bc .bcd-news .is-new a {
 
 html.bc .bcd-new {
   position: absolute;
-  left: -13px;
+  left: 1px;
   top: 7px;
   width: 7px;
   height: 7px;
@@ -587,12 +605,13 @@ html.bc .bcd-error-actions {
     row-gap: 4px;
   }
 
-  html.bc .bcd-item .bcd-check {
+  html.bc .bcd-item .bcd-check-hit {
     grid-row: span 2;
   }
 
   html.bc .bcd-item .bcd-chip {
     grid-column: 2 / -1;
+    min-width: 0;
   }
 
   html.bc .bcd-hero {

@@ -253,7 +253,10 @@ bare når koden er minifisert eller bygget, og det er den ikke her.
 
 ### Ikke publisert
 
-Ingenting ennå.
+- Engelsk: dashboardet, innstillingene og knappene utvidelsen legger til, finnes nå også på
+  engelsk. Et nytt valg for språk i innstillingene (Auto, Norsk, English). Auto følger språket du
+  bruker i Canvas, så den som har Canvas på engelsk, får utvidelsen på engelsk. Beskrivelsen av
+  utvidelsen er oversatt i `_locales/`. Ingen nye tillatelser.
 
 ### 0.3.0
 

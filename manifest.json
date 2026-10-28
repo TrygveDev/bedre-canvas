@@ -2,7 +2,8 @@
   "manifest_version": 3,
   "name": "Bedre Canvas",
   "version": "0.3.0",
-  "description": "Et renere og mer moderne design for Canvas LMS.",
+  "description": "__MSG_description__",
+  "default_locale": "nb",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "scripting", "activeTab", "sidePanel"],
   "host_permissions": ["https://*.instructure.com/*", "https://canvas.ntnu.no/*", "https://canvas.bi.no/*"],
@@ -27,7 +28,7 @@
     {
       "matches": ["https://*.instructure.com/*", "https://canvas.ntnu.no/*", "https://canvas.bi.no/*"],
       "css": ["content/icons.css", "content/canvas.css", "content/canvas-ui.css", "content/pages.css", "content/dashboard.css"],
-      "js": ["content/content.js", "content/dashboard.js", "content/calendar.js", "content/trays.js", "content/layout.js"],
+      "js": ["content/i18n.js", "content/content.js", "content/dashboard.js", "content/calendar.js", "content/trays.js", "content/layout.js"],
       "run_at": "document_start",
       "all_frames": false
     }

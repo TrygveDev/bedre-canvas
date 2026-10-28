@@ -4,19 +4,21 @@ const DEFAULTS = {
   nav: "modern", // modern | canvas | wide
   accent: "school",
   customAccent: "#7c3aed", // siste farge fra fargevelgeren, så den kan velges igjen med ett klikk
+  language: "auto", // auto | nb | en, se content/i18n.js
 };
 
 // «school» bruker fargene skolen har satt i Canvas. Alt annet er en hex-farge, enten en av
 // disse eller en brukeren har valgt selv i fargevelgeren.
 const ACCENTS = [
-  ["#2563eb", "Blå"],
-  ["#15803d", "Grønn"],
-  ["#dc2626", "Rød"],
-  ["#ff8da1", "Rosa"],
+  ["#2563eb", "accentBlue"],
+  ["#15803d", "accentGreen"],
+  ["#dc2626", "accentRed"],
+  ["#ff8da1", "accentPink"],
 ];
 
 const THEMES = ["light", "auto", "dark"];
 const NAVS = ["modern", "canvas", "wide"];
+const LANGUAGES = ["auto", "nb", "en"];
 
 // Samme grense som i Canvas (content.js): under 4.5:1 mot hvit tekst får knappen mørk tekst.
 function isLight(hex) {
@@ -47,6 +49,22 @@ try {
 applyScheme();
 systemDark.addEventListener("change", applyScheme);
 
+// Tekstene i popup.html står på norsk og byttes her. Språket huskes lokalt som temaet, så popupen
+// ikke blinker norsk før innstillingene er lest.
+const { t } = bcI18n;
+function translate() {
+  root.lang = bcI18n.lang;
+  for (const n of document.querySelectorAll("[data-i18n]")) n.textContent = t(n.dataset.i18n);
+  for (const n of document.querySelectorAll("[data-i18n-label]")) n.setAttribute("aria-label", t(n.dataset.i18nLabel));
+  for (const n of document.querySelectorAll("[data-i18n-title]")) n.title = t(n.dataset.i18nTitle);
+  try {
+    localStorage.setItem("bc-lang", bcI18n.lang);
+  } catch {}
+}
+try {
+  bcI18n.set({ language: localStorage.getItem("bc-lang") || "auto" });
+} catch {}
+
 function render(s) {
   $("#enabled").checked = s.enabled;
   document.querySelectorAll("button[data-theme]").forEach((b) => {
@@ -58,12 +76,16 @@ function render(s) {
   document.querySelectorAll("button[data-nav]").forEach((b) => {
     b.setAttribute("aria-checked", String(b.dataset.nav === s.nav));
   });
+  document.querySelectorAll("button[data-language]").forEach((b) => {
+    b.setAttribute("aria-checked", String(b.dataset.language === s.language));
+  });
   $("#themes").style.setProperty("--i", Math.max(0, THEMES.indexOf(s.theme)));
   $("#navs").style.setProperty("--i", Math.max(0, NAVS.indexOf(s.nav)));
+  $("#languages").style.setProperty("--i", Math.max(0, LANGUAGES.indexOf(s.language)));
   const preset = s.accent === "school" || ACCENTS.some(([c]) => c === s.accent);
   customButton.setAttribute("aria-checked", String(!preset));
-  $("#accent-name").textContent =
-    ACCENTS.find(([c]) => c === s.accent)?.[1] || (preset ? "" : s.accent.toUpperCase());
+  const named = ACCENTS.find(([c]) => c === s.accent)?.[1];
+  $("#accent-name").textContent = named ? t(named) : preset ? "" : s.accent.toUpperCase();
   accent = s.accent;
   customAccent = s.customAccent;
   root.style.setProperty("--accent", s.accent === "school" ? "#1d2433" : s.accent);
@@ -82,28 +104,30 @@ for (const [color, name] of ACCENTS) {
   const b = document.createElement("button");
   b.dataset.accent = color;
   b.style.background = color;
-  b.title = name;
+  b.dataset.i18nTitle = name;
+  b.dataset.i18nLabel = name;
   b.setAttribute("role", "radio");
-  b.setAttribute("aria-label", name);
   swatches.append(b);
 }
 
 // Siste valg er en egen farge: en regnbuesirkel som åpner fargevelgeren under.
 const customButton = document.createElement("button");
 customButton.className = "custom";
-customButton.title = "Egen farge";
+customButton.dataset.i18nTitle = "accentCustom";
+customButton.dataset.i18nLabel = "accentCustom";
 customButton.setAttribute("role", "radio");
-customButton.setAttribute("aria-label", "Egen farge");
 customButton.setAttribute("aria-expanded", "false");
 swatches.append(customButton);
+translate();
 
 document.addEventListener("click", (e) => {
-  const t = e.target.closest("button[data-theme], button[data-nav], button[data-accent]");
-  if (!t) return;
-  if (t.dataset.theme) save({ theme: t.dataset.theme });
-  if (t.dataset.nav) save({ nav: t.dataset.nav });
-  if (t.dataset.accent) {
-    save({ accent: t.dataset.accent });
+  const b = e.target.closest("button[data-theme], button[data-nav], button[data-accent], button[data-language]");
+  if (!b) return;
+  if (b.dataset.theme) save({ theme: b.dataset.theme });
+  if (b.dataset.nav) save({ nav: b.dataset.nav });
+  if (b.dataset.language) save({ language: b.dataset.language });
+  if (b.dataset.accent) {
+    save({ accent: b.dataset.accent });
     closePicker();
   }
 });
@@ -258,8 +282,21 @@ hexInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") hexInput.blur();
 });
 
-chrome.storage.sync.get(DEFAULTS, render);
-chrome.storage.onChanged.addListener(() => chrome.storage.sync.get(DEFAULTS, render));
+// Språket følger valget i popupen, eller på «auto» språket Canvas var på sist (se content.js).
+function load() {
+  chrome.storage.local.get("canvasLang", ({ canvasLang }) => {
+    chrome.storage.sync.get(DEFAULTS, (s) => {
+      bcI18n.set({ language: s.language, hint: canvasLang });
+      render(s);
+    });
+  });
+}
+bcI18n.onChange(() => {
+  translate();
+  setupSiteSection();
+});
+load();
+chrome.storage.onChanged.addListener(load);
 
 // Canvas på egne domener (f.eks. canvas.skolen.no)
 
@@ -302,21 +339,21 @@ async function setupSiteSection() {
   section.hidden = false;
 
   if (registered) {
-    text.textContent = `Bedre Canvas er aktivert på ${host}.`;
-    button.textContent = "Fjern fra denne siden";
+    text.textContent = t("siteActive", host);
+    button.textContent = t("siteRemove");
     button.onclick = async () => {
       try {
         await chrome.scripting.unregisterContentScripts({ ids: [id] });
         await chrome.permissions.remove({ origins: [origin] });
         await chrome.tabs.reload(tab.id);
       } catch (err) {
-        text.textContent = `Fikk ikke fjernet Bedre Canvas fra ${host}. Prøv igjen.`;
+        text.textContent = t("siteRemoveFailed", host);
         console.error(err);
       }
     };
   } else {
-    text.textContent = `${host} ser ut som Canvas. Vil du bruke Bedre Canvas her?`;
-    button.textContent = "Bruk på denne siden";
+    text.textContent = t("siteOffer", host);
+    button.textContent = t("siteUse");
     button.onclick = async () => {
       // Tillatelsen må bes om før noe annet ventes på, ellers er klikket «brukt opp».
       const granted = await chrome.permissions.request({ origins: [origin] });
@@ -335,7 +372,7 @@ async function setupSiteSection() {
         }
         await chrome.tabs.reload(tab.id);
       } catch (err) {
-        text.textContent = `Fikk ikke slått på Bedre Canvas for ${host}. Prøv igjen.`;
+        text.textContent = t("siteUseFailed", host);
         console.error(err);
       }
     };
