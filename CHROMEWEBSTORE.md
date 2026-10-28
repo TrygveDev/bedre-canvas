@@ -1,6 +1,6 @@
 # Chrome Web Store – Bedre Canvas
 
-> Sist oppdatert: 2026-10-27
+> Sist oppdatert: 2026-10-28
 
 Alt som trengs for å publisere og oppdatere Bedre Canvas i Chrome Web Store, klart til å
 kopiere inn i utviklerkonsollen. Hold filen oppdatert når tillatelser, funksjoner eller versjon
@@ -8,9 +8,8 @@ endres.
 
 ## Status før neste opplasting
 
-- [x] **Versjon:** 0.3.0 ble sendt til gjennomgang med release-workflowen 2026-10-27
-      (`PENDING_REVIEW`). 0.2.2 var
-      publisert (`PUBLISHED`, 100 %) da, sjekket med `cws-check.yml`. Senere versjoner slippes som
+- [x] **Versjon:** 0.4.0 ble sendt til gjennomgang med release-workflowen 2026-10-28.
+      0.3.0 ble sendt 2026-10-27. Senere versjoner slippes som
       beskrevet i [RELEASING.md](RELEASING.md).
 - [ ] **Lang beskrivelse:** ny linje om raskere lasting under «Hva du får». Workflowen oppdaterer
       bare pakken, så teksten må limes inn i utviklerkonsollen for hånd.
@@ -245,6 +244,7 @@ bare når koden er minifisert eller bygget, og det er den ikke her.
 
 | Versjon | Dato | Endringer | Status |
 | --- | --- | --- | --- |
+| 0.4.0 | 2026-10-28 | Engelsk versjon med valg av språk, jevnere avstand i listene | Til gjennomgang |
 | 0.3.0 | 2026-10-27 | Raskere dashboard, forhåndslasting, skjeletter, egen Firefox-pakke | Til gjennomgang |
 | 0.2.2 | 2026-10-26 | Virker på NTNU og BI uten oppsett | Publisert (sjekket 2026-10-27) |
 | 0.2.1 | 2026-10-25 | Ikonet er en snarvei til Canvas fra andre sider | Til gjennomgang |
@@ -253,10 +253,15 @@ bare når koden er minifisert eller bygget, og det er den ikke her.
 
 ### Ikke publisert
 
+Ingenting ennå.
+
+### 0.4.0
+
 - Engelsk: dashboardet, innstillingene og knappene utvidelsen legger til, finnes nå også på
   engelsk. Et nytt valg for språk i innstillingene (Auto, Norsk, English). Auto følger språket du
   bruker i Canvas, så den som har Canvas på engelsk, får utvidelsen på engelsk. Beskrivelsen av
   utvidelsen er oversatt i `_locales/`. Ingen nye tillatelser.
+- Jevnere avstand i fristlisten, kunngjøringene og kalenderlisten.
 
 ### 0.3.0
 

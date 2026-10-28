@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Bedre Canvas",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "__MSG_description__",
   "default_locale": "nb",
   "minimum_chrome_version": "116",
